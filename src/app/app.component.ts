@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { FoodApiService } from './services/api/food-api.service';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,10 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'calorie-composer-ui';
+
+  constructor(private foodApiService: FoodApiService) { }
+
+  doTheThing(): void {
+    this.foodApiService.getFood().subscribe(food => console.log(food));
+  }
 }
