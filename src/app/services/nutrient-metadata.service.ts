@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { NutrientEnum } from '../constants/enums/nutrient.enum';
 import { NutrientMetadataList } from '../constants/nutrient-metadata';
+import { NutrientType } from '../constants/types/nutrient.type';
 // import convert from 'convert-units';
 // import Qty from 'js-quantities';
 
@@ -11,7 +11,7 @@ export class NutrientMetadataService {
 
   constructor() { }
 
-  aliasToEnum(alias: string): NutrientEnum {
+  aliasToEnum(alias: string): NutrientType {
     const metaDataMatch = NutrientMetadataList
       .find(nutrientMD => nutrientMD.aliases.includes(alias));
 

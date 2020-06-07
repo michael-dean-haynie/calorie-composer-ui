@@ -1,5 +1,5 @@
 
-import { MacroNutrientEnum } from '../constants/enums/macro-nutrient.enum';
+import { MacroNutrientType } from '../constants/types/macro-nutrient.type';
 import { Nutrient } from './nutrient.model';
 
 export class Food {
@@ -19,20 +19,23 @@ export class Food {
     //     this.nutrients = foodDTO.nutrients.map(nutrientDTO => new Nutrient(nutrientDTO));
     // }
 
-    macroAmt(macro: MacroNutrientEnum): number {
+    macroAmt(macro: MacroNutrientType): number {
         // return this.nutrients.find(nutrient => nutrient.name === macro.toString()).amount;
         return 0;
     }
 
-    macroCals(macro: MacroNutrientEnum): number {
+    macroCals(macro: MacroNutrientType): number {
         // return this.macroAmt(macro) * MacroCals.get(macro);
         return 0;
     }
 
-    macroPctg(macro: MacroNutrientEnum): number {
+    macroPctg(macro: MacroNutrientType): number {
+
+        const macros: MacroNutrientType[] = ['Fat', 'Carbohydrate', 'Protein'];
+
         const sumReducer = (accumulator, currentValue) => accumulator + currentValue;
 
-        const totalCalsFromMacros = [MacroNutrientEnum.Fat, MacroNutrientEnum.Carbohydrate, MacroNutrientEnum.Protein]
+        const totalCalsFromMacros = macros
             .map(macroNutrient => this.macroCals(macroNutrient))
             .reduce(sumReducer);
 

@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
-import { SexEnum } from './constants/enums/sex.enum';
 import { Food } from './models/food.model';
 import { FoodApiService } from './services/api/food-api.service';
-import { EnumService } from './services/util/enum.service';
 
 @Component({
   selector: 'app-root',
@@ -11,7 +9,7 @@ import { EnumService } from './services/util/enum.service';
 })
 export class AppComponent {
 
-  constructor(private foodApiService: FoodApiService, private enumService: EnumService) { }
+  constructor(private foodApiService: FoodApiService) { }
   private result: Food;
 
   doTheThing(): void {
@@ -22,25 +20,6 @@ export class AppComponent {
   }
 
   doAnotherThing(): void {
-    // [MacroNutrientEnum.Fat, MacroNutrientEnum.Carbohydrate, MacroNutrientEnum.Protein].forEach(macro => {
-
-    //   console.log(macro);
-    //   console.log(`ammount: ${this.result.macroAmt(macro)}`);
-    //   console.log(`calories: ${this.result.macroCals(macro)}`);
-    //   console.log(`calories %: ${this.result.macroPctg(macro)}`);
-    // });
-
-    // console.log(SexEnum);
-    // console.log(SexEnum.Male);
-    // console.log(SexEnum.Female);
-    // console.log(SexEnum[SexEnum.Male]);
-    // console.log(SexEnum[SexEnum.Female]);
-
-    // const foo: SexEnum = SexEnum['Malez'];
-    // console.log(foo);
-
-
-    console.log(this.enumService.getEnumMembers(SexEnum));
 
   }
 }

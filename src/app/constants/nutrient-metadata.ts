@@ -1,8 +1,8 @@
-import { NutrientEnum } from './enums/nutrient.enum';
-import { SexEnum } from './enums/sex.enum';
+import { NutrientType } from './types/nutrient.type';
+import { SexEnum } from './types/sex.type';
 
 export class NutrientMetaData {
-    nutrient: NutrientEnum;
+    nutrient: NutrientType;
     displayName: string;
     aliases: string[];
     defaultUnit: string; // also unit of DRI values
@@ -24,7 +24,7 @@ export class DietaryReferenceIntake {
  */
 export const NutrientMetadataList: NutrientMetaData[] = [
     {
-        nutrient: NutrientEnum.VitaminA,
+        nutrient: 'VitaminA',
         displayName: 'Vitamin A',
         aliases: ['Vitamin A, IU'],
         defaultUnit: 'mcg',
@@ -44,7 +44,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.VitaminC,
+        nutrient: 'VitaminC',
         displayName: 'Vitamin C',
         aliases: ['Vitamin C, total ascorbic acid'],
         defaultUnit: 'mg',
@@ -64,7 +64,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.VitaminD,
+        nutrient: 'VitaminD',
         displayName: 'Vitamin D',
         aliases: ['Vitamin D (D2 + D3), International Units'],
         defaultUnit: 'mcg',
@@ -84,7 +84,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.VitaminE,
+        nutrient: 'VitaminE',
         displayName: 'Vitamin E',
         aliases: [],
         defaultUnit: 'mg',
@@ -104,7 +104,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.VitaminK,
+        nutrient: 'VitaminK',
         displayName: 'Vitamin K',
         aliases: [],
         defaultUnit: 'mcg',
@@ -124,7 +124,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.Thiamin,
+        nutrient: 'Thiamin',
         displayName: 'Thiamin',
         aliases: ['Thiamin'],
         defaultUnit: 'mg',
@@ -144,7 +144,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.Riboflavin,
+        nutrient: 'Riboflavin',
         displayName: 'Riboflavin',
         aliases: ['Riboflavin'],
         defaultUnit: 'mg',
@@ -164,7 +164,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.Niacin,
+        nutrient: 'Niacin',
         displayName: 'Niacin',
         aliases: ['Niacin'],
         defaultUnit: 'mg',
@@ -184,7 +184,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.VitaminB6,
+        nutrient: 'VitaminB6',
         displayName: 'Vitamin B-6',
         aliases: ['Vitamin B-6'],
         defaultUnit: 'mg',
@@ -204,7 +204,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.Folate,
+        nutrient: 'Folate',
         displayName: 'Folate',
         aliases: ['Folate, total'],
         defaultUnit: 'mcg',
@@ -224,7 +224,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.VitaminB12,
+        nutrient: 'VitaminB12',
         displayName: 'Vitamin B-12',
         aliases: ['Vitamin B-12'],
         defaultUnit: 'mcg',
@@ -244,7 +244,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.PantothenicAcid,
+        nutrient: 'PantothenicAcid',
         displayName: 'Pantothenic Acid',
         aliases: ['Pantothenic acid'],
         defaultUnit: 'mg',
@@ -264,7 +264,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.Biotin,
+        nutrient: 'Biotin',
         displayName: 'Biotin',
         aliases: [],
         defaultUnit: 'mcg',
@@ -284,7 +284,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.Choline,
+        nutrient: 'Choline',
         displayName: 'Choline',
         aliases: [],
         defaultUnit: 'mg',
@@ -304,7 +304,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.Boron,
+        nutrient: 'Boron',
         displayName: 'Boron',
         aliases: [],
         defaultUnit: 'mg',
@@ -324,7 +324,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.Calcium,
+        nutrient: 'Calcium',
         displayName: 'Calcium',
         aliases: ['Calcium, Ca'],
         defaultUnit: 'mg',
@@ -344,7 +344,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.Chromium,
+        nutrient: 'Chromium',
         displayName: 'Chromium',
         aliases: [],
         defaultUnit: 'mcg',
@@ -364,7 +364,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.Copper,
+        nutrient: 'Copper',
         displayName: 'Copper',
         aliases: ['Copper, Cu'],
         defaultUnit: 'mcg',
@@ -384,7 +384,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.Fluoride,
+        nutrient: 'Fluoride',
         displayName: 'Fluoride',
         aliases: [],
         defaultUnit: 'mg',
@@ -404,7 +404,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.Iodine,
+        nutrient: 'Iodine',
         displayName: 'Iodine',
         aliases: ['Iodine, I'],
         defaultUnit: 'mcg',
@@ -424,7 +424,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.Iron,
+        nutrient: 'Iron',
         displayName: 'Iron',
         aliases: ['Iron, Fe'],
         defaultUnit: 'mg',
@@ -444,7 +444,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.Magnesium,
+        nutrient: 'Magnesium',
         displayName: 'Magnesium',
         aliases: ['Magnesium, Mg'],
         defaultUnit: 'mg',
@@ -464,7 +464,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.Manganese,
+        nutrient: 'Manganese',
         displayName: 'Manganese',
         aliases: [],
         defaultUnit: 'mg',
@@ -484,7 +484,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.Molybdenum,
+        nutrient: 'Molybdenum',
         displayName: 'Molybdenum',
         aliases: [],
         defaultUnit: 'mcg',
@@ -504,7 +504,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.Nickel,
+        nutrient: 'Nickel',
         displayName: 'Nickel',
         aliases: [],
         defaultUnit: 'mg',
@@ -524,7 +524,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.Phosphorus,
+        nutrient: 'Phosphorus',
         displayName: 'Phosphorus',
         aliases: ['Phosphorus, P'],
         defaultUnit: 'mcg',
@@ -544,7 +544,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.Selenium,
+        nutrient: 'Selenium',
         displayName: 'Selenium',
         aliases: [],
         defaultUnit: 'mcg',
@@ -564,7 +564,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.Vanadium,
+        nutrient: 'Vanadium',
         displayName: 'Vanadium',
         aliases: [],
         defaultUnit: 'mg',
@@ -584,7 +584,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.Zinc,
+        nutrient: 'Zinc',
         displayName: 'Zinc',
         aliases: ['Zinc, Zn'],
         defaultUnit: 'mg',
@@ -604,7 +604,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.Potassium,
+        nutrient: 'Potassium',
         displayName: 'Potassium',
         aliases: ['Potassium, K'],
         defaultUnit: 'g',
@@ -624,7 +624,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.Sodium,
+        nutrient: 'Sodium',
         displayName: 'Sodium',
         aliases: ['Sodium, Na'],
         defaultUnit: 'g',
@@ -644,7 +644,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.Chloride,
+        nutrient: 'Chloride',
         displayName: 'Chloride',
         aliases: [],
         defaultUnit: 'g',
@@ -664,7 +664,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.Carbohydrate,
+        nutrient: 'Carbohydrate',
         displayName: 'Carbohydrate',
         aliases: ['Carbohydrate, by difference', 'Carbohydrate, other'],
         defaultUnit: 'g',
@@ -684,7 +684,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.TotalFiber,
+        nutrient: 'TotalFiber',
         displayName: 'Total Fiber',
         aliases: ['Fiber, total dietary'],
         defaultUnit: 'g',
@@ -704,7 +704,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.Fat,
+        nutrient: 'Fat',
         displayName: 'Fat',
         aliases: ['Total lipid (fat)'],
         defaultUnit: 'g',
@@ -724,7 +724,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.LinoleicAcid,
+        nutrient: 'LinoleicAcid',
         displayName: 'Linoleic Acid',
         aliases: [],
         defaultUnit: 'g',
@@ -744,7 +744,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.AlphaLinolenicAcid,
+        nutrient: 'AlphaLinolenicAcid',
         displayName: 'Alpha Linolenic Acid',
         aliases: [],
         defaultUnit: 'g',
@@ -764,7 +764,7 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.Protein,
+        nutrient: 'Protein',
         displayName: 'Protein',
         aliases: ['Protein'],
         defaultUnit: 'g',
@@ -784,42 +784,42 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         ]
     },
     {
-        nutrient: NutrientEnum.Energy,
+        nutrient: 'Energy',
         displayName: 'Energy',
         aliases: ['Energy'],
         defaultUnit: 'kcal',
         dris: null
     },
     {
-        nutrient: NutrientEnum.Cholesterol,
+        nutrient: 'Cholesterol',
         displayName: 'Cholesterol',
         aliases: ['Cholesterol'],
         defaultUnit: 'mg',
         dris: null
     },
     {
-        nutrient: NutrientEnum.TransFat,
+        nutrient: 'TransFat',
         displayName: 'Trans Fat',
         aliases: ['Fatty acids, total trans'],
         defaultUnit: 'mg',
         dris: null
     },
     {
-        nutrient: NutrientEnum.SaturatedFat,
+        nutrient: 'SaturatedFat',
         displayName: 'Saturated Fat',
         aliases: ['Fatty acids, total saturated'],
         defaultUnit: 'mg',
         dris: null
     },
     {
-        nutrient: NutrientEnum.MonounsaturatedFat,
+        nutrient: 'MonounsaturatedFat',
         displayName: 'Monounsaturated Fat',
         aliases: ['Fatty acids, total monounsaturated'],
         defaultUnit: 'mg',
         dris: null
     },
     {
-        nutrient: NutrientEnum.PolyunsaturatedFat,
+        nutrient: 'PolyunsaturatedFat',
         displayName: 'Polyunsaturated Fat',
         aliases: ['Fatty acids, total polyunsaturated'],
         defaultUnit: 'mg',
