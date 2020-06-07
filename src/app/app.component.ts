@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Food } from './models/food.model';
+import { FdcApiService } from './services/api/fdc-api.service';
 import { FoodApiService } from './services/api/food-api.service';
 
 @Component({
@@ -9,11 +10,16 @@ import { FoodApiService } from './services/api/food-api.service';
 })
 export class AppComponent {
 
-  constructor(private foodApiService: FoodApiService) { }
+  constructor(private foodApiService: FoodApiService, private fdcApiService: FdcApiService) { }
   private result: Food;
 
   doTheThing(): void {
-    this.foodApiService.getFood().subscribe(food => {
+    // this.foodApiService.getFood().subscribe(food => {
+    //   console.log(food);
+    //   this.result = food;
+    // });
+
+    this.fdcApiService.search('apple').subscribe(food => {
       console.log(food);
       this.result = food;
     });
