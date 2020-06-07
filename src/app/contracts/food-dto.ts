@@ -1,4 +1,4 @@
-import { NutrientDTO } from './NutrientDTO';
+import { NutrientDTO } from './nutrient-dto';
 
 export interface FoodDTO {
     description: string;
