@@ -824,6 +824,21 @@ export const NutrientMetadataList: NutrientMetaData[] = [
         aliases: ['Fatty acids, total polyunsaturated'],
         defaultUnit: 'mg',
         dris: null
+    },
+    {
+        nutrient: 'TotalSugars',
+        displayName: 'Sugars, total',
+        aliases: ['Sugars, total including NLEA'],
+        defaultUnit: 'g',
+        dris: null
+    },
+    {
+        nutrient: 'AddedSugars',
+        displayName: 'Sugars, added',
+        aliases: ['Sugars, added'],
+        defaultUnit: 'g',
+        dris: null
     }
+
 
 ];

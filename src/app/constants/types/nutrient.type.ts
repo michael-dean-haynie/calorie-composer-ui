@@ -53,4 +53,6 @@ export type NutrientType =
     'TransFat' |
     'SaturatedFat' |
     'MonounsaturatedFat' |
-    'PolyunsaturatedFat';
+    'PolyunsaturatedFat' |
+    'TotalSugars' |
+    'AddedSugars';
