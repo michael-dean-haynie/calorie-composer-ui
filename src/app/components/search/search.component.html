@@ -1,6 +1,6 @@
-<form>
+<form (submit)="search($event, searchInput.value)">
     <mat-form-field>
-        <mat-label>Search</mat-label>
-        <input matInput placeholder="Ex: Yogurt">
+        <mat-label>Search by food or brand</mat-label>
+        <input #searchInput type="search" matInput placeholder="Ex: Yogurt">
     </mat-form-field>
 </form>
