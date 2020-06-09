@@ -3,11 +3,11 @@ import { SearchResult } from 'src/app/models/search-result.model';
 import { SearchService } from 'src/app/services/search.service';
 
 @Component({
-  selector: 'app-search-results',
-  templateUrl: './search-results.component.html',
-  styleUrls: ['./search-results.component.scss']
+  selector: 'app-narrow-search-results',
+  templateUrl: './narrow-search-results.component.html',
+  styleUrls: ['./narrow-search-results.component.scss']
 })
-export class SearchResultsComponent implements OnInit {
+export class NarrowSearchResultsComponent implements OnInit {
 
   results: SearchResult;
 

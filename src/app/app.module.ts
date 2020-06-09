@@ -7,15 +7,19 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { NarrowSearchResultsComponent } from './components/narrow-search-results/narrow-search-results.component';
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
-import { SearchResultsComponent } from './components/search-results/search-results.component';
+import { SearchSideBarComponent } from './components/search-side-bar/search-side-bar.component';
+import { SearchComponent } from './components/search/search.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     SearchBarComponent,
-    SearchResultsComponent
+    NarrowSearchResultsComponent,
+    SearchComponent,
+    SearchSideBarComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,11 @@
+<ng-container *ngIf="layoutMode === 'narrow'">
+    <app-search-bar></app-search-bar>
+    <app-narrow-search-results></app-narrow-search-results>
+</ng-container>
+
+<ng-container *ngIf="layoutMode === 'wide'">
+    <div class="wide-container">
+        <app-search-side-bar></app-search-side-bar>
+        <div>This is the search result details</div>
+    </div>
+</ng-container>
