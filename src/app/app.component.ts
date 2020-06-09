@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Food } from './models/food.model';
 import { FdcApiService } from './services/api/fdc-api.service';
 import { FoodApiService } from './services/api/food-api.service';
+import { ResponsiveService } from './services/responsive.service';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +11,12 @@ import { FoodApiService } from './services/api/food-api.service';
 })
 export class AppComponent {
 
-  constructor(private foodApiService: FoodApiService, private fdcApiService: FdcApiService) { }
+  constructor(
+    private foodApiService: FoodApiService,
+    private fdcApiService: FdcApiService,
+    responsiveService: ResponsiveService
+  ) { }
+
   private result: Food;
 
   doTheThing(): void {

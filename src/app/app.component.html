@@ -1,6 +1,8 @@
-<router-outlet></router-outlet>
-
-<app-search></app-search>
-<!-- 
-<button (click)="doTheThing()">Do the thing</button>
-<button (click)="doAnotherThing()">Do another thing</button> -->
+<mat-toolbar color="primary" class="heading">
+    <h1>Calorie Composer</h1>
+</mat-toolbar>
+<div class="padded-main-content">
+    <router-outlet></router-outlet>
+    <app-search></app-search>
+    <app-search-results></app-search-results>
+</div>
