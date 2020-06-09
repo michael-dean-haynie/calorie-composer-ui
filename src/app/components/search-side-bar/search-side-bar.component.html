@@ -1,6 +1,6 @@
 <app-search-bar></app-search-bar>
-<ul>
-    <li *ngFor="let food of results?.foods">
+<mat-selection-list #resultsList [multiple]="false">
+    <mat-list-option *ngFor="let food of results?.foods">
         {{food.description}}
-    </li>
-</ul>
+    </mat-list-option>
+</mat-selection-list>
