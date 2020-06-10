@@ -11,6 +11,7 @@ export class SearchService {
 
   results = new BehaviorSubject<SearchResult>(null);
   selectedFood = new BehaviorSubject<Food>(null);
+  latestQuery = new BehaviorSubject<string>('');
 
   constructor(private fdcApiService: FdcApiService) { }
 

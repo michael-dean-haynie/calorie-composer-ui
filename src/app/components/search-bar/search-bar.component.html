@@ -1,6 +1,7 @@
 <form (submit)="search($event, searchInput.value)">
     <mat-form-field class="search-bar-form-field">
         <mat-label>Search by food or brand</mat-label>
-        <input #searchInput type="search" matInput placeholder="Ex: Kellogg Corn Flakes">
+        <input #searchInput type="search" name="searchInput" matInput [(ngModel)]="query" (input)="saveQuery()"
+            placeholder="Ex: Kellogg Corn Flakes">
     </mat-form-field>
 </form>

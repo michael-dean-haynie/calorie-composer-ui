@@ -8,9 +8,12 @@ import { SearchService } from 'src/app/services/search.service';
 })
 export class SearchBarComponent implements OnInit {
 
+  query: string;
+
   constructor(private searchService: SearchService) { }
 
   ngOnInit(): void {
+    this.searchService.latestQuery.subscribe(latestQuery => this.query = latestQuery);
   }
 
   search(event: Event, query: string): void {
@@ -19,6 +22,10 @@ export class SearchBarComponent implements OnInit {
 
     // make request with query
     this.searchService.search(query);
+  }
+
+  saveQuery(): void {
+    this.searchService.latestQuery.next(this.query);
   }
 
 }
