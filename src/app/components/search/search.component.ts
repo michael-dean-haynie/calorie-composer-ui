@@ -30,7 +30,7 @@ export class SearchComponent implements OnInit {
   }
 
   private setLayoutMode(windowWidth: number) {
-    this.layoutMode = windowWidth < 500 ? 'narrow' : 'wide';
+    this.layoutMode = windowWidth < 800 ? 'narrow' : 'wide';
   }
 
 }
