@@ -3,6 +3,7 @@ import { MacroNutrientType } from '../constants/types/macro-nutrient.type';
 import { Nutrient } from './nutrient.model';
 
 export class Food {
+    fdcId: string;
     description: string;
     brandOwner: string;
     ingredients: string;

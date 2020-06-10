@@ -1,6 +1,7 @@
 import { NutrientDTO } from './nutrient-dto';
 
 export interface FoodDTO {
+    fdcId: string;
     description: string;
     brandOwner: string;
     ingredients: string;

@@ -1,6 +1,11 @@
-<app-search-bar></app-search-bar>
-<mat-selection-list #resultsList [multiple]="false">
-    <mat-list-option *ngFor="let food of results?.foods">
-        {{food.description}}
-    </mat-list-option>
-</mat-selection-list>
+<div class="sticky-container">
+    <div class="search-bar-container">
+        <app-search-bar></app-search-bar>
+    </div>
+    <mat-selection-list #resultsList [multiple]="false">
+        <mat-list-option *ngFor="let food of results?.foods" (click)="foodSelected(food)"
+            [selected]="food?.fdcId === selectedFood?.fdcId">
+            {{food.description}}
+        </mat-list-option>
+    </mat-selection-list>
+</div>

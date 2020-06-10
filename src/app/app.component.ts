@@ -20,11 +20,6 @@ export class AppComponent {
   private result: Food;
 
   doTheThing(): void {
-    // this.foodApiService.getFood().subscribe(food => {
-    //   console.log(food);
-    //   this.result = food;
-    // });
-
     this.fdcApiService.search('apple').subscribe(result => {
       console.log(result);
     });

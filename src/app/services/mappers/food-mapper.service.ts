@@ -12,6 +12,7 @@ export class FoodMapperService {
 
   dtoToModel(foodDTO: FoodDTO): Food {
     const food = new Food();
+    food.fdcId = foodDTO.fdcId;
     food.description = foodDTO.description;
     food.brandOwner = foodDTO.brandOwner;
     food.ingredients = foodDTO.ingredients;

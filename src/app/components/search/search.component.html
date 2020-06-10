@@ -6,6 +6,8 @@
 <ng-container *ngIf="layoutMode === 'wide'">
     <div class="wide-container">
         <app-search-side-bar></app-search-side-bar>
-        <div>This is the search result details</div>
+        <div>
+            {{selectedFood?.description}}
+        </div>
     </div>
 </ng-container>

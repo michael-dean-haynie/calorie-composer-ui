@@ -10,7 +10,6 @@ export class ResponsiveService {
 
   constructor() {
     window.onresize = () => {
-      console.log(window.innerWidth);
       this.windowWidth.next(window.innerWidth);
     };
   }

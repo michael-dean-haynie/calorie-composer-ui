@@ -1,0 +1,18 @@
+@import '../../../style-vars';
+
+.sticky-container {
+    position: sticky;
+    top: var(--default-padding);
+    background-color: rgb(242, 242, 242);
+}
+
+.search-bar-container {
+    padding: var(--default-padding);
+    padding-bottom: 0;
+}
+
+mat-selection-list {
+    overflow-y: auto;
+    height: calc( 100vh - var(--header-height)*2 - var(--default-padding)*2);
+
+}

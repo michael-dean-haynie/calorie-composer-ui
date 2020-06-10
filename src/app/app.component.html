@@ -1,6 +1,11 @@
-<mat-toolbar color="primary" class="heading">
+<mat-toolbar color="primary" class="header mat-elevation-z12">
     <h1>Calorie Composer</h1>
 </mat-toolbar>
-<div class="padded-main-content">
-    <router-outlet></router-outlet>
+<div class="scrolling-content">
+    <mat-toolbar color="primary">
+        <h2>Search</h2>
+    </mat-toolbar>
+    <div class="padded-content">
+        <router-outlet></router-outlet>
+    </div>
 </div>
