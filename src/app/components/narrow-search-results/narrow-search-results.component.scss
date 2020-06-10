@@ -1,3 +1,17 @@
-mat-panel-description {
-    flex-direction: row-reverse;
+.panel-header-content{
+    font-size: .75rem;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+
+    .description {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .brand-owner {
+        color: rgba(0,0,0,.54);
+    }
 }
+

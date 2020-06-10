@@ -3,13 +3,12 @@
         <mat-expansion-panel [expanded]="food.fdcId === selectedFood?.fdcId" (opened)="foodSelected(food)"
             (closed)="foodUnselected()">
             <mat-expansion-panel-header>
-                <mat-panel-title>
-                    {{food.description}}
-                </mat-panel-title>
-                <mat-panel-description>
-                    {{food.brandOwner}}
-                </mat-panel-description>
+                <div class="panel-header-content">
+                    <div class="description">{{food.description}}</div>
+                    <div class="brand-owner">{{food.brandOwner}}</div>
+                </div>
             </mat-expansion-panel-header>
+            <div>hi<br>hi<br>hi<br>hi<br>hi<br>hi<br>hi<br>hi<br></div>
         </mat-expansion-panel>
     </ng-container>
 </mat-accordion>
