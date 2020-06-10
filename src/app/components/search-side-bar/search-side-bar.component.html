@@ -4,7 +4,7 @@
     </div>
     <mat-selection-list #resultsList [multiple]="false">
         <mat-list-option *ngFor="let food of results?.foods" (click)="foodSelected(food)"
-            [selected]="food?.fdcId === selectedFood?.fdcId">
+            [selected]="food.fdcId === selectedFood?.fdcId">
             {{food.description}}
         </mat-list-option>
     </mat-selection-list>

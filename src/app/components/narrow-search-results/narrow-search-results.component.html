@@ -1,6 +1,7 @@
 <mat-accordion>
     <ng-container *ngFor="let food of results?.foods">
-        <mat-expansion-panel>
+        <mat-expansion-panel [expanded]="food.fdcId === selectedFood?.fdcId" (opened)="foodSelected(food)"
+            (closed)="foodUnselected()">
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     {{food.description}}
