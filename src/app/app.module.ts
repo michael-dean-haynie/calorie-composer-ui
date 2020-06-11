@@ -13,6 +13,8 @@ import { NarrowSearchResultsComponent } from './components/narrow-search-results
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
 import { SearchSideBarComponent } from './components/search-side-bar/search-side-bar.component';
 import { SearchComponent } from './components/search/search.component';
+import { MacroAmtPipe } from './pipes/macro-amt.pipe';
+import { MacroPctgPipe } from './pipes/macro-pctg.pipe';
 
 
 @NgModule({
@@ -21,7 +23,9 @@ import { SearchComponent } from './components/search/search.component';
     SearchBarComponent,
     NarrowSearchResultsComponent,
     SearchComponent,
-    SearchSideBarComponent
+    SearchSideBarComponent,
+    MacroAmtPipe,
+    MacroPctgPipe
   ],
   imports: [
     BrowserModule,

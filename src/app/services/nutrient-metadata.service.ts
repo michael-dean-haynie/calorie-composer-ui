@@ -17,6 +17,7 @@ export class NutrientMetadataService {
 
     if (metaDataMatch === undefined) {
       console.error(`Could not match nutrient alias "${alias}" to a nutrient enum.`);
+      alert(`Could not match nutrient alias "${alias}" to a nutrient enum.`);
       return undefined;
     } else {
       return metaDataMatch.nutrient;

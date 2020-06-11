@@ -8,7 +8,15 @@
                     <div class="brand-owner">{{food.brandOwner}}</div>
                 </div>
             </mat-expansion-panel-header>
-            <div>hi<br>hi<br>hi<br>hi<br>hi<br>hi<br>hi<br>hi<br></div>
+            <div>Carbohydrate Amount: {{food | macroAmt:"Carbohydrate"}}</div>
+            <div>Carbohydrate Percentage: {{food | macroPctg:"Carbohydrate"}}</div>
+            <br>
+            <div>Fat Amount: {{food | macroAmt:"Fat"}}</div>
+            <div>Fat Percentage: {{food | macroPctg:"Fat"}}</div>
+            <br>
+            <div>Protein Amount: {{food | macroAmt:"Protein"}}</div>
+            <div>Protein Percentage: {{food | macroPctg:"Protein"}}</div>
+            <br>
         </mat-expansion-panel>
     </ng-container>
 </mat-accordion>
