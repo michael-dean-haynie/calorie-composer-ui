@@ -7,8 +7,10 @@ import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ChartsModule } from 'ng2-charts';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { MacroPieChartComponent } from './components/macro-pie-chart/macro-pie-chart.component';
 import { NarrowSearchResultsComponent } from './components/narrow-search-results/narrow-search-results.component';
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
 import { SearchSideBarComponent } from './components/search-side-bar/search-side-bar.component';
@@ -25,7 +27,8 @@ import { MacroPctgPipe } from './pipes/macro-pctg.pipe';
     SearchComponent,
     SearchSideBarComponent,
     MacroAmtPipe,
-    MacroPctgPipe
+    MacroPctgPipe,
+    MacroPieChartComponent
   ],
   imports: [
     BrowserModule,
@@ -38,7 +41,11 @@ import { MacroPctgPipe } from './pipes/macro-pctg.pipe';
     MatInputModule,
     MatToolbarModule,
     MatExpansionModule,
-    MatListModule
+    MatListModule,
+
+
+    // chart.js / ng2-charts
+    ChartsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
