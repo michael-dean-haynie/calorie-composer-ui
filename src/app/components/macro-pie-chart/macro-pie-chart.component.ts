@@ -21,8 +21,6 @@ export class MacroPieChartComponent implements OnInit {
     tooltips: {
       callbacks: {
         label: (tooltipItems, data) => {
-          console.log(tooltipItems);
-          console.log(data);
           return `${data.labels[tooltipItems.index]}: ${data.datasets[tooltipItems.datasetIndex].data[tooltipItems.index]}%`;
         }
       }

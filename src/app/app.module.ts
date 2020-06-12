@@ -19,6 +19,7 @@ import { SearchSideBarComponent } from './components/search-side-bar/search-side
 import { SearchComponent } from './components/search/search.component';
 import { MacroAmtPipe } from './pipes/macro-amt.pipe';
 import { MacroPctgPipe } from './pipes/macro-pctg.pipe';
+import { HomeComponent } from './components/home/home.component';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import { MacroPctgPipe } from './pipes/macro-pctg.pipe';
     MacroAmtPipe,
     MacroPctgPipe,
     MacroPieChartComponent,
-    MacroTableComponent
+    MacroTableComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
