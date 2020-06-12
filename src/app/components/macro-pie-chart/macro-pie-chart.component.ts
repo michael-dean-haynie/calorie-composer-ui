@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ChartOptions, ChartType } from 'chart.js';
 import { Label } from 'ng2-charts';
+import { Food } from 'src/app/models/food.model';
+import { NutrientCalculationService } from 'src/app/services/util/nutrient-calculation.service';
 
 @Component({
   selector: 'app-macro-pie-chart',
@@ -9,34 +11,39 @@ import { Label } from 'ng2-charts';
 })
 export class MacroPieChartComponent implements OnInit {
 
+  @Input() food: Food;
+
+  public pieChartType: ChartType = 'pie';
   public pieChartOptions: ChartOptions = {
     responsive: true,
-    legend: {
-      position: 'top',
-    },
-    // plugins: {
-    //   datalabels: {
-    //     formatter: (value, ctx) => {
-    //       const label = ctx.chart.data.labels[ctx.dataIndex];
-    //       return label;
-    //     },
-    //   },
-    // }
+    aspectRatio: 1,
+    cutoutPercentage: 50,
+    tooltips: {
+      callbacks: {
+        label: (tooltipItems, data) => {
+          console.log(tooltipItems);
+          console.log(data);
+          return `${data.labels[tooltipItems.index]}: ${data.datasets[tooltipItems.datasetIndex].data[tooltipItems.index]}%`;
+        }
+      }
+    }
   };
-  public pieChartLabels: Label[] = [['Download', 'Sales'], ['In', 'Store', 'Sales'], 'Mail Sales'];
-  public pieChartData: number[] = [300, 500, 100];
-  public pieChartType: ChartType = 'pie';
-  public pieChartLegend = true;
-  // public pieChartPlugins = [pluginDataLabels];
+  public pieChartLabels: Label[] = ['Fat', 'Carbohydrate', 'Protein'];
+  public pieChartData: number[] = [];
   public pieChartColors = [
     {
-      backgroundColor: ['rgba(255,0,0,0.3)', 'rgba(0,255,0,0.3)', 'rgba(0,0,255,0.3)'],
+      backgroundColor: ['rgb(253, 216, 53)', 'rgb(67, 160, 71)', 'rgb(216, 67, 21)'],
     },
   ];
 
-  constructor() { }
+  constructor(private nutrientCalculationService: NutrientCalculationService) { }
 
   ngOnInit(): void {
+    this.pieChartData = [
+      this.nutrientCalculationService.macroPctg(this.food, 'Fat'),
+      this.nutrientCalculationService.macroPctg(this.food, 'Carbohydrate'),
+      this.nutrientCalculationService.macroPctg(this.food, 'Protein'),
+    ].map(pct => Math.floor(pct));
   }
 
 }

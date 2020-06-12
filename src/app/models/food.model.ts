@@ -8,6 +8,7 @@ export class Food {
     ingredients: string;
     servingSize: number;
     servingSizeUnit: string;
+    householdServingFullText: string;
     nutrients: Nutrient[];
 
 }

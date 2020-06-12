@@ -1,10 +1,13 @@
+mat-expansion-panel {
+    font-size: .8rem
+}
+
 .panel-header-content{
-    font-size: .75rem;
     width: 100%;
     display: grid;
     grid-template-columns: 1fr;
 
-    .description {
+    .description, .brand-owner {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -13,5 +16,10 @@
     .brand-owner {
         color: rgba(0,0,0,.54);
     }
+}
+
+.panel-body-content {
+    display: grid;
+    grid-template-columns: 34% 66%;
 }
 

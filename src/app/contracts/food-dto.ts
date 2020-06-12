@@ -7,5 +7,6 @@ export interface FoodDTO {
     ingredients: string;
     servingSize: number;
     servingSizeUnit: string;
+    householdServingFullText: string;
     nutrients: NutrientDTO[];
 }

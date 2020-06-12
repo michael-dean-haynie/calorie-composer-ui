@@ -18,6 +18,7 @@ export class FoodMapperService {
     food.ingredients = foodDTO.ingredients;
     food.servingSize = foodDTO.servingSize;
     food.servingSizeUnit = foodDTO.servingSizeUnit;
+    food.householdServingFullText = foodDTO.householdServingFullText;
     food.nutrients = foodDTO.nutrients
       .map(nutrientDTO => this.nutrientMapperService.dtoToModel(nutrientDTO));
 
