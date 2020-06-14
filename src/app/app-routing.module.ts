@@ -1,12 +1,14 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
+import { PlanningComponent } from './components/planning/planning.component';
 import { SearchComponent } from './components/search/search.component';
 
 
 // const routes: Routes = [];
 const routes: Routes = [
   { path: 'home', component: HomeComponent, data: { pageTitle: 'Home' } },
+  { path: 'planning', component: PlanningComponent, data: { pageTitle: 'Planning' } },
   { path: 'search', component: SearchComponent, data: { pageTitle: 'Search' } },
   // empty url
   { path: '', pathMatch: 'full', redirectTo: 'home' },
