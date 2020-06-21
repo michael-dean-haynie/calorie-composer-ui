@@ -1,12 +1,12 @@
 import { NutrientDTO } from './nutrient-dto';
+import { PortionDTO } from './portion-dto';
 
 export interface FoodDTO {
+    id?: string;
     fdcId: string;
     description: string;
     brandOwner: string;
     ingredients: string;
-    servingSize: number;
-    servingSizeUnit: string;
-    householdServingFullText: string;
     nutrients: NutrientDTO[];
+    portions: PortionDTO[];
 }

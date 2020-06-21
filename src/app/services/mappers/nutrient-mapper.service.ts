@@ -12,7 +12,7 @@ export class NutrientMapperService {
 
     dtoToModel(nutrientDTO: NutrientDTO): Nutrient {
         const nutrient = new Nutrient();
-
+        nutrient.id = nutrientDTO.id;
         nutrient.nutrient = this.nutriantMetadataService.aliasToEnum(nutrientDTO.name);
         nutrient.unitName = nutrientDTO.unitName;
         nutrient.amount = nutrientDTO.amount;
