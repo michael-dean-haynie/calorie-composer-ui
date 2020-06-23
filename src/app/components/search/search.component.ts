@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Food } from 'src/app/models/food.model';
+import { FoodApiService } from 'src/app/services/api/food-api.service';
 import { ResponsiveService } from 'src/app/services/responsive.service';
 import { SearchService } from 'src/app/services/search.service';
 
@@ -18,7 +19,8 @@ export class SearchComponent implements OnInit {
 
   constructor(
     private responsiveService: ResponsiveService,
-    private searchService: SearchService
+    private searchService: SearchService,
+    private foodApiService: FoodApiService
   ) { }
 
   ngOnInit(): void {
@@ -27,6 +29,10 @@ export class SearchComponent implements OnInit {
     });
 
     this.searchService.selectedFood.subscribe(food => this.selectedFood = food);
+  }
+
+  save(): void {
+    this.foodApiService.post(this.selectedFood).subscribe(food => console.log(food));
   }
 
   private setLayoutMode(windowWidth: number) {

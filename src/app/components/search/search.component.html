@@ -8,6 +8,9 @@
         <app-search-side-bar></app-search-side-bar>
         <div>
             {{selectedFood?.description}}
+            <div>
+                <button (click)="save()">Save to library (pantry?)</button>
+            </div>
         </div>
     </div>
 </ng-container>

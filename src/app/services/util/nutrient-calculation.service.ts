@@ -16,7 +16,7 @@ export class NutrientCalculationService {
   constructor() { }
 
   macroAmt(food: Food, macro: MacroNutrientType): number {
-    const nutrient = food.nutrients.find(nutr => nutr.nutrient === macro);
+    const nutrient = food.nutrients.find(nutr => nutr.name === macro);
     return nutrient ? nutrient.amount : 0;
   }
 

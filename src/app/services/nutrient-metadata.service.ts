@@ -13,7 +13,7 @@ export class NutrientMetadataService {
 
   aliasToEnum(alias: string): NutrientType {
     const metaDataMatch = NutrientMetadataList
-      .find(nutrientMD => nutrientMD.aliases.includes(alias));
+      .find(nutrientMD => nutrientMD.nutrient === alias || nutrientMD.aliases.includes(alias));
 
     if (metaDataMatch === undefined) {
       console.error(`Could not match nutrient alias "${alias}" to a nutrient enum.`);

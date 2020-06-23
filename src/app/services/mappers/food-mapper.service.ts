@@ -25,4 +25,9 @@ export class FoodMapperService {
 
     return food;
   }
+
+  modelToDTO(food: Food): FoodDTO {
+    return food;
+  }
+
 }

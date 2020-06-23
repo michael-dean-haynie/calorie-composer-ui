@@ -21,4 +21,8 @@ export class PortionMapperService {
     portion.displayUnitAmount = portionDTO.displayUnitAmount;
     return portion;
   }
+
+  modelToDTO(portion: Portion): PortionDTO {
+    return portion;
+  }
 }

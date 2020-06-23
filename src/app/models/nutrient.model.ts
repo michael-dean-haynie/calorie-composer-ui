@@ -2,7 +2,7 @@ import { NutrientType } from '../constants/types/nutrient.type';
 
 export class Nutrient {
     id?: string;
-    nutrient: NutrientType;
+    name: NutrientType;
     unitName: string;
     amount: number;
 }

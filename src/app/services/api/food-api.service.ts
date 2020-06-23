@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FoodDTO } from 'src/app/contracts/food-dto';
 import { Food } from 'src/app/models/food.model';
+import { environment } from 'src/environments/environment';
 import { FoodMapperService } from '../mappers/food-mapper.service';
 
 @Injectable({
@@ -11,11 +12,20 @@ import { FoodMapperService } from '../mappers/food-mapper.service';
 })
 export class FoodApiService {
 
+  private baseUrl = `${environment.apiBaseUrl}/food`;
+
   constructor(private http: HttpClient, private foodMapperService: FoodMapperService) { }
 
-  getFood(): Observable<Food> {
-    return this.http.get<FoodDTO>('http://localhost:8080').pipe(
-      map(foodDTO => this.foodMapperService.dtoToModel(foodDTO)),
+  post(food: Food): Observable<Food> {
+    const body = this.foodMapperService.modelToDTO(food);
+    return this.http.post<FoodDTO>(this.baseUrl, body).pipe(
+      map(foodDTO => this.foodMapperService.dtoToModel(foodDTO))
+    );
+  }
+
+  get(id: string): Observable<Food> {
+    return this.http.get<FoodDTO>(`${this.baseUrl}/${id}`).pipe(
+      map(foodDTO => this.foodMapperService.dtoToModel(foodDTO))
     );
   }
 }
