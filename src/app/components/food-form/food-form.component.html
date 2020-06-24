@@ -22,18 +22,26 @@
         <h3>Portions</h3>
         <div class="portions-subsections">
             <div>
-                <h4>Serving Size</h4>
+                <div class="split-subheader">
+                    <h4>Serving Size</h4>
+                </div>
                 <app-food-form-portion [foodForm]="foodForm" [portionFormControl]="foodForm.get('servingSizePortion')">
                 </app-food-form-portion>
             </div>
 
             <div>
-                <h4>Other Portions ({{otherPortions.controls.length}})</h4>
-                <ng-container formArrayName="otherPortions">
+                <div class="split-subheader">
+                    <h4>Other Portions ({{otherPortions.controls.length}})</h4>
+                    <button type="button" mat-icon-button color="primary" (click)="addNonSSPortion()">
+                        <mat-icon>add_to_photos</mat-icon>
+                    </button>
+                </div>
+                <div class="other-portions">
                     <app-food-form-portion *ngFor="let portion of otherPortions.controls; let i=index"
-                        [foodForm]="foodForm" [portionFormControl]="foodForm.get(['otherPortions', i])">
+                        [foodForm]="foodForm" [portionFormControl]="foodForm.get(['otherPortions', i])"
+                        [otherPortionsIndex]="i">
                     </app-food-form-portion>
-                </ng-container>
+                </div>
             </div>
         </div>
     </section>

@@ -11,3 +11,22 @@ mat-form-field {
     grid-template-columns: 100%;
     row-gap: var(--default-padding);
 }
+
+.split-subheader {
+    height: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: var(--default-padding);
+
+    h4 {
+        margin-bottom: 0;
+    }
+}
+
+
+.other-portions{
+    display: grid;
+    grid-template-columns: 100%;
+    row-gap: var(--default-padding);
+}

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PortionDTO } from 'src/app/contracts/portion-dto';
 import { Portion } from 'src/app/models/portion.model';
 import { PortionService } from '../util/portion.service';
@@ -41,8 +41,8 @@ export class PortionMapperService {
       displayUnitAmount: [portion.displayUnitAmount],
 
       // base measure
-      baseUnitName: [this.portionService.determineBaseUnit(portion.baseUnitName)],
-      baseUnitAmount: [portion.baseUnitAmount?.toString() ?? ''],
+      baseUnitName: [this.portionService.determineBaseUnit(portion.baseUnitName), Validators.required],
+      baseUnitAmount: [portion.baseUnitAmount?.toString() ?? '', Validators.required],
 
       // flags
       isNutrientRefPortion: [portion.isNutrientRefPortion],

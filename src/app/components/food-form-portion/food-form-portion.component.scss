@@ -29,6 +29,13 @@
     }
 }
 
+
+.split-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 // aligns the right side of the autocomplete panel with the right side of
 // the the input so it doesn't overflow off the right side of the page
 ::ng-deep :root {

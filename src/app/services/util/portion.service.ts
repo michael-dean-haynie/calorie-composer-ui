@@ -8,28 +8,7 @@ import { UnitService } from './unit.service';
 })
 export class PortionService {
 
-  constructor() {
-    // console.log(convert().measures());
-    // console.log(convert().measures().map(measure => convert().possibilities(measure)));
-    // console.log(convert().describe('kg'));
-
-    // console.log(Qty.getUnits('mass'));
-    // console.log(Qty.getUnits('volume'));
-
-    // let qty = Qty(1, 'ml');
-    // console.log(Qty.getAliases('ml'));
-    // console.log(qty);
-    // console.log(qty.kind());
-    // console.log(Qty.getAliases('g'));
-
-    // qty = Qty(1, 'ml');
-    // console.log(qty);
-    // console.log(qty.kind());
-
-    // Qty.getKinds().forEach(kind => Qty.getUnits(kind).forEach(unit => console.log(unit)));
-    // console.log(Qty.getKinds().);
-    // console.log(Qty.getUnits('unitless'));
-  }
+  constructor() { }
 
   getServingSize(portions: Portion[]): Portion {
     if (!portions) { return undefined; }

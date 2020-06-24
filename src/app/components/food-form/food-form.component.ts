@@ -3,8 +3,10 @@ import { FormArray, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Food } from 'src/app/models/food.model';
+import { Portion } from 'src/app/models/portion.model';
 import { FoodApiService } from 'src/app/services/api/food-api.service';
 import { FoodMapperService } from 'src/app/services/mappers/food-mapper.service';
+import { PortionMapperService } from 'src/app/services/mappers/portion-mapper.service';
 
 type FormMode = 'create' | 'update';
 
@@ -28,7 +30,8 @@ export class FoodFormComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private foodApiService: FoodApiService,
-    private foodMapperService: FoodMapperService
+    private foodMapperService: FoodMapperService,
+    private portionMapperService: PortionMapperService
   ) { }
 
   ngOnInit(): void {
@@ -55,6 +58,13 @@ export class FoodFormComponent implements OnInit, OnDestroy {
 
   get otherPortions(): FormArray {
     return this.foodForm.get('otherPortions') as FormArray;
+  }
+
+  addNonSSPortion(): void {
+    const portion = new Portion();
+    portion.isServingSizePortion = false;
+    portion.isNutrientRefPortion = false;
+    this.otherPortions.push(this.portionMapperService.modelToFormGroup(portion));
   }
 
   private loadExistingFood(): void {

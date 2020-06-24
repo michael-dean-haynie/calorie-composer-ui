@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormArray, FormGroup } from '@angular/forms';
 import { UnitDescription, UnitService } from 'src/app/services/util/unit.service';
 
 @Component({
@@ -11,6 +11,7 @@ export class FoodFormPortionComponent implements OnInit {
 
   @Input() foodForm: FormGroup;
   @Input() portionFormControl: FormGroup;
+  @Input() otherPortionsIndex: number;
 
   metricMeasureACOptions = [
     {
@@ -34,6 +35,11 @@ export class FoodFormPortionComponent implements OnInit {
   toggleHouseholdMeasureMode(): void {
     const modeControl = this.portionFormControl.get('householdMeasureMode');
     modeControl.setValue(modeControl.value === 'unit-amount' ? 'free-form' : 'unit-amount');
+  }
+
+  removeNonSSPortion(): void {
+    const otherPortions = this.foodForm.get('otherPortions') as FormArray;
+    otherPortions.removeAt(this.otherPortionsIndex);
   }
 
   private mapUnitToAutoCompleteOptions(unit: UnitDescription): any {

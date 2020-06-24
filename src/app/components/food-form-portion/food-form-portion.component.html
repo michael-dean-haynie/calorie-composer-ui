@@ -56,8 +56,12 @@
             </div>
 
             <!-- is nutrient ref portion -->
-            <div>
-                <mat-slide-toggle formControlName="isNutrientRefPortion">Nutrient Reference Portion</mat-slide-toggle>
+            <div class="split-row">
+                <mat-slide-toggle formControlName="isNutrientRefPortion">Nutrient Reference</mat-slide-toggle>
+                <button *ngIf="!portionFormControl.get('isServingSizePortion').value" type="button" mat-icon-button
+                    color="primary" (click)="removeNonSSPortion()">
+                    <mat-icon>delete</mat-icon>
+                </button>
             </div>
         </mat-card>
     </ng-container>
