@@ -29,7 +29,8 @@ export class NutrientMapperService {
 
   modelToFormGroup(nutrient: Nutrient): FormGroup {
     return this.fb.group({
-      nutrient: [nutrient.name],
+      editMode: [false],
+      name: [nutrient.name],
       unitName: [nutrient.unitName],
       amount: [nutrient.amount]
     });

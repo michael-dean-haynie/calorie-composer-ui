@@ -48,26 +48,70 @@
 
     <section>
         <h3>Nutrients</h3>
-        <div>nutrient</div>
-        <div>nutrient</div>
-        <div>nutrient</div>
-        <div>nutrient</div>
-        <div>nutrient</div>
-        <div>nutrient</div>
-        <div>nutrient</div>
-        <div>nutrient</div>
-        <div>nutrient</div>
-        <div>nutrient</div>
-        <div>nutrient</div>
-        <div>nutrient</div>
-        <div>nutrient</div>
-        <div>nutrient</div>
-        <div>nutrient</div>
-        <div>nutrient</div>
-        <div>nutrient</div>
-        <div>nutrient</div>
-        <div>nutrient</div>
-        <div>nutrient</div>
-        <div>nutrient</div>
+        <table mat-table [dataSource]="nutrientsDataSource" class="mat-elevation-z8 nutrients-table">
+
+            <!-- Name Column -->
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef> Name </th>
+                <td mat-cell *matCellDef="let element">
+                    <ng-container *ngIf="!element.get('editMode').value">
+                        {{element.get('name').value}}
+                    </ng-container>
+                    <ng-container *ngIf="element.get('editMode').value">
+                        <mat-form-field floatLabel="never">
+                            <input matInput placeholder="Ex. Protein" [formControl]="element.get('name')">
+                        </mat-form-field>
+                    </ng-container>
+                </td>
+            </ng-container>
+
+            <!-- Amount Column -->
+            <ng-container matColumnDef="amount">
+                <th mat-header-cell *matHeaderCellDef> Amount </th>
+                <td mat-cell *matCellDef="let element">
+                    <ng-container *ngIf="!element.get('editMode').value">
+                        {{element.get('amount').value}}
+                    </ng-container>
+                    <ng-container *ngIf="element.get('editMode').value">
+                        <mat-form-field floatLabel="never">
+                            <input matInput placeholder="64.29" [formControl]="element.get('amount')">
+                        </mat-form-field>
+                    </ng-container>
+                </td>
+            </ng-container>
+
+            <!-- Unit Column -->
+            <ng-container matColumnDef="unit">
+                <th mat-header-cell *matHeaderCellDef> Unit </th>
+                <td mat-cell *matCellDef="let element">
+                    <ng-container *ngIf="!element.get('editMode').value">
+                        {{element.get('unitName').value}}
+                    </ng-container>
+                    <ng-container *ngIf="element.get('editMode').value">
+                        <mat-form-field floatLabel="never">
+                            <input matInput placeholder="g" [formControl]="element.get('unitName')">
+                        </mat-form-field>
+                    </ng-container>
+                </td>
+            </ng-container>
+
+            <!-- Unit Column -->
+            <ng-container matColumnDef="icons">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let element">
+                    <div class="icons">
+                        <button type="button" mat-icon-button color="primary" (click)="toggleNutrientEditMode(element)">
+                            <mat-icon *ngIf="element.get('editMode').value === false && !aNutrientIsBeingEdited">edit
+                            </mat-icon>
+                            <mat-icon *ngIf="element.get('editMode').value === true">done</mat-icon>
+                        </button>
+                    </div>
+                </td>
+            </ng-container>
+
+
+            <tr mat-header-row *matHeaderRowDef="nutrientsDisplayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: nutrientsDisplayedColumns;"></tr>
+        </table>
     </section>
 </form>

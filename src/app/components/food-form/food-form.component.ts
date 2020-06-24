@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { Food } from 'src/app/models/food.model';
 import { Portion } from 'src/app/models/portion.model';
 import { FoodApiService } from 'src/app/services/api/food-api.service';
@@ -21,6 +21,9 @@ export class FoodFormComponent implements OnInit, OnDestroy {
   loading = false;
 
   foodForm: FormGroup;
+
+  nutrientsDisplayedColumns = ['name', 'amount', 'unit', 'icons'];
+  nutrientsDataSource: BehaviorSubject<any> = new BehaviorSubject([]);
 
   private foodId: string;
   private food: Food;
@@ -60,11 +63,20 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     return this.foodForm.get('otherPortions') as FormArray;
   }
 
+  get aNutrientIsBeingEdited(): boolean {
+    const nutrients = this.foodForm.get('nutrients') as FormArray;
+    return nutrients.controls.some(ctrl => ctrl.get('editMode').value);
+  }
+
   addNonSSPortion(): void {
     const portion = new Portion();
     portion.isServingSizePortion = false;
     portion.isNutrientRefPortion = false;
     this.otherPortions.push(this.portionMapperService.modelToFormGroup(portion));
+  }
+
+  toggleNutrientEditMode(nutrient: FormGroup): void {
+    nutrient.get('editMode').setValue(!nutrient.get('editMode').value);
   }
 
   private loadExistingFood(): void {
@@ -83,5 +95,7 @@ export class FoodFormComponent implements OnInit, OnDestroy {
 
   private prepareFoodForm(): void {
     this.foodForm = this.foodMapperService.modelToFormGroup(this.food);
+    const nutrients = this.foodForm.get('nutrients') as FormArray;
+    this.nutrientsDataSource.next(nutrients.controls);
   }
 }

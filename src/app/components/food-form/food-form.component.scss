@@ -24,9 +24,29 @@ mat-form-field {
     }
 }
 
-
 .other-portions{
     display: grid;
     grid-template-columns: 100%;
     row-gap: var(--default-padding);
+}
+
+.nutrients-table {
+    width: 100%;
+
+    ::ng-deep{
+        mat-form-field {
+            // separate form-field underline at column line
+            width: calc(100% - 1ch);
+    
+            // prevent table blowout
+            .mat-form-field-infix {
+                width: unset;
+            }
+        }
+    }
+
+    .icons {
+        display: flex;
+        justify-content: flex-end;
+    }
 }
