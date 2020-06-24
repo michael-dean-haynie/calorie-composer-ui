@@ -23,6 +23,8 @@ export class UnitService {
   public static MetricMeasureVolumeUnits = convert()
     .list('volume').filter(desc => ['ml', 'l'].includes(desc.abbr)) as UnitDescription[];
 
+  public static MetricMeasureUnits = UnitService.MetricMeasureMassUnits.concat(UnitService.MetricMeasureVolumeUnits);
+
   constructor() {
     console.log(UnitService.MetricMeasureMassUnits);
     console.log(UnitService.MetricMeasureVolumeUnits);

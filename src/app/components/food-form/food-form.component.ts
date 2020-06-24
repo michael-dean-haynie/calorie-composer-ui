@@ -2,12 +2,12 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { BaseUnitTypes, MassUnits, VolumeUnits } from 'src/app/constants/types/units.type';
 import { Food } from 'src/app/models/food.model';
-import { Portion } from 'src/app/models/portion.model';
 import { FoodApiService } from 'src/app/services/api/food-api.service';
+import { FoodMapperService } from 'src/app/services/mappers/food-mapper.service';
 import { PortionService } from 'src/app/services/util/portion.service';
 import { UnitDescription, UnitService } from 'src/app/services/util/unit.service';
+import { FoodValidatorService } from 'src/app/services/validators/food-validator.service';
 
 type FormMode = 'create' | 'update';
 
@@ -22,10 +22,6 @@ export class FoodFormComponent implements OnInit, OnDestroy {
   loading = false;
 
   foodForm: FormGroup;
-
-  baseUnitTypes = BaseUnitTypes;
-  massUnits = MassUnits;
-  volumeUnits = VolumeUnits;
 
   metricMeasureACOptions = [
     {
@@ -47,11 +43,16 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private fb: FormBuilder,
     private foodApiService: FoodApiService,
+    private foodMapperService: FoodMapperService,
+    private foodValidatorService: FoodValidatorService,
     private portionService: PortionService,
     private unitService: UnitService
   ) { }
 
   ngOnInit(): void {
+    // TODO: remove
+    this.testThingsOut();
+
     // determine form mode and initial food
     this.subscriptions.push(
       this.route.params.subscribe(params => {
@@ -93,57 +94,7 @@ export class FoodFormComponent implements OnInit, OnDestroy {
   }
 
   private prepareFoodForm(): void {
-    const ssp = this.portionService.getServingSize(this.food.portions);
-
-
-    this.foodForm = this.fb.group({
-      description: [this.food.description],
-      brandOwner: [this.food.brandOwner],
-      ingredients: [this.food.ingredients],
-      nutrients: this.fb.array(this.food.nutrients.map(srcNutrient => {
-        return this.fb.group({
-          nutrient: [srcNutrient.name],
-          unitName: [srcNutrient.unitName],
-          amount: [srcNutrient.amount]
-        });
-      })),
-      servingSizePortion: this.preparePortionFormGroup(ssp),
-      otherPortions: this.fb.array(this.food.portions
-        // remove serving size array
-        .filter(srcPortion => !srcPortion.isServingSizePortion)
-        .map(srcPortion => {
-          return this.fb.group({
-            baseUnitName: [srcPortion.baseUnitName],
-            baseUnitAmount: [srcPortion.baseUnitAmount],
-            isNutrientRefPortion: [srcPortion.isNutrientRefPortion],
-            isServingSizePortion: [srcPortion.isServingSizePortion],
-            description: [srcPortion.description],
-            displayUnitName: [srcPortion.displayUnitName],
-            displayUnitAmount: [srcPortion.displayUnitAmount],
-          });
-        })),
-    });
-  }
-
-  private preparePortionFormGroup(portion: Portion): FormGroup {
-    return this.fb.group({
-
-      // household measure
-      householdMeasureMode: this.portionService.determineHouseholdMeasureMode(portion),
-      description: [portion.description],
-      displayUnitName: [portion.displayUnitName],
-      displayUnitAmount: [portion.displayUnitAmount],
-
-
-      // base measure
-      baseUnitType: [this.portionService.determineBaseUnitType(portion.baseUnitName)],
-      baseUnitName: [this.portionService.determineBaseUnit(portion.baseUnitName)],
-      baseUnitAmount: [portion.baseUnitAmount.toString()],
-
-      // flags
-      isNutrientRefPortion: [portion.isNutrientRefPortion],
-      isServingSizePortion: [portion.isServingSizePortion],
-    });
+    this.foodForm = this.foodMapperService.modelToFormGroup(this.food);
   }
 
   private mapUnitToAutoCompleteOptions(unit: UnitDescription): any {
@@ -151,5 +102,13 @@ export class FoodFormComponent implements OnInit, OnDestroy {
       label: `${unit.plural} (${unit.abbr})`,
       value: unit.abbr
     };
+  }
+
+  private testThingsOut(): void {
+    const food = new Food();
+    // food.description = 'hi';
+    // const foodFormGroup = this.foodMapperService.modelToFormGroup(food);
+    console.log(this.foodValidatorService.isValid(food));
+
   }
 }

@@ -1,112 +1,107 @@
-<form *ngIf="!loading" [formGroup]="foodForm">
-    <mat-form-field>
-        <mat-label>Description</mat-label>
-        <input matInput placeholder="Ex. Pizza" formControlName="description">
-    </mat-form-field>
-
-    <mat-form-field>
-        <mat-label>Brand</mat-label>
-        <input matInput placeholder="Ex. Pizza Hut" formControlName="brandOwner">
-    </mat-form-field>
-
-    <mat-form-field>
-        <mat-label>Ingredients</mat-label>
-        <textarea matInput placeholder="Ex. MILK CHOCOLATE, DEXTRIN, CORN SYRUP, ..."
-            formControlName="ingredients"></textarea>
-    </mat-form-field>
-
-    <ng-container formGroupName="servingSizePortion">
-        <div>Serving Size</div>
-
+<form *ngIf="!loading" [formGroup]="foodForm" class="sections-container">
+    <section>
+        <h3>Labeling</h3>
         <mat-form-field>
-            <mat-label>Base Unit Type</mat-label>
-            <mat-select formControlName="baseUnitType">
-                <mat-option *ngFor="let type of baseUnitTypes" [value]="type">
-                    {{type}}
-                </mat-option>
-            </mat-select>
+            <mat-label>Description</mat-label>
+            <input matInput placeholder="Ex. Pizza" formControlName="description">
         </mat-form-field>
 
         <mat-form-field>
-            <mat-label>Base Unit</mat-label>
-            <mat-select formControlName="baseUnitName">
-                <ng-container *ngIf="foodForm.get('servingSizePortion.baseUnitType').value === 'mass'">
-                    <mat-option *ngFor="let unit of massUnits" [value]="unit">
-                        {{unit}}
-                    </mat-option>
+            <mat-label>Brand</mat-label>
+            <input matInput placeholder="Ex. Pizza Hut" formControlName="brandOwner">
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Ingredients</mat-label>
+            <textarea matInput placeholder="Ex. MILK CHOCOLATE, DEXTRIN, CORN SYRUP, ..."
+                formControlName="ingredients"></textarea>
+        </mat-form-field>
+    </section>
+
+    <section>
+        <h3>Portions</h3>
+        <h4>Serving Size</h4>
+        <ng-container formGroupName="servingSizePortion">
+
+            <div class="measurement">
+                <!-- toggle household measure mode -->
+                <button type="button" mat-icon-button color="primary" (click)="toggleHouseholdMeasureMode()">
+                    <mat-icon *ngIf="foodForm.get('servingSizePortion.householdMeasureMode').value === 'unit-amount'">
+                        flip
+                    </mat-icon>
+                    <mat-icon *ngIf="foodForm.get('servingSizePortion.householdMeasureMode').value === 'free-form'">
+                        crop_din
+                    </mat-icon>
+                </button>
+
+                <!-- household measure in unit-amount mode -->
+                <ng-container *ngIf="foodForm.get('servingSizePortion.householdMeasureMode').value === 'unit-amount'">
+                    <mat-form-field floatLabel="always" class="household-measure-amount">
+                        <mat-label>Amount</mat-label>
+                        <input matInput [appMask]="['non-negative', 'float-hundredths']" placeholder="16"
+                            formControlName="displayUnitAmount">
+                    </mat-form-field>
+                    <mat-form-field floatLabel="always" class="household-measure-unit">
+                        <mat-label>Unit</mat-label>
+                        <input matInput placeholder="pieces" formControlName="displayUnitName">
+                    </mat-form-field>
                 </ng-container>
 
-                <ng-container *ngIf="foodForm.get('servingSizePortion.baseUnitType').value === 'volume'">
-                    <mat-option *ngFor="let unit of volumeUnits" [value]="unit">
-                        {{unit}}
-                    </mat-option>
+                <!-- household measure in free-form mode -->
+                <ng-container *ngIf="foodForm.get('servingSizePortion.householdMeasureMode').value === 'free-form'">
+                    <mat-form-field floatLabel="always" class="household-measure-free-form">
+                        <mat-label>Amount</mat-label>
+                        <input matInput placeholder="16 pieces" formControlName="description">
+                    </mat-form-field>
                 </ng-container>
-            </mat-select>
-        </mat-form-field>
 
-        <mat-form-field>
-            <mat-label>Base Unit Amount</mat-label>
-            <input matInput placeholder="Ex. 3.25" formControlName="baseUnitAmount">
-        </mat-form-field>
-
-        <div class="measurement">
-            <!-- toggle household measure mode -->
-            <button type="button" mat-icon-button color="primary" (click)="toggleHouseholdMeasureMode()">
-                <mat-icon *ngIf="foodForm.get('servingSizePortion.householdMeasureMode').value === 'unit-amount'">
-                    flip
-                </mat-icon>
-                <mat-icon *ngIf="foodForm.get('servingSizePortion.householdMeasureMode').value === 'free-form'">
-                    crop_din
-                </mat-icon>
-            </button>
-
-            <!-- household measure in unit-amount mode -->
-            <ng-container *ngIf="foodForm.get('servingSizePortion.householdMeasureMode').value === 'unit-amount'">
-                <mat-form-field floatLabel="always" class="household-measure-amount">
+                <!-- metric measure -->
+                <mat-form-field floatLabel="always" class="base-measure-amount">
                     <mat-label>Amount</mat-label>
-                    <input matInput [appMask]="['non-negative', 'float-hundredths']" placeholder="16"
-                        formControlName="displayUnitAmount">
+                    <span matPrefix>(&nbsp;</span>
+                    <input matInput [appMask]="['non-negative', 'float-hundredths']" placeholder="31"
+                        formControlName="baseUnitAmount">
                 </mat-form-field>
-                <mat-form-field floatLabel="always" class="household-measure-unit">
+                <mat-form-field floatLabel="always" class="base-measure-unit">
                     <mat-label>Unit</mat-label>
-                    <input matInput placeholder="pieces" formControlName="displayUnitName">
+                    <input matInput placeholder="g" formControlName="baseUnitName"
+                        [matAutocomplete]="metricMeasureAmount">
+                    <span matSuffix>&nbsp;)</span>
+                    <mat-autocomplete class="align-panel-right" #metricMeasureAmount="matAutocomplete">
+                        <mat-optgroup *ngFor="let group of metricMeasureACOptions" [label]="group.groupLabel">
+                            <mat-option *ngFor=" let option of group.options" [value]="option.value">
+                                {{option.label}}
+                            </mat-option>
+                        </mat-optgroup>
+                    </mat-autocomplete>
                 </mat-form-field>
-            </ng-container>
 
-            <!-- household measure in free-form mode -->
-            <ng-container *ngIf="foodForm.get('servingSizePortion.householdMeasureMode').value === 'free-form'">
-                <mat-form-field floatLabel="always" class="household-measure-free-form">
-                    <mat-label>Amount</mat-label>
-                    <input matInput placeholder="16 pieces" formControlName="description">
-                </mat-form-field>
-            </ng-container>
+            </div>
+        </ng-container>
+    </section>
 
-            <!-- metric measure -->
-            <mat-form-field floatLabel="always" class="base-measure-amount">
-                <mat-label>Amount</mat-label>
-                <span matPrefix>(&nbsp;</span>
-                <input matInput [appMask]="['non-negative', 'float-hundredths']" placeholder="31"
-                    formControlName="baseUnitAmount">
-            </mat-form-field>
-            <mat-form-field floatLabel="always" class="base-measure-unit">
-                <mat-label>Unit</mat-label>
-                <input matInput placeholder="g" formControlName="baseUnitName" [matAutocomplete]="metricMeasureAmount">
-                <span matSuffix>&nbsp;)</span>
-                <mat-autocomplete class="align-panel-right" #metricMeasureAmount="matAutocomplete">
-                    <mat-optgroup *ngFor="let group of metricMeasureACOptions" [label]="group.groupLabel">
-                        <mat-option *ngFor=" let option of group.options" [value]="option.value">
-                            {{option.label}}
-                        </mat-option>
-                    </mat-optgroup>
-                </mat-autocomplete>
-            </mat-form-field>
-
-        </div>
-
-
-    </ng-container>
-    <!-- <ul formArrayName=" portions">
-                <li *ngFor="let portion of portions; let i=index"></li>
-
-                </ul> -->
+    <section>
+        <h3>Nutrients</h3>
+        <div>nutrient</div>
+        <div>nutrient</div>
+        <div>nutrient</div>
+        <div>nutrient</div>
+        <div>nutrient</div>
+        <div>nutrient</div>
+        <div>nutrient</div>
+        <div>nutrient</div>
+        <div>nutrient</div>
+        <div>nutrient</div>
+        <div>nutrient</div>
+        <div>nutrient</div>
+        <div>nutrient</div>
+        <div>nutrient</div>
+        <div>nutrient</div>
+        <div>nutrient</div>
+        <div>nutrient</div>
+        <div>nutrient</div>
+        <div>nutrient</div>
+        <div>nutrient</div>
+        <div>nutrient</div>
+    </section>
 </form>

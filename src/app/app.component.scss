@@ -25,9 +25,9 @@
     overflow: auto;
 }
 
-.padded-content {
+.sections-container-container {
   position: relative;
-  padding: var(--default-padding);
+  height: calc(100vh - var(--header-height)*2)
 }
 
 .page-title {

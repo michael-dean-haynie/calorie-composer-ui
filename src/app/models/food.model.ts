@@ -7,6 +7,6 @@ export class Food {
     description: string;
     brandOwner: string;
     ingredients: string;
-    nutrients: Nutrient[];
-    portions: Portion[];
+    nutrients: Nutrient[] = [];
+    portions: Portion[] = [];
 }

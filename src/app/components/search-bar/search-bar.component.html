@@ -3,5 +3,8 @@
         <mat-label>Search by food or brand</mat-label>
         <input #searchInput type="search" name="searchInput" matInput [(ngModel)]="query" (input)="saveQuery()"
             placeholder="Ex: Kellogg Corn Flakes">
+        <button mat-icon-button matSuffix color="primary">
+            <mat-icon>search</mat-icon>
+        </button>
     </mat-form-field>
 </form>

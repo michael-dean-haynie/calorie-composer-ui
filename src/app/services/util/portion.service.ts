@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
-// import convert from 'convert-units';
-import Qty from 'js-quantities';
 import { HouseholdMeasureMode } from 'src/app/constants/types/household-measure-mode.type';
-import { BaseUnitType, MassUnit, MassUnits, VolumeUnit, VolumeUnits } from 'src/app/constants/types/units.type';
 import { Portion } from 'src/app/models/portion.model';
+import { UnitService } from './unit.service';
 
 @Injectable({
   providedIn: 'root'
@@ -34,27 +32,23 @@ export class PortionService {
   }
 
   getServingSize(portions: Portion[]): Portion {
+    if (!portions) { return undefined; }
     return portions.find(portion => portion.isServingSizePortion);
   }
 
   getNonSSPortions(portions: Portion[]): Portion[] {
+    if (!portions) { return []; }
     return portions.filter(portion => !portion.isServingSizePortion);
   }
 
-  determineBaseUnitType(baseUnitName: string): BaseUnitType {
-    const qty = Qty(1, baseUnitName);
-    if (qty.kind() === 'mass') {
-      return 'mass';
-    } else if (qty.kind() === 'volume') {
-      return 'volume';
-    } else {
-      return null;
-    }
-  }
-
-  determineBaseUnit(baseUnitName: string): MassUnit | VolumeUnit {
-    const units: (MassUnit | VolumeUnit)[] = this.determineBaseUnitType(baseUnitName) === 'mass' ? MassUnits : VolumeUnits;
-    return units.find(unit => Qty.getAliases(baseUnitName).includes(unit));
+  determineBaseUnit(baseUnitName: string): string {
+    return UnitService.MetricMeasureUnits.find(unitDesc => {
+      return [
+        unitDesc.abbr,
+        unitDesc.singular.toLowerCase(),
+        unitDesc.plural.toLowerCase()
+      ].includes(baseUnitName);
+    })?.abbr || baseUnitName;
   }
 
   determineHouseholdMeasureMode(portion: Portion): HouseholdMeasureMode {

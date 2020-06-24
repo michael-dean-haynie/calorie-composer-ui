@@ -1,16 +1,24 @@
-<ng-container *ngIf="layoutMode === 'narrow'">
-    <app-search-bar></app-search-bar>
-    <app-narrow-search-results></app-narrow-search-results>
-</ng-container>
+<div class="sections-container">
+    <ng-container *ngIf="layoutMode === 'narrow'">
+        <section>
+            <app-search-bar></app-search-bar>
+        </section>
+        <section>
+            <app-narrow-search-results></app-narrow-search-results>
+        </section>
+    </ng-container>
 
-<ng-container *ngIf="layoutMode === 'wide'">
-    <div class="wide-container">
-        <app-search-side-bar></app-search-side-bar>
-        <div>
-            {{selectedFood?.description}}
-            <div>
-                <button (click)="save()">Save to library (pantry?)</button>
+    <ng-container *ngIf="layoutMode === 'wide'">
+        <section>
+            <div class="wide-container">
+                <app-search-side-bar></app-search-side-bar>
+                <div>
+                    {{selectedFood?.description}}
+                    <div>
+                        <button (click)="save()">Save to library (pantry?)</button>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-</ng-container>
+        </section>
+    </ng-container>
+</div>
