@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -10,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { BrowserModule } from '@angular/platform-browser';
@@ -18,6 +20,7 @@ import { ChartsModule } from 'ng2-charts';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ComboFoodFormComponent } from './components/combo-food-form/combo-food-form.component';
+import { FoodFormPortionComponent } from './components/food-form-portion/food-form-portion.component';
 import { FoodFormComponent } from './components/food-form/food-form.component';
 import { HomeComponent } from './components/home/home.component';
 import { MacroPieChartComponent } from './components/macro-pie-chart/macro-pie-chart.component';
@@ -47,7 +50,8 @@ import { MacroPctgPipe } from './pipes/macro-pctg.pipe';
     PlanningComponent,
     ComboFoodFormComponent,
     FoodFormComponent,
-    MaskDirective
+    MaskDirective,
+    FoodFormPortionComponent
   ],
   imports: [
     BrowserModule,
@@ -69,6 +73,8 @@ import { MacroPctgPipe } from './pipes/macro-pctg.pipe';
     MatIconModule,
     MatButtonModule,
     MatAutocompleteModule,
+    MatCardModule,
+    MatSlideToggleModule,
 
 
 

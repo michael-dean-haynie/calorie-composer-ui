@@ -20,64 +20,22 @@
 
     <section>
         <h3>Portions</h3>
-        <h4>Serving Size</h4>
-        <ng-container formGroupName="servingSizePortion">
-
-            <div class="measurement">
-                <!-- toggle household measure mode -->
-                <button type="button" mat-icon-button color="primary" (click)="toggleHouseholdMeasureMode()">
-                    <mat-icon *ngIf="foodForm.get('servingSizePortion.householdMeasureMode').value === 'unit-amount'">
-                        flip
-                    </mat-icon>
-                    <mat-icon *ngIf="foodForm.get('servingSizePortion.householdMeasureMode').value === 'free-form'">
-                        crop_din
-                    </mat-icon>
-                </button>
-
-                <!-- household measure in unit-amount mode -->
-                <ng-container *ngIf="foodForm.get('servingSizePortion.householdMeasureMode').value === 'unit-amount'">
-                    <mat-form-field floatLabel="always" class="household-measure-amount">
-                        <mat-label>Amount</mat-label>
-                        <input matInput [appMask]="['non-negative', 'float-hundredths']" placeholder="16"
-                            formControlName="displayUnitAmount">
-                    </mat-form-field>
-                    <mat-form-field floatLabel="always" class="household-measure-unit">
-                        <mat-label>Unit</mat-label>
-                        <input matInput placeholder="pieces" formControlName="displayUnitName">
-                    </mat-form-field>
-                </ng-container>
-
-                <!-- household measure in free-form mode -->
-                <ng-container *ngIf="foodForm.get('servingSizePortion.householdMeasureMode').value === 'free-form'">
-                    <mat-form-field floatLabel="always" class="household-measure-free-form">
-                        <mat-label>Amount</mat-label>
-                        <input matInput placeholder="16 pieces" formControlName="description">
-                    </mat-form-field>
-                </ng-container>
-
-                <!-- metric measure -->
-                <mat-form-field floatLabel="always" class="base-measure-amount">
-                    <mat-label>Amount</mat-label>
-                    <span matPrefix>(&nbsp;</span>
-                    <input matInput [appMask]="['non-negative', 'float-hundredths']" placeholder="31"
-                        formControlName="baseUnitAmount">
-                </mat-form-field>
-                <mat-form-field floatLabel="always" class="base-measure-unit">
-                    <mat-label>Unit</mat-label>
-                    <input matInput placeholder="g" formControlName="baseUnitName"
-                        [matAutocomplete]="metricMeasureAmount">
-                    <span matSuffix>&nbsp;)</span>
-                    <mat-autocomplete class="align-panel-right" #metricMeasureAmount="matAutocomplete">
-                        <mat-optgroup *ngFor="let group of metricMeasureACOptions" [label]="group.groupLabel">
-                            <mat-option *ngFor=" let option of group.options" [value]="option.value">
-                                {{option.label}}
-                            </mat-option>
-                        </mat-optgroup>
-                    </mat-autocomplete>
-                </mat-form-field>
-
+        <div class="portions-subsections">
+            <div>
+                <h4>Serving Size</h4>
+                <app-food-form-portion [foodForm]="foodForm" [portionFormControl]="foodForm.get('servingSizePortion')">
+                </app-food-form-portion>
             </div>
-        </ng-container>
+
+            <div>
+                <h4>Other Portions ({{otherPortions.controls.length}})</h4>
+                <ng-container formArrayName="otherPortions">
+                    <app-food-form-portion *ngFor="let portion of otherPortions.controls; let i=index"
+                        [foodForm]="foodForm" [portionFormControl]="foodForm.get(['otherPortions', i])">
+                    </app-food-form-portion>
+                </ng-container>
+            </div>
+        </div>
     </section>
 
     <section>

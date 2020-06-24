@@ -49,7 +49,7 @@ export class FoodMapperService {
         return this.nutrientMapperService.modelToFormGroup(nutrient);
       })),
       servingSizePortion: this.portionMapperService.modelToFormGroup(ssp),
-      otherPortions: otherPortions.map(portion => this.portionMapperService.modelToFormGroup(portion))
+      otherPortions: this.fb.array(otherPortions.map(portion => this.portionMapperService.modelToFormGroup(portion)))
     });
   }
 }
