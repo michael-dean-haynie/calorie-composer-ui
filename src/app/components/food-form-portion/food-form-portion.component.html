@@ -45,7 +45,7 @@
                     <input matInput placeholder="g" formControlName="baseUnitName"
                         [matAutocomplete]="metricMeasureAmount">
                     <span matSuffix>&nbsp;)</span>
-                    <mat-autocomplete class="align-panel-right" #metricMeasureAmount="matAutocomplete">
+                    <mat-autocomplete class="ac-panel right" #metricMeasureAmount="matAutocomplete">
                         <mat-optgroup *ngFor="let group of metricMeasureACOptions" [label]="group.groupLabel">
                             <mat-option *ngFor=" let option of group.options" [value]="option.value">
                                 {{option.label}}

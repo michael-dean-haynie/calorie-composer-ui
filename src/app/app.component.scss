@@ -34,3 +34,21 @@
   font-weight: normal;
   font-size: 1.2rem;
 }
+
+// aligns the right side of the autocomplete panel with the right side of
+// the the input so it doesn't overflow off the right side of the page
+::ng-deep :root {
+  .ac-panel  {
+      width: unset;
+
+      &.right {
+        position: absolute;
+        right: 0;
+      }
+
+      &.left {
+        position: absolute;
+        left: 0;
+      }
+  }
+}

@@ -35,13 +35,3 @@
     justify-content: space-between;
     align-items: center;
 }
-
-// aligns the right side of the autocomplete panel with the right side of
-// the the input so it doesn't overflow off the right side of the page
-::ng-deep :root {
-    .align-panel-right  {
-        position: absolute;
-        right: 0;
-        width: unset;
-    }
-}

@@ -37,12 +37,21 @@ mat-form-field {
         mat-form-field {
             // separate form-field underline at column line
             width: calc(100% - 1ch);
+
     
             // prevent table blowout
             .mat-form-field-infix {
                 width: unset;
             }
         }
+    }
+
+    .unit-form-field {
+        max-width: 5ch;
+    }
+
+    .amount-form-field {
+        max-width: 8ch;
     }
 
     .icons {

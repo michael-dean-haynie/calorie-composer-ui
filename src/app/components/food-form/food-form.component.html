@@ -59,7 +59,13 @@
                     </ng-container>
                     <ng-container *ngIf="element.get('editMode').value">
                         <mat-form-field floatLabel="never">
-                            <input matInput placeholder="Ex. Protein" [formControl]="element.get('name')">
+                            <input matInput placeholder="Ex. Protein" [formControl]="element.get('name')"
+                                [matAutocomplete]="nutrientName">
+                            <mat-autocomplete #nutrientName="matAutocomplete" class="ac-panel left">
+                                <mat-option *ngFor=" let option of nutrientNameACOptions" [value]="option">
+                                    {{option}}
+                                </mat-option>
+                            </mat-autocomplete>
                         </mat-form-field>
                     </ng-container>
                 </td>
@@ -67,14 +73,16 @@
 
             <!-- Amount Column -->
             <ng-container matColumnDef="amount">
-                <th mat-header-cell *matHeaderCellDef> Amount </th>
+                <th mat-header-cell *matHeaderCellDef> Amt </th>
                 <td mat-cell *matCellDef="let element">
                     <ng-container *ngIf="!element.get('editMode').value">
                         {{element.get('amount').value}}
                     </ng-container>
                     <ng-container *ngIf="element.get('editMode').value">
-                        <mat-form-field floatLabel="never">
-                            <input matInput placeholder="64.29" [formControl]="element.get('amount')">
+                        <mat-form-field floatLabel="never" class="amount-form-field">
+                            <input matInput [appMask]="['non-negative', 'float-hundredths']" placeholder=" 64"
+                                [formControl]="element.get('amount')">
+
                         </mat-form-field>
                     </ng-container>
                 </td>
@@ -88,19 +96,26 @@
                         {{element.get('unitName').value}}
                     </ng-container>
                     <ng-container *ngIf="element.get('editMode').value">
-                        <mat-form-field floatLabel="never">
-                            <input matInput placeholder="g" [formControl]="element.get('unitName')">
+                        <mat-form-field floatLabel="never" class="unit-form-field">
+                            <input matInput placeholder="g" [formControl]="element.get('unitName')"
+                                [matAutocomplete]="nutrientUnit">
+                            <mat-autocomplete #nutrientUnit="matAutocomplete" class="ac-panel right">
+                                <mat-option *ngFor=" let option of nutrientUnitACOptions" [value]="option.value">
+                                    {{option.label}}
+                                </mat-option>
+                            </mat-autocomplete>
                         </mat-form-field>
                     </ng-container>
                 </td>
             </ng-container>
 
-            <!-- Unit Column -->
+            <!-- Icons Column -->
             <ng-container matColumnDef="icons">
                 <th mat-header-cell *matHeaderCellDef></th>
                 <td mat-cell *matCellDef="let element">
                     <div class="icons">
-                        <button type="button" mat-icon-button color="primary" (click)="toggleNutrientEditMode(element)">
+                        <button *ngIf="!aNutrientIsBeingEdited || element.get('editMode').value === true" type="button"
+                            mat-icon-button color="primary" (click)="toggleNutrientEditMode(element)">
                             <mat-icon *ngIf="element.get('editMode').value === false && !aNutrientIsBeingEdited">edit
                             </mat-icon>
                             <mat-icon *ngIf="element.get('editMode').value === true">done</mat-icon>

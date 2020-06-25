@@ -17,7 +17,7 @@ export class NutrientMapperService {
   dtoToModel(nutrientDTO: NutrientDTO): Nutrient {
     const nutrient = new Nutrient();
     nutrient.id = nutrientDTO.id;
-    nutrient.name = this.nutriantMetadataService.aliasToEnum(nutrientDTO.name);
+    nutrient.name = this.nutriantMetadataService.aliasToType(nutrientDTO.name);
     nutrient.unitName = nutrientDTO.unitName;
     nutrient.amount = nutrientDTO.amount;
     return nutrient;
@@ -30,7 +30,7 @@ export class NutrientMapperService {
   modelToFormGroup(nutrient: Nutrient): FormGroup {
     return this.fb.group({
       editMode: [false],
-      name: [nutrient.name],
+      name: [this.nutriantMetadataService.tryAliasToDisplayName(nutrient.name)],
       unitName: [nutrient.unitName],
       amount: [nutrient.amount]
     });
