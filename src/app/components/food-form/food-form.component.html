@@ -80,7 +80,7 @@
                     </ng-container>
                     <ng-container *ngIf="element.get('editMode').value">
                         <mat-form-field floatLabel="never" class="amount-form-field">
-                            <input matInput [appMask]="['non-negative', 'float-hundredths']" placeholder=" 64"
+                            <input matInput [appMask]="['non-negative', 'float-hundredths']" placeholder="3.5"
                                 [formControl]="element.get('amount')">
 
                         </mat-form-field>
@@ -130,7 +130,8 @@
 
                         <!-- Toggle Edit Mode -->
                         <button *ngIf="!aNutrientIsBeingEdited || element.get('editMode').value === true" type="button"
-                            mat-icon-button color="primary" (click)="toggleNutrientEditMode(element)">
+                            mat-icon-button color="primary" (click)="toggleNutrientEditMode(element)"
+                            [disabled]="element.invalid">
                             <mat-icon *ngIf="element.get('editMode').value === false && !aNutrientIsBeingEdited">edit
                             </mat-icon>
                             <mat-icon *ngIf="element.get('editMode').value === true">done</mat-icon>
@@ -143,5 +144,11 @@
             <tr mat-header-row *matHeaderRowDef="nutrientsDisplayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: nutrientsDisplayedColumns;"></tr>
         </table>
+    </section>
+    <section>
+        <div class="form-buttons">
+            <button mat-raised-button color="accent">Cancel</button>
+            <button mat-raised-button color="primary" [disabled]="foodForm.invalid">Save Changes</button>
+        </div>
     </section>
 </form>

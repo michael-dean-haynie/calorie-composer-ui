@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { UnitDescription, UnitService } from 'src/app/services/util/unit.service';
 
@@ -7,7 +7,7 @@ import { UnitDescription, UnitService } from 'src/app/services/util/unit.service
   templateUrl: './food-form-portion.component.html',
   styleUrls: ['./food-form-portion.component.scss']
 })
-export class FoodFormPortionComponent implements OnInit {
+export class FoodFormPortionComponent {
 
   @Input() foodForm: FormGroup;
   @Input() portionFormControl: FormGroup;
@@ -27,10 +27,6 @@ export class FoodFormPortionComponent implements OnInit {
   constructor(
     private unitService: UnitService
   ) { }
-
-  ngOnInit(): void {
-    console.log(this.portionFormControl);
-  }
 
   toggleHouseholdMeasureMode(): void {
     const modeControl = this.portionFormControl.get('householdMeasureMode');

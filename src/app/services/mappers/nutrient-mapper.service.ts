@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NutrientDTO } from 'src/app/contracts/nutrient-dto';
 import { Nutrient } from 'src/app/models/nutrient.model';
 import { NutrientMetadataService } from '../nutrient-metadata.service';
@@ -30,9 +30,9 @@ export class NutrientMapperService {
   modelToFormGroup(nutrient: Nutrient): FormGroup {
     return this.fb.group({
       editMode: [false],
-      name: [this.nutriantMetadataService.tryAliasToDisplayName(nutrient.name)],
-      unitName: [nutrient.unitName],
-      amount: [nutrient.amount]
+      name: [this.nutriantMetadataService.tryAliasToDisplayName(nutrient.name), Validators.required],
+      unitName: [nutrient.unitName, Validators.required],
+      amount: [nutrient.amount, Validators.required]
     });
   }
 }

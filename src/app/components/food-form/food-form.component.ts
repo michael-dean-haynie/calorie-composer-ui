@@ -13,7 +13,7 @@ import { PortionMapperService } from 'src/app/services/mappers/portion-mapper.se
 import { NutrientMetadataService } from 'src/app/services/nutrient-metadata.service';
 import { UnitService } from 'src/app/services/util/unit.service';
 
-type FormMode = 'create' | 'update';
+type FormMode = 'create' | 'update' | 'import';
 
 @Component({
   selector: 'app-food-form',

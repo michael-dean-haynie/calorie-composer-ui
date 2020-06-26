@@ -1,4 +1,5 @@
 import { Directive, ElementRef, HostListener, Input } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 
 // A function that takes a value and checks if it passes the mask criteria.
@@ -11,9 +12,14 @@ export type ProvidedMaskCriteriaName = 'non-negative' | 'float-hundredths';
  * Inspiration: https://stackoverflow.com/a/469362/6137022
  */
 @Directive({
-  selector: '[appMask]'
+  selector: '[appMask]',
+  providers: [{
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: MaskDirective,
+    multi: true
+  }]
 })
-export class MaskDirective {
+export class MaskDirective implements ControlValueAccessor {
 
   // ProvidedMaskCriteriaNames to be applied
   @Input('appMask') providedCriteria: ProvidedMaskCriteriaName[];
@@ -26,6 +32,11 @@ export class MaskDirective {
   private oldSelectionStart: number;
   private oldSelectionEnd: number;
 
+  // Start ControlValueAccessor fields
+  private onChange: (value) => void;
+  private onTouched: () => void;
+  // End ControlValueAccessor fields
+
   private providedCriteriaMap = new Map<ProvidedMaskCriteriaName, MaskCriteria>([
     ['non-negative', (value) => /^\d*\.?\d*$/.test(value)],
     ['float-hundredths', (value) => /^-?\d*\.?\d{0,2}$/.test(value)],
@@ -35,6 +46,30 @@ export class MaskDirective {
     this.inputEl = el.nativeElement as HTMLInputElement;
     this.oldValue = this.inputEl.value;
   }
+
+  /**
+   * START ControlValueAccessor methods
+   */
+  writeValue(obj: any): void {
+    this.inputEl.value = obj;
+  }
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+  setDisabledState?(isDisabled: boolean): void {
+    this.inputEl.disabled = isDisabled;
+  }
+
+  @HostListener('blur', ['$event'])
+  onBlur(event: Event) {
+    this.onTouched();
+  }
+  /**
+   * End ControlValueAccessor methods
+   */
 
   @HostListener('input', ['$event'])
   @HostListener('keydown', ['$event'])
@@ -49,6 +84,7 @@ export class MaskDirective {
       this.oldValue = this.inputEl.value;
       this.oldSelectionStart = this.inputEl.selectionStart;
       this.oldSelectionEnd = this.inputEl.selectionEnd;
+      this.onChange(this.inputEl.value);
     } else {
       this.inputEl.value = this.oldValue;
       this.inputEl.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
