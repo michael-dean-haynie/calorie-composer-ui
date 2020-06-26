@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { FoodDTO } from 'src/app/contracts/food-dto';
 import { Food } from 'src/app/models/food.model';
 import { PortionService } from '../util/portion.service';
@@ -10,6 +10,15 @@ import { PortionMapperService } from './portion-mapper.service';
   providedIn: 'root'
 })
 export class FoodMapperService {
+
+  // Must have at least one portion flagged as a nutrient reference portion
+  private nutrientRefPortionRequired: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
+    const servingSizePortion = control.get('servingSizePortion') as FormControl;
+    const otherPortions = control.get('otherPortions') as FormArray;
+    const allPortions = [servingSizePortion].concat(otherPortions.controls as FormControl[]);
+
+    return allPortions.some(portion => !!portion.get('isNutrientRefPortion').value) ? null : { nutrientRefPortionRequired: true };
+  }
 
   constructor(
     private nutrientMapperService: NutrientMapperService,
@@ -50,6 +59,7 @@ export class FoodMapperService {
       })),
       servingSizePortion: this.portionMapperService.modelToFormGroup(ssp),
       otherPortions: this.fb.array(otherPortions.map(portion => this.portionMapperService.modelToFormGroup(portion)))
-    });
+    }, { validators: this.nutrientRefPortionRequired });
   }
+
 }
