@@ -31,7 +31,7 @@ export class SearchComponent implements OnInit {
     this.searchService.selectedFood.subscribe(food => this.selectedFood = food);
   }
 
-  save(): void {
+  import(): void {
     this.foodApiService.post(this.selectedFood).subscribe(food => console.log(food));
   }
 

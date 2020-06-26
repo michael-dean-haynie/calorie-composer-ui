@@ -15,7 +15,9 @@
                 <div>
                     {{selectedFood?.description}}
                     <div>
-                        <button (click)="save()">Save to library (pantry?)</button>
+                        <a routerLink="/import-food/{{selectedFood?.fdcId}}">
+                            <button>Save to library (pantry?)</button>
+                        </a>
                     </div>
                 </div>
             </div>

@@ -147,7 +147,7 @@
     </section>
     <section>
         <div class="form-buttons">
-            <button mat-raised-button color="accent">Cancel</button>
+            <button mat-raised-button color="accent" (click)="cancel()">Cancel</button>
             <button mat-raised-button color="primary" [disabled]="foodForm.invalid">Save Changes</button>
         </div>
     </section>

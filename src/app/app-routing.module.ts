@@ -12,8 +12,9 @@ const routes: Routes = [
   { path: 'planning', component: PlanningComponent, data: { pageTitle: 'Planning' } },
   { path: 'search', component: SearchComponent, data: { pageTitle: 'Search' } },
   // forms
-  { path: 'food-form', component: FoodFormComponent, pathMatch: 'full', data: { pageTitle: 'Create New Food' } },
-  { path: 'food-form/:id', component: FoodFormComponent, data: { pageTitle: 'Edit Food' } },
+  { path: 'create-food', component: FoodFormComponent, pathMatch: 'full', data: { pageTitle: 'Create New Food' } },
+  { path: 'edit-food/:id', component: FoodFormComponent, data: { pageTitle: 'Edit Food' } },
+  { path: 'import-food/:fdcId', component: FoodFormComponent, data: { pageTitle: 'Import Food' } },
   // empty url
   { path: '', pathMatch: 'full', redirectTo: 'home' },
   // anything else
