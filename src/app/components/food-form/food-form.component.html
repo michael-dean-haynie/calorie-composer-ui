@@ -114,6 +114,13 @@
                 <th mat-header-cell *matHeaderCellDef></th>
                 <td mat-cell *matCellDef="let element">
                     <div class="icons">
+                        <!-- Delete Nutrient -->
+                        <button *ngIf="element.get('editMode').value === true" type="button" mat-icon-button
+                            color="primary" (click)="removeNutrient(element.get('nutrientIndex').value)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+
+                        <!-- Toggle Edit Mode -->
                         <button *ngIf="!aNutrientIsBeingEdited || element.get('editMode').value === true" type="button"
                             mat-icon-button color="primary" (click)="toggleNutrientEditMode(element)">
                             <mat-icon *ngIf="element.get('editMode').value === false && !aNutrientIsBeingEdited">edit

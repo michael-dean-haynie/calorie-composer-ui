@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { NutrientMetadataList } from 'src/app/constants/nutrient-metadata';
@@ -91,6 +91,10 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     nutrient.get('editMode').setValue(!nutrient.get('editMode').value);
   }
 
+  removeNutrient(index: number): void {
+    this.nutrients.removeAt(index);
+  }
+
   private loadExistingFood(): void {
     this.loading = true;
     this.foodApiService.get(this.foodId).subscribe(food => {
@@ -107,7 +111,25 @@ export class FoodFormComponent implements OnInit, OnDestroy {
 
   private prepareFoodForm(): void {
     this.foodForm = this.foodMapperService.modelToFormGroup(this.food);
-    const nutrients = this.foodForm.get('nutrients') as FormArray;
-    this.nutrientsDataSource.next(nutrients.controls);
+    this.foodForm.valueChanges.subscribe(() => {
+      const nutrients = this.foodForm.get('nutrients') as FormArray;
+
+      // inject nutrient index into nutrient form groups and push to data source
+      this.nutrientsDataSource.next(nutrients.controls.map((nutrient: FormGroup, index: number) => {
+        const existingIndexControl = nutrient.get('nutrientIndex');
+        if (existingIndexControl) {
+          // avoid recursive change detection - nice.
+          if ((existingIndexControl.value + 0) !== index) {
+            nutrient.get('nutrientIndex').setValue(index);
+          }
+        } else {
+          nutrient.addControl('nutrientIndex', new FormControl(index));
+        }
+        return nutrient;
+      }));
+    });
+
+    // trigger initial value changes
+    this.foodForm.updateValueAndValidity({ onlySelf: false, emitEvent: true });
   }
 }

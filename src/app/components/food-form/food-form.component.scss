@@ -33,6 +33,15 @@ mat-form-field {
 .nutrients-table {
     width: 100%;
 
+    .mat-header-cell, .mat-cell {
+        &:first-child {
+            padding-left: var(--default-padding);
+        }
+        &:last-child {
+            padding-right: var(--default-padding);
+        }
+    }
+
     ::ng-deep{
         mat-form-field {
             // separate form-field underline at column line
