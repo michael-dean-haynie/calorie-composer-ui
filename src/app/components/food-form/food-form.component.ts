@@ -4,9 +4,11 @@ import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { NutrientMetadataList } from 'src/app/constants/nutrient-metadata';
 import { Food } from 'src/app/models/food.model';
+import { Nutrient } from 'src/app/models/nutrient.model';
 import { Portion } from 'src/app/models/portion.model';
 import { FoodApiService } from 'src/app/services/api/food-api.service';
 import { FoodMapperService } from 'src/app/services/mappers/food-mapper.service';
+import { NutrientMapperService } from 'src/app/services/mappers/nutrient-mapper.service';
 import { PortionMapperService } from 'src/app/services/mappers/portion-mapper.service';
 import { NutrientMetadataService } from 'src/app/services/nutrient-metadata.service';
 import { UnitService } from 'src/app/services/util/unit.service';
@@ -42,7 +44,8 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     private foodMapperService: FoodMapperService,
     private portionMapperService: PortionMapperService,
     private unitService: UnitService,
-    private nutrientMetadataService: NutrientMetadataService
+    private nutrientMetadataService: NutrientMetadataService,
+    private nutrientMapperService: NutrientMapperService
   ) { }
 
   ngOnInit(): void {
@@ -85,6 +88,12 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     portion.isServingSizePortion = false;
     portion.isNutrientRefPortion = false;
     this.otherPortions.push(this.portionMapperService.modelToFormGroup(portion));
+  }
+
+  addNutrient(): void {
+    const nutrientCtrl = this.nutrientMapperService.modelToFormGroup(new Nutrient());
+    nutrientCtrl.get('editMode').setValue(true);
+    this.nutrients.insert(0, nutrientCtrl);
   }
 
   toggleNutrientEditMode(nutrient: FormGroup): void {

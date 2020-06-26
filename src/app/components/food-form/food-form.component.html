@@ -111,7 +111,15 @@
 
             <!-- Icons Column -->
             <ng-container matColumnDef="icons">
-                <th mat-header-cell *matHeaderCellDef></th>
+                <th mat-header-cell *matHeaderCellDef>
+                    <div class="icons">
+                        <!-- Add Nutrient -->
+                        <button *ngIf="!aNutrientIsBeingEdited" type="button" mat-icon-button color="primary"
+                            (click)="addNutrient()">
+                            <mat-icon>add_to_photos</mat-icon>
+                        </button>
+                    </div>
+                </th>
                 <td mat-cell *matCellDef="let element">
                     <div class="icons">
                         <!-- Delete Nutrient -->
