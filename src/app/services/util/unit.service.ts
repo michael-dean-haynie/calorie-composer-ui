@@ -59,4 +59,8 @@ export class UnitService {
 
 
   constructor() { }
+
+  getUnitMeasure(unit: string): UnitMeasure {
+    return convert().describe(unit)?.measure;
+  }
 }

@@ -163,5 +163,10 @@ export class FoodFormComponent implements OnInit, OnDestroy {
 
     // trigger initial value changes
     this.foodForm.updateValueAndValidity({ onlySelf: false, emitEvent: true });
+
+    // mark as touched if import mode
+    if (this.formMode === 'import') {
+      this.foodForm.markAllAsTouched();
+    }
   }
 }
