@@ -120,20 +120,24 @@ export class FoodFormComponent implements OnInit, OnDestroy {
 
   private loadExistingFood(): void {
     this.loading = true;
-    this.foodApiService.get(this.foodId).subscribe(food => {
-      this.food = food;
-      this.loading = false;
-      this.prepareFoodForm();
-    });
+    this.subscriptions.push(
+      this.foodApiService.get(this.foodId).subscribe(food => {
+        this.food = food;
+        this.loading = false;
+        this.prepareFoodForm();
+      })
+    );
   }
 
   private loadFdcFood(): void {
     this.loading = true;
-    this.fdcApiService.get(this.fdcId).subscribe(food => {
-      this.food = food;
-      this.loading = false;
-      this.prepareFoodForm();
-    });
+    this.subscriptions.push(
+      this.fdcApiService.get(this.fdcId).subscribe(food => {
+        this.food = food;
+        this.loading = false;
+        this.prepareFoodForm();
+      })
+    );
   }
 
   private prepareNewFood(): void {
@@ -143,23 +147,25 @@ export class FoodFormComponent implements OnInit, OnDestroy {
 
   private prepareFoodForm(): void {
     this.foodForm = this.foodMapperService.modelToFormGroup(this.food);
-    this.foodForm.valueChanges.subscribe(() => {
-      const nutrients = this.foodForm.get('nutrients') as FormArray;
+    this.subscriptions.push(
+      this.foodForm.valueChanges.subscribe(() => {
+        const nutrients = this.foodForm.get('nutrients') as FormArray;
 
-      // inject nutrient index into nutrient form groups and push to data source
-      this.nutrientsDataSource.next(nutrients.controls.map((nutrient: FormGroup, index: number) => {
-        const existingIndexControl = nutrient.get('nutrientIndex');
-        if (existingIndexControl) {
-          // avoid recursive change detection - nice.
-          if ((existingIndexControl.value + 0) !== index) {
-            nutrient.get('nutrientIndex').setValue(index);
+        // inject nutrient index into nutrient form groups and push to data source
+        this.nutrientsDataSource.next(nutrients.controls.map((nutrient: FormGroup, index: number) => {
+          const existingIndexControl = nutrient.get('nutrientIndex');
+          if (existingIndexControl) {
+            // avoid recursive change detection - nice.
+            if ((existingIndexControl.value + 0) !== index) {
+              nutrient.get('nutrientIndex').setValue(index);
+            }
+          } else {
+            nutrient.addControl('nutrientIndex', new FormControl(index));
           }
-        } else {
-          nutrient.addControl('nutrientIndex', new FormControl(index));
-        }
-        return nutrient;
-      }));
-    });
+          return nutrient;
+        }));
+      })
+    );
 
     // trigger initial value changes
     this.foodForm.updateValueAndValidity({ onlySelf: false, emitEvent: true });
