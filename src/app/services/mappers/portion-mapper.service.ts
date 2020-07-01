@@ -17,13 +17,13 @@ export class PortionMapperService {
   dtoToModel(portionDTO: PortionDTO): Portion {
     const portion = new Portion();
     portion.id = portionDTO.id;
-    portion.baseUnitName = portionDTO.baseUnitName;
-    portion.baseUnitAmount = portionDTO.baseUnitAmount;
+    portion.metricUnit = portionDTO.metricUnit;
+    portion.metricAmount = portionDTO.metricAmount;
     portion.isNutrientRefPortion = portionDTO.isNutrientRefPortion;
     portion.isServingSizePortion = portionDTO.isServingSizePortion;
-    portion.description = portionDTO.description;
-    portion.displayUnitName = portionDTO.displayUnitName;
-    portion.displayUnitAmount = portionDTO.displayUnitAmount;
+    portion.householdMeasure = portionDTO.householdMeasure;
+    portion.householdUnit = portionDTO.householdUnit;
+    portion.householdAmount = portionDTO.householdAmount;
     return portion;
   }
 
@@ -36,13 +36,13 @@ export class PortionMapperService {
 
       // household measure
       householdMeasureMode: this.portionService.determineHouseholdMeasureMode(portion),
-      description: [portion.description],
-      displayUnitName: [portion.displayUnitName],
-      displayUnitAmount: [portion.displayUnitAmount],
+      householdMeasure: [portion.householdMeasure],
+      householdUnit: [portion.householdUnit],
+      householdAmount: [portion.householdAmount],
 
       // base measure
-      baseUnitName: [this.portionService.determineBaseUnit(portion.baseUnitName), Validators.required],
-      baseUnitAmount: [portion.baseUnitAmount?.toString() ?? '', Validators.required],
+      metricUnit: [this.portionService.determineMetricUnit(portion.metricUnit), Validators.required],
+      metricAmount: [portion.metricAmount?.toString() ?? '', Validators.required],
 
       // flags
       isNutrientRefPortion: [portion.isNutrientRefPortion],

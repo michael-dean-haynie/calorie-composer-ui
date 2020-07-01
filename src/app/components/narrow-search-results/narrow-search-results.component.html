@@ -20,7 +20,7 @@
             <div class="panel-body-content">
 
                 <app-macro-pie-chart [food]="food"></app-macro-pie-chart>
-                <div>{{food.householdServingFullText}} ({{food.servingSize}} {{food.servingSizeUnit}})</div>
+                <!-- <div>{{food.householdServingFullText}} ({{food.servingSize}} {{food.servingSizeUnit}})</div> -->
                 <a routerLink="/import-food/{{food?.fdcId}}">
                     <button>Save to library (pantry?)</button>
                 </a>

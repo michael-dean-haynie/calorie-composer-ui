@@ -17,11 +17,11 @@
                     <mat-form-field floatLabel="always" class="household-measure-amount">
                         <mat-label>Amount</mat-label>
                         <input matInput [appMask]="['non-negative', 'float-hundredths']" placeholder="16"
-                            formControlName="displayUnitAmount">
+                            formControlName="householdAmount">
                     </mat-form-field>
                     <mat-form-field floatLabel="always" class="household-measure-unit">
                         <mat-label>Unit</mat-label>
-                        <input matInput placeholder="pieces" formControlName="displayUnitName">
+                        <input matInput placeholder="pieces" formControlName="householdUnit">
                     </mat-form-field>
                 </ng-container>
 
@@ -29,7 +29,7 @@
                 <ng-container *ngIf="portionFormControl.get('householdMeasureMode').value === 'free-form'">
                     <mat-form-field floatLabel="always" class="household-measure-free-form">
                         <mat-label>Amount</mat-label>
-                        <input matInput placeholder="16 pieces" formControlName="description">
+                        <input matInput placeholder="16 pieces" formControlName="householdMeasure">
                     </mat-form-field>
                 </ng-container>
 
@@ -38,11 +38,11 @@
                     <mat-label>Amount</mat-label>
                     <span matPrefix>(&nbsp;</span>
                     <input matInput [appMask]="['non-negative', 'float-hundredths']" placeholder="31"
-                        formControlName="baseUnitAmount">
+                        formControlName="metricAmount">
                 </mat-form-field>
                 <mat-form-field floatLabel="always" class="base-measure-unit">
                     <mat-label>Unit</mat-label>
-                    <input matInput placeholder="g" formControlName="baseUnitName"
+                    <input matInput placeholder="g" formControlName="metricUnit"
                         [matAutocomplete]="metricMeasureAmount">
                     <span matSuffix>&nbsp;)</span>
                     <mat-autocomplete class="ac-panel right" #metricMeasureAmount="matAutocomplete">

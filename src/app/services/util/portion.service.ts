@@ -20,21 +20,21 @@ export class PortionService {
     return portions.filter(portion => !portion.isServingSizePortion);
   }
 
-  determineBaseUnit(baseUnitName: string): string {
+  determineMetricUnit(unitName: string): string {
     return UnitService.MetricMeasureUnits.find(unitDesc => {
       return [
         unitDesc.abbr,
         unitDesc.singular.toLowerCase(),
         unitDesc.plural.toLowerCase()
-      ].includes(baseUnitName);
-    })?.abbr || baseUnitName;
+      ].includes(unitName);
+    })?.abbr || unitName;
   }
 
   determineHouseholdMeasureMode(portion: Portion): HouseholdMeasureMode {
     const empty = val => val === undefined || val === null || ('' + val).trim() === '';
     let result: HouseholdMeasureMode = 'unit-amount';
 
-    if (!empty(portion.description) && (empty(portion.displayUnitName) || empty(portion.displayUnitAmount))) {
+    if (!empty(portion.householdMeasure) && (empty(portion.householdUnit) || empty(portion.householdAmount))) {
       result = 'free-form';
     }
 

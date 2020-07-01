@@ -31,7 +31,7 @@ export class FoodMapperService {
       // only concerned about portions marked as nutrient ref portion
       .filter(portion => portion.get('isNutrientRefPortion').value)
       // map to unit type and remove falsey results
-      .map(portion => this.unitService.getUnitMeasure(portion.get('baseUnitName').value))
+      .map(portion => this.unitService.getUnitMeasure(portion.get('metricUnit').value))
       .filter(measure => measure);
 
     // check for duplicates and return error if existing
