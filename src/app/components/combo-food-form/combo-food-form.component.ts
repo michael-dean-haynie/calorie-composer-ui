@@ -1,10 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormArray, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { ComboFoodPortion } from 'src/app/models/combo-food-portion.model';
 import { ComboFood } from 'src/app/models/combo-food.model';
 import { ComboFoodApiService } from 'src/app/services/api/combo-food-api.service';
 import { ComboFoodMapperService } from 'src/app/services/mappers/combo-food-mapper.service';
+import { ComboFoodPortionMapperService } from 'src/app/services/mappers/combo-food-portion-mapper.service';
 
 type FormMode = 'create' | 'update';
 
@@ -18,7 +20,7 @@ export class ComboFoodFormComponent implements OnInit, OnDestroy {
   formMode: FormMode;
   loading = false;
 
-  comboFoodForm = FormGroup;
+  comboFoodForm: FormGroup;
 
   comboFoodId: string;
   comboFood: ComboFood;
@@ -28,7 +30,8 @@ export class ComboFoodFormComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private comboFoodApiService: ComboFoodApiService,
-    private comboFoodMapperService: ComboFoodMapperService
+    private comboFoodMapperService: ComboFoodMapperService,
+    private comboFoodPortionMapperService: ComboFoodPortionMapperService
   ) { }
 
   ngOnInit(): void {
@@ -53,6 +56,17 @@ export class ComboFoodFormComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
+  get otherPortions(): FormArray {
+    return this.comboFoodForm.get('otherPortions') as FormArray;
+  }
+
+  addNonSSPortion(): void {
+    const comboFoodPortion = new ComboFoodPortion();
+    comboFoodPortion.isServingSizePortion = false;
+    comboFoodPortion.isFoodAmountRefPortion = false;
+    this.otherPortions.push(this.comboFoodPortionMapperService.modelToFormGroup(comboFoodPortion));
+  }
+
   private loadExistingComboFood(): void {
     this.loading = true;
     this.comboFoodApiService.get(this.comboFoodId).subscribe(comboFood => {
@@ -68,7 +82,7 @@ export class ComboFoodFormComponent implements OnInit, OnDestroy {
   }
 
   private prepareComboFoodForm(): void {
-    // this.comboFoodForm = this.comboFoodMapperService.modelToFormGroup(this.comboFood);
+    this.comboFoodForm = this.comboFoodMapperService.modelToFormGroup(this.comboFood);
   }
 
 }

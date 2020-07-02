@@ -1,1 +1,39 @@
-<p>combo-food-form works!</p>
+<form *ngIf="!loading" [formGroup]="comboFoodForm" class="sections-container">
+    <section>
+        <h3>Labeling</h3>
+        <mat-form-field>
+            <mat-label>Description</mat-label>
+            <input matInput placeholder="Ex. Peanutbutter & Jelley Sandwich" formControlName="description">
+        </mat-form-field>
+    </section>
+
+    <section>
+        <h3 [ngClass]="{'mat-error': !!comboFoodForm.errors}">Portions</h3>
+        <app-error-msg [ctrl]="comboFoodForm"></app-error-msg>
+        <div class="portions-subsections">
+            <div>
+                <div class="split-subheader">
+                    <h4>Serving Size</h4>
+                </div>
+                <app-combo-food-form-portion [comboFoodForm]="comboFoodForm"
+                    [portionFormControl]="comboFoodForm.get('servingSizePortion')">
+                </app-combo-food-form-portion>
+            </div>
+
+            <div>
+                <div class="split-subheader">
+                    <h4>Other Portions ({{otherPortions.controls.length}})</h4>
+                    <button type="button" mat-icon-button color="primary" (click)="addNonSSPortion()">
+                        <mat-icon>add_to_photos</mat-icon>
+                    </button>
+                </div>
+                <div class="other-portions">
+                    <app-combo-food-form-portion *ngFor="let portion of otherPortions.controls; let i=index"
+                        [comboFoodForm]="comboFoodForm" [portionFormControl]="comboFoodForm.get(['otherPortions', i])"
+                        [otherPortionsIndex]="i">
+                    </app-combo-food-form-portion>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>

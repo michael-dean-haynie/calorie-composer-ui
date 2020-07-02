@@ -34,6 +34,7 @@ import { MaskDirective } from './directives/mask.directive';
 import { MacroAmtPipe } from './pipes/macro-amt.pipe';
 import { MacroPctgPipe } from './pipes/macro-pctg.pipe';
 import { ErrorMsgComponent } from './components/error-msg/error-msg.component';
+import { ComboFoodFormPortionComponent } from './components/combo-food-form-portion/combo-food-form-portion.component';
 
 
 @NgModule({
@@ -53,7 +54,8 @@ import { ErrorMsgComponent } from './components/error-msg/error-msg.component';
     FoodFormComponent,
     MaskDirective,
     FoodFormPortionComponent,
-    ErrorMsgComponent
+    ErrorMsgComponent,
+    ComboFoodFormPortionComponent
   ],
   imports: [
     BrowserModule,

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ComboFoodFoodAmountDTO } from 'src/app/contracts/combo-food-food-amount-dto';
 import { ComboFoodFoodAmount } from 'src/app/models/combo-food-food-amount.model';
 import { FoodMapperService } from './food-mapper.service';
@@ -9,7 +10,8 @@ import { FoodMapperService } from './food-mapper.service';
 export class ComboFoodFoodAmountMapperService {
 
   constructor(
-    private foodMapperService: FoodMapperService
+    private foodMapperService: FoodMapperService,
+    private fb: FormBuilder
   ) { }
 
   dtoToModel(comboFoodFoodAmountDTO: ComboFoodFoodAmountDTO): ComboFoodFoodAmount {
@@ -22,5 +24,12 @@ export class ComboFoodFoodAmountMapperService {
 
   modelToDTO(comboFoodFoodAmount: ComboFoodFoodAmount): ComboFoodFoodAmountDTO {
     return comboFoodFoodAmount;
+  }
+
+  modelToFormGroup(comboFoodFoodAmount: ComboFoodFoodAmount): FormGroup {
+    return this.fb.group({
+      foodId: [comboFoodFoodAmount.food.id, Validators.required],
+      metricAmount: [comboFoodFoodAmount.metricAmount, Validators.required]
+    });
   }
 }

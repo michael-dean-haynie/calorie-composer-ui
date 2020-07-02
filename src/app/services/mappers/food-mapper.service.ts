@@ -12,35 +12,6 @@ import { PortionMapperService } from './portion-mapper.service';
 })
 export class FoodMapperService {
 
-  // Must have at least one portion flagged as a nutrient reference portion
-  private nutrientRefPortionRequired: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
-    const servingSizePortion = control.get('servingSizePortion') as FormControl;
-    const otherPortions = control.get('otherPortions') as FormArray;
-    const allPortions = [servingSizePortion].concat(otherPortions.controls as FormControl[]);
-
-    return allPortions.some(portion => !!portion.get('isNutrientRefPortion').value) ? null : { nutrientRefPortionRequired: true };
-  }
-
-  // No more than one nutrient reference portion per unit type (mass / volume)
-  private oneNutrientRefPortionPerUnitType: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
-    const servingSizePortion = control.get('servingSizePortion') as FormControl;
-    const otherPortions = control.get('otherPortions') as FormArray;
-    const allPortions = [servingSizePortion].concat(otherPortions.controls as FormControl[]);
-
-    const allMeasures = allPortions
-      // only concerned about portions marked as nutrient ref portion
-      .filter(portion => portion.get('isNutrientRefPortion').value)
-      // map to unit type and remove falsey results
-      .map(portion => this.unitService.getUnitMeasure(portion.get('metricUnit').value))
-      .filter(measure => measure);
-
-    // check for duplicates and return error if existing
-    return (new Set(allMeasures).size === allMeasures.length)
-      ? null
-      : { oneNutrientRefPortionPerUnitType: true };
-
-  }
-
   constructor(
     private nutrientMapperService: NutrientMapperService,
     private portionMapperService: PortionMapperService,
@@ -76,12 +47,39 @@ export class FoodMapperService {
       description: [food.description, Validators.required],
       brandOwner: [food.brandOwner],
       ingredients: [food.ingredients],
-      nutrients: this.fb.array(food.nutrients.map(nutrient => {
-        return this.nutrientMapperService.modelToFormGroup(nutrient);
-      })),
+      nutrients: this.fb.array(food.nutrients.map(nutrient => this.nutrientMapperService.modelToFormGroup(nutrient))),
       servingSizePortion: this.portionMapperService.modelToFormGroup(ssp),
       otherPortions: this.fb.array(otherPortions.map(portion => this.portionMapperService.modelToFormGroup(portion)))
     }, { validators: [this.nutrientRefPortionRequired, this.oneNutrientRefPortionPerUnitType] });
+  }
+
+  // Must have at least one portion flagged as a nutrient reference portion
+  private nutrientRefPortionRequired: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
+    const servingSizePortion = control.get('servingSizePortion') as FormControl;
+    const otherPortions = control.get('otherPortions') as FormArray;
+    const allPortions = [servingSizePortion].concat(otherPortions.controls as FormControl[]);
+
+    return allPortions.some(portion => !!portion.get('isNutrientRefPortion').value) ? null : { nutrientRefPortionRequired: true };
+  }
+
+  // No more than one nutrient reference portion per unit type (mass / volume)
+  private oneNutrientRefPortionPerUnitType: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
+    const servingSizePortion = control.get('servingSizePortion') as FormControl;
+    const otherPortions = control.get('otherPortions') as FormArray;
+    const allPortions = [servingSizePortion].concat(otherPortions.controls as FormControl[]);
+
+    const allMeasures = allPortions
+      // only concerned about portions marked as nutrient ref portion
+      .filter(portion => portion.get('isNutrientRefPortion').value)
+      // map to unit type and remove falsey results
+      .map(portion => this.unitService.getUnitMeasure(portion.get('metricUnit')?.value))
+      .filter(measure => measure);
+
+    // check for duplicates and return error if existing
+    return (new Set(allMeasures).size === allMeasures.length)
+      ? null
+      : { oneNutrientRefPortionPerUnitType: true };
+
   }
 
 }

@@ -40,7 +40,7 @@ export class PortionMapperService {
       householdUnit: [portion.householdUnit],
       householdAmount: [portion.householdAmount],
 
-      // base measure
+      // metric measure
       metricUnit: [this.portionService.determineMetricUnit(portion.metricUnit), Validators.required],
       metricAmount: [portion.metricAmount?.toString() ?? '', Validators.required],
 

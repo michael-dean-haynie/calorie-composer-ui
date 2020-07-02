@@ -1,0 +1,36 @@
+@import '../../../style-vars.scss';
+
+mat-form-field {
+    width: 100%;
+}
+
+.portions-subsections {
+    display: grid;
+    // must be definitely sized to prevent grid blowout
+    // https://css-tricks.com/preventing-a-grid-blowout/
+    grid-template-columns: 100%;
+    row-gap: var(--default-padding);
+}
+
+.split-subheader {
+    height: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: var(--default-padding);
+
+    h4 {
+        margin-bottom: 0;
+    }
+}
+
+.other-portions{
+    display: grid;
+    grid-template-columns: 100%;
+    row-gap: var(--default-padding);
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: space-between;
+}
