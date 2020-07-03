@@ -3,3 +3,23 @@
 mat-form-field {
     width: 100%;
 }
+
+::ng-deep :root {
+    .food-ac-option  {
+        .description {
+            font-size: .8rem;
+            white-space: nowrap;
+            overflow: hidden; 
+            text-overflow: ellipsis;
+        }
+
+        .brand-owner {
+            color: rgba(0,0,0,.54);
+            font-size: .75rem;
+        }
+        
+        .mat-option-text {
+            line-height: initial;
+        }
+    }
+}

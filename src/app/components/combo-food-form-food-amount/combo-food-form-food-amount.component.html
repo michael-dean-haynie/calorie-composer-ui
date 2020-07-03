@@ -3,11 +3,23 @@
         <mat-form-field>
             <mat-label>Food Name</mat-label>
             <input matInput placeholder="Ex. Peanut butter" formControlName="foodName" [matAutocomplete]="foodAC">
+            <button mat-button *ngIf="foodAmountCtrl.get('foodName').value" matSuffix mat-icon-button
+                (click)="foodAmountCtrl.get('foodName').setValue('')">
+                <mat-icon>close</mat-icon>
+            </button>
         </mat-form-field>
         <mat-autocomplete #foodAC="matAutocomplete">
-            <mat-option *ngFor="let option of foodACOptions | async" [value]="option">
-                {{option}}
+            <mat-option *ngFor="let option of foodACOptions | async" [value]="option.description"
+                (onSelectionChange)="updateSelectedFood(option, $event)" class="food-ac-option">
+                <div class="description">{{option.description}}</div>
+                <div class="brand-owner">{{option.brandOwner}}</div>
             </mat-option>
         </mat-autocomplete>
+
+        <ng-container *ngIf="food">
+            <div>{{food.description}}</div>
+            <div>{{food.brandOwner}}</div>
+            <div>{{food.ingredients}}</div>
+        </ng-container>
     </mat-card>
 </ng-container>

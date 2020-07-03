@@ -1,8 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { MatOptionSelectionChange } from '@angular/material/core';
 import { BehaviorSubject } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, tap } from 'rxjs/operators';
+import { Food } from 'src/app/models/food.model';
 import { FoodApiService } from 'src/app/services/api/food-api.service';
+
+// Indicates whether component treats ctrl value as a selected value or a query for a value;
+type FoodNameCtrlMode = 'selection' | 'query';
 
 @Component({
   selector: 'app-combo-food-form-food-amount',
@@ -13,9 +18,11 @@ export class ComboFoodFormFoodAmountComponent implements OnInit {
 
   @Input() foodAmountCtrl: FormGroup;
 
-  allOptions = ['aqueduct', 'beautiful', 'cowardly'];
+  foodNameCtrlMode: FoodNameCtrlMode = 'query';
 
-  foodACOptions = new BehaviorSubject<string[]>(this.allOptions);
+  foodACOptions = new BehaviorSubject<Food[]>([]);
+
+  food: Food;
 
   constructor(
     private foodApiService: FoodApiService
@@ -23,15 +30,35 @@ export class ComboFoodFormFoodAmountComponent implements OnInit {
 
   ngOnInit(): void {
     this.foodAmountCtrl.get('foodName').valueChanges.pipe(
+      tap(value => {
+        // switch to query mode if change did not come from auto-complete selection
+        if (!this.foodNameChangeIsFromACSelection(value)) {
+          this.foodNameCtrlMode = 'query';
+          this.food = null;
+        }
+      }),
       debounceTime(200)
     ).subscribe(value => {
-      this.foodApiService.search(value).subscribe(results => {
-        this.foodACOptions.next(results.map(result => `${result.description}`));
-      });
-
-      // const newOptions = this.allOptions.filter(opt => opt.toLowerCase().includes(value.toLowerCase()));
-      // this.foodACOptions.next(newOptions);
+      if (this.foodNameCtrlMode === 'query') {
+        // query for auto complete options
+        this.foodApiService.search(value).subscribe(results => {
+          this.foodACOptions.next(results);
+        });
+      }
     });
+  }
+
+  updateSelectedFood(food: Food, event: MatOptionSelectionChange): void {
+    if (event.source.selected) {
+      this.foodNameCtrlMode = 'selection';
+      this.food = food;
+    }
+  }
+
+  foodNameChangeIsFromACSelection(value: string): boolean {
+    // selection flag is set upon selection and before event makes it to the foonName ctrl
+    // food value is also assigned upon selection.
+    return this.foodNameCtrlMode === 'selection' && this.food.description === value;
   }
 
 }
