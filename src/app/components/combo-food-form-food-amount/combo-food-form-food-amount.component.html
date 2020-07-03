@@ -1,0 +1,13 @@
+<ng-container [formGroup]="foodAmountCtrl">
+    <mat-card>
+        <mat-form-field>
+            <mat-label>Food Name</mat-label>
+            <input matInput placeholder="Ex. Peanut butter" formControlName="foodName" [matAutocomplete]="foodAC">
+        </mat-form-field>
+        <mat-autocomplete #foodAC="matAutocomplete">
+            <mat-option *ngFor="let option of foodACOptions | async" [value]="option">
+                {{option}}
+            </mat-option>
+        </mat-autocomplete>
+    </mat-card>
+</ng-container>

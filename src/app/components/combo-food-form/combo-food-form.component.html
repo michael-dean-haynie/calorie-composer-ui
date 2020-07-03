@@ -36,4 +36,20 @@
             </div>
         </div>
     </section>
+
+    <section>
+        <!-- TODO: error messages and styles -->
+        <div class="split-header">
+            <h3>Foods</h3>
+            <button type="button" mat-icon-button color="primary" (click)="addFoodAmount()">
+                <mat-icon>add_to_photos</mat-icon>
+            </button>
+        </div>
+
+        <app-combo-food-form-food-amount *ngFor="let foodAmount of foodAmounts.controls; let i=index"
+            [foodAmountCtrl]="foodAmount">
+        </app-combo-food-form-food-amount>
+
+
+    </section>
 </form>

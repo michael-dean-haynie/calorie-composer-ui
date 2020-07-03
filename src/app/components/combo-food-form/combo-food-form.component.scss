@@ -17,9 +17,23 @@ mat-form-field {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-right: var(--default-padding);
+    // might need to add back in?
+    // padding-right: var(--default-padding);
 
     h4 {
+        margin-bottom: 0;
+    }
+}
+
+.split-header {
+    height: 44px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    // might need to add back in?
+    // padding-right: var(--default-padding);
+
+    h3 {
         margin-bottom: 0;
     }
 }

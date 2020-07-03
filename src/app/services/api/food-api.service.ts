@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -26,6 +26,15 @@ export class FoodApiService {
   get(id: string): Observable<Food> {
     return this.http.get<FoodDTO>(`${this.baseUrl}/${id}`).pipe(
       map(foodDTO => this.foodMapperService.dtoToModel(foodDTO))
+    );
+  }
+
+  search(query: string): Observable<Food[]> {
+    const params = new HttpParams()
+      .append('searchQuery', query);
+
+    return this.http.get<FoodDTO[]>(`${this.baseUrl}/search`, { params }).pipe(
+      map(results => results.map(result => this.foodMapperService.dtoToModel(result)))
     );
   }
 }

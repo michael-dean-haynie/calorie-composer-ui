@@ -2,9 +2,11 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { ComboFoodFoodAmount } from 'src/app/models/combo-food-food-amount.model';
 import { ComboFoodPortion } from 'src/app/models/combo-food-portion.model';
 import { ComboFood } from 'src/app/models/combo-food.model';
 import { ComboFoodApiService } from 'src/app/services/api/combo-food-api.service';
+import { ComboFoodFoodAmountMapperService } from 'src/app/services/mappers/combo-food-food-amount-mapper.service';
 import { ComboFoodMapperService } from 'src/app/services/mappers/combo-food-mapper.service';
 import { ComboFoodPortionMapperService } from 'src/app/services/mappers/combo-food-portion-mapper.service';
 
@@ -31,7 +33,8 @@ export class ComboFoodFormComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private comboFoodApiService: ComboFoodApiService,
     private comboFoodMapperService: ComboFoodMapperService,
-    private comboFoodPortionMapperService: ComboFoodPortionMapperService
+    private comboFoodPortionMapperService: ComboFoodPortionMapperService,
+    private comboFoodFoodAmountMapperService: ComboFoodFoodAmountMapperService
   ) { }
 
   ngOnInit(): void {
@@ -60,11 +63,20 @@ export class ComboFoodFormComponent implements OnInit, OnDestroy {
     return this.comboFoodForm.get('otherPortions') as FormArray;
   }
 
+  get foodAmounts(): FormArray {
+    return this.comboFoodForm.get('foodAmounts') as FormArray;
+  }
+
   addNonSSPortion(): void {
     const comboFoodPortion = new ComboFoodPortion();
     comboFoodPortion.isServingSizePortion = false;
     comboFoodPortion.isFoodAmountRefPortion = false;
     this.otherPortions.push(this.comboFoodPortionMapperService.modelToFormGroup(comboFoodPortion));
+  }
+
+  addFoodAmount(): void {
+    const foodAmount = new ComboFoodFoodAmount();
+    this.foodAmounts.push(this.comboFoodFoodAmountMapperService.modelToFormGroup(foodAmount));
   }
 
   private loadExistingComboFood(): void {
