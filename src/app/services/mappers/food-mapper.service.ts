@@ -50,36 +50,35 @@ export class FoodMapperService {
       nutrients: this.fb.array(food.nutrients.map(nutrient => this.nutrientMapperService.modelToFormGroup(nutrient))),
       servingSizePortion: this.portionMapperService.modelToFormGroup(ssp),
       otherPortions: this.fb.array(otherPortions.map(portion => this.portionMapperService.modelToFormGroup(portion)))
-    }, { validators: [this.nutrientRefPortionRequired, this.oneNutrientRefPortionPerUnitType] });
+    }, { validators: [this.exactlyOneNutrientRefPortionPerUnitType] });
   }
 
-  // Must have at least one portion flagged as a nutrient reference portion
-  private nutrientRefPortionRequired: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
+  // Must have exactly 1 nutrient reference portion per unit type (mass/volume) that there are portions of
+  private exactlyOneNutrientRefPortionPerUnitType: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
     const servingSizePortion = control.get('servingSizePortion') as FormControl;
     const otherPortions = control.get('otherPortions') as FormArray;
     const allPortions = [servingSizePortion].concat(otherPortions.controls as FormControl[]);
 
-    return allPortions.some(portion => !!portion.get('isNutrientRefPortion').value) ? null : { nutrientRefPortionRequired: true };
-  }
-
-  // No more than one nutrient reference portion per unit type (mass / volume)
-  private oneNutrientRefPortionPerUnitType: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
-    const servingSizePortion = control.get('servingSizePortion') as FormControl;
-    const otherPortions = control.get('otherPortions') as FormArray;
-    const allPortions = [servingSizePortion].concat(otherPortions.controls as FormControl[]);
-
-    const allMeasures = allPortions
-      // only concerned about portions marked as nutrient ref portion
-      .filter(portion => portion.get('isNutrientRefPortion').value)
+    const allUnitTypes = allPortions
       // map to unit type and remove falsey results
       .map(portion => this.unitService.getUnitMeasure(portion.get('metricUnit')?.value))
       .filter(measure => measure);
 
-    // check for duplicates and return error if existing
-    return (new Set(allMeasures).size === allMeasures.length)
-      ? null
-      : { oneNutrientRefPortionPerUnitType: true };
+    // remove duplicates
+    const uniqueUnitTypes = new Set(allUnitTypes);
 
+    // check for number of nutrient reference portions per unit type and return error if not 1
+    for (const unitType of uniqueUnitTypes) {
+      const refPortionsOfUnitType = allPortions
+        .filter(portion => portion.get('isNutrientRefPortion').value)
+        .filter(portion => this.unitService.getUnitMeasure(portion.get('metricUnit')?.value) === unitType);
+
+      if (refPortionsOfUnitType.length !== 1) {
+        return { exactlyOneNutrientRefPortionPerUnitType: true };
+      }
+    }
+
+    return null;
   }
 
 }

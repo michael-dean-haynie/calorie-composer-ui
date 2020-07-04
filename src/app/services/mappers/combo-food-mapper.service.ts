@@ -43,7 +43,9 @@ export class ComboFoodMapperService {
       servingSizePortion: this.comboFoodPortionMapperService.modelToFormGroup(ssp),
       otherPortions: this.fb.array(otherPortions.map(portion => this.comboFoodPortionMapperService.modelToFormGroup(portion))),
       foodAmounts: this.fb.array(
-        comboFood.foodAmounts.map(foodAmount => this.comboFoodFoodAmountMapperService.modelToFormGroup(foodAmount))
+        comboFood.foodAmounts.length
+          ? comboFood.foodAmounts.map(foodAmount => this.comboFoodFoodAmountMapperService.modelToFormGroup(foodAmount))
+          : [this.comboFoodFoodAmountMapperService.modelToFormGroup(this.comboFoodFoodAmountMapperService.defaultModel())]
       )
     }, { validators: [this.foodAmountRefPortionRequired, this.oneFoodAmountRefPortionPerUnitType] });
   }

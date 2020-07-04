@@ -29,8 +29,12 @@ export class ComboFoodFoodAmountMapperService {
   modelToFormGroup(comboFoodFoodAmount: ComboFoodFoodAmount): FormGroup {
     return this.fb.group({
       foodName: [''],
-      foodId: [comboFoodFoodAmount.food?.id, Validators.required],
+      food: [comboFoodFoodAmount.food, Validators.required],
       metricAmount: [comboFoodFoodAmount.metricAmount, Validators.required]
     });
+  }
+
+  defaultModel(): ComboFoodFoodAmount {
+    return new ComboFoodFoodAmount();
   }
 }

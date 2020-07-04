@@ -16,10 +16,10 @@
             </mat-option>
         </mat-autocomplete>
 
-        <ng-container *ngIf="food">
-            <div>{{food.description}}</div>
-            <div>{{food.brandOwner}}</div>
-            <div>{{food.ingredients}}</div>
+        <ng-container *ngIf="foodCtrl.value">
+            <div>{{foodCtrl.value.description}}</div>
+            <div>{{foodCtrl.value.brandOwner}}</div>
+            <div>{{foodCtrl.value.ingredients}}</div>
         </ng-container>
     </mat-card>
 </ng-container>

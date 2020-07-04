@@ -10,8 +10,7 @@ export class ErrorMsgComponent implements OnInit {
 
   private static msgMap: Map<string, string> = new Map<string, string>([
     ['required', 'This field is required.'],
-    ['nutrientRefPortionRequired', 'At least one portion must be marked as a nutrient reference portion.'],
-    ['oneNutrientRefPortionPerUnitType', 'No more than one nutrient reference portion per unit type (mass / volume).'],
+    ['exactlyOneNutrientRefPortionPerUnitType', 'Exactly 1 nutrient reference portion required for each unit type (mass/volume) that there are portions for.'],
     ['foodAmountRefPortionRequired', 'At least one portion must be marked as a food amount reference portion.'],
     ['oneFoodAmountRefPortionPerUnitType', 'No more than one food amount reference portion per unit type (mass / volume).']
   ]);

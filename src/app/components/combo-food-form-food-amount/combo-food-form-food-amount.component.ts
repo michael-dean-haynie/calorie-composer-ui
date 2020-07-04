@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MatOptionSelectionChange } from '@angular/material/core';
 import { BehaviorSubject } from 'rxjs';
 import { debounceTime, tap } from 'rxjs/operators';
@@ -18,11 +18,10 @@ export class ComboFoodFormFoodAmountComponent implements OnInit {
 
   @Input() foodAmountCtrl: FormGroup;
 
+  // TODO: make sure this works in the case of loading a draft or editing
   foodNameCtrlMode: FoodNameCtrlMode = 'query';
 
   foodACOptions = new BehaviorSubject<Food[]>([]);
-
-  food: Food;
 
   constructor(
     private foodApiService: FoodApiService
@@ -34,7 +33,7 @@ export class ComboFoodFormFoodAmountComponent implements OnInit {
         // switch to query mode if change did not come from auto-complete selection
         if (!this.foodNameChangeIsFromACSelection(value)) {
           this.foodNameCtrlMode = 'query';
-          this.food = null;
+          this.foodCtrl.setValue(null);
         }
       }),
       debounceTime(200)
@@ -48,17 +47,21 @@ export class ComboFoodFormFoodAmountComponent implements OnInit {
     });
   }
 
+  get foodCtrl(): FormControl {
+    return this.foodAmountCtrl.get('food') as FormControl;
+  }
+
   updateSelectedFood(food: Food, event: MatOptionSelectionChange): void {
     if (event.source.selected) {
       this.foodNameCtrlMode = 'selection';
-      this.food = food;
+      this.foodCtrl.setValue(food);
     }
   }
 
   foodNameChangeIsFromACSelection(value: string): boolean {
     // selection flag is set upon selection and before event makes it to the foonName ctrl
     // food value is also assigned upon selection.
-    return this.foodNameCtrlMode === 'selection' && this.food.description === value;
+    return this.foodNameCtrlMode === 'selection' && this.foodCtrl.value.description === value;
   }
 
 }
