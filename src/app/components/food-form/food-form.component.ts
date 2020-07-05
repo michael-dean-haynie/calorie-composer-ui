@@ -118,6 +118,17 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     this.location.back();
   }
 
+  saveChanges(): void {
+    const newFood = this.foodMapperService.formGroupToModel(this.foodForm);
+
+    if (this.formMode === 'create' || this.formMode === 'import') {
+      this.foodApiService.post(newFood).subscribe(() => console.log('all done posting!'));
+    }
+    else if (this.formMode === 'update') {
+      this.foodApiService.put(newFood).subscribe(() => console.log('all done updating!'));
+    }
+  }
+
   private loadExistingFood(): void {
     this.loading = true;
     this.subscriptions.push(

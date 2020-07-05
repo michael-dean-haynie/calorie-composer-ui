@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PortionDTO } from 'src/app/contracts/portion-dto';
 import { Portion } from 'src/app/models/portion.model';
 import { PortionService } from '../util/portion.service';
@@ -33,6 +33,7 @@ export class PortionMapperService {
 
   modelToFormGroup(portion: Portion): FormGroup {
     return this.fb.group({
+      id: [portion.id],
 
       // household measure
       householdMeasureMode: this.portionService.determineHouseholdMeasureMode(portion),
@@ -48,6 +49,23 @@ export class PortionMapperService {
       isNutrientRefPortion: [portion.isNutrientRefPortion],
       isServingSizePortion: [portion.isServingSizePortion],
     });
+  }
+
+  formGroupToModel(formGroup: FormGroup): Portion {
+    const portion = new Portion();
+    portion.id = formGroup.get('id').value;
+    portion.isNutrientRefPortion = formGroup.get('isNutrientRefPortion').value;
+    portion.isServingSizePortion = formGroup.get('isServingSizePortion').value;
+    portion.metricUnit = formGroup.get('metricUnit').value;
+    portion.metricAmount = formGroup.get('metricAmount').value;
+    portion.householdMeasure = formGroup.get('householdMeasure').value;
+    portion.householdUnit = formGroup.get('householdUnit').value;
+    portion.householdAmount = formGroup.get('householdAmount').value;
+    return portion;
+  }
+
+  formArrayToModelArray(formArray: FormArray): Portion[] {
+    return formArray.controls.map((formGroup: FormGroup) => this.formGroupToModel(formGroup));
   }
 
   defaultSSModel(): Portion {

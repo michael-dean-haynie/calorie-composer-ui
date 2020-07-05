@@ -29,6 +29,13 @@ export class FoodApiService {
     );
   }
 
+  put(food: Food): Observable<Food> {
+    const body = this.foodMapperService.modelToDTO(food);
+    return this.http.put<FoodDTO>(this.baseUrl, body).pipe(
+      map(foodDTO => this.foodMapperService.dtoToModel(foodDTO))
+    );
+  }
+
   search(query: string): Observable<Food[]> {
     const params = new HttpParams()
       .append('searchQuery', query);

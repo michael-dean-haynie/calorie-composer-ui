@@ -44,6 +44,8 @@ export class FoodMapperService {
     const otherPortions = this.portionService.getNonSSPortions(food.portions);
 
     return this.fb.group({
+      id: [food.id],
+      fdcId: [food.fdcId],
       description: [food.description, Validators.required],
       brandOwner: [food.brandOwner],
       ingredients: [food.ingredients],
@@ -51,6 +53,23 @@ export class FoodMapperService {
       servingSizePortion: this.portionMapperService.modelToFormGroup(ssp),
       otherPortions: this.fb.array(otherPortions.map(portion => this.portionMapperService.modelToFormGroup(portion)))
     }, { validators: [this.exactlyOneNutrientRefPortionPerUnitType] });
+  }
+
+  formGroupToModel(formGroup: FormGroup): Food {
+    const food = new Food();
+    food.id = formGroup.get('id').value;
+    food.fdcId = formGroup.get('fdcId').value;
+    food.description = formGroup.get('description').value;
+    food.brandOwner = formGroup.get('brandOwner').value;
+    food.ingredients = formGroup.get('ingredients').value;
+    food.nutrients = this.nutrientMapperService.formArrayToModelArray(formGroup.get('nutrients') as FormArray);
+
+    // collect portions
+    food.portions = [];
+    food.portions.push(this.portionMapperService.formGroupToModel(formGroup.get('servingSizePortion') as FormGroup));
+    food.portions = food.portions.concat(this.portionMapperService.formArrayToModelArray(formGroup.get('otherPortions') as FormArray));
+
+    return food;
   }
 
   // Must have exactly 1 nutrient reference portion per unit type (mass/volume) that there are portions of
@@ -61,7 +80,7 @@ export class FoodMapperService {
 
     const allUnitTypes = allPortions
       // map to unit type and remove falsey results
-      .map(portion => this.unitService.getUnitMeasure(portion.get('metricUnit')?.value))
+      .map(portion => this.unitService.getUnitType(portion.get('metricUnit')?.value))
       .filter(measure => measure);
 
     // remove duplicates
@@ -71,7 +90,7 @@ export class FoodMapperService {
     for (const unitType of uniqueUnitTypes) {
       const refPortionsOfUnitType = allPortions
         .filter(portion => portion.get('isNutrientRefPortion').value)
-        .filter(portion => this.unitService.getUnitMeasure(portion.get('metricUnit')?.value) === unitType);
+        .filter(portion => this.unitService.getUnitType(portion.get('metricUnit')?.value) === unitType);
 
       if (refPortionsOfUnitType.length !== 1) {
         return { exactlyOneNutrientRefPortionPerUnitType: true };

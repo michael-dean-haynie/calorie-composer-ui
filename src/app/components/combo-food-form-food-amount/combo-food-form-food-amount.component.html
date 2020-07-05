@@ -1,6 +1,7 @@
 <ng-container [formGroup]="foodAmountCtrl">
     <mat-card>
         <mat-form-field>
+            <!-- Food Name -->
             <mat-label>Food Name</mat-label>
             <input matInput placeholder="Ex. Peanut butter" formControlName="foodName" [matAutocomplete]="foodAC">
             <button mat-button *ngIf="foodAmountCtrl.get('foodName').value" matSuffix mat-icon-button
@@ -17,9 +18,20 @@
         </mat-autocomplete>
 
         <ng-container *ngIf="foodCtrl.value">
-            <div>{{foodCtrl.value.description}}</div>
-            <div>{{foodCtrl.value.brandOwner}}</div>
-            <div>{{foodCtrl.value.ingredients}}</div>
+            <!-- Unit -->
+            <mat-form-field>
+                <mat-label>Unit</mat-label>
+                <!-- TODO: Add dynamic placeholder that is one of appropriate choices -->
+                <!-- TODO: pu@ after adjusting the comboFood models -->
+                <input matInput placeholder="pieces" formControlName="unit" [matAutocomplete]="unitAC">
+            </mat-form-field>
+            <mat-autocomplete #unitAC="matAutocomplete">
+                <mat-optgroup *ngFor="let group of unitACOptions" [label]="group.groupLabel">
+                    <mat-option *ngFor=" let option of group.groupOptions" [value]="option.value">
+                        {{option.label}}
+                    </mat-option>
+                </mat-optgroup>
+            </mat-autocomplete>
         </ng-container>
     </mat-card>
 </ng-container>

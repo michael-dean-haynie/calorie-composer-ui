@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NutrientDTO } from 'src/app/contracts/nutrient-dto';
 import { Nutrient } from 'src/app/models/nutrient.model';
 import { NutrientMetadataService } from '../nutrient-metadata.service';
@@ -29,10 +29,24 @@ export class NutrientMapperService {
 
   modelToFormGroup(nutrient: Nutrient): FormGroup {
     return this.fb.group({
+      id: [nutrient.id],
       editMode: [false],
       name: [this.nutriantMetadataService.tryAliasToDisplayName(nutrient.name), Validators.required],
       unitName: [nutrient.unitName, Validators.required],
       amount: [nutrient.amount, Validators.required]
     });
+  }
+
+  formGroupToModel(formGroup: FormGroup): Nutrient {
+    const nutrient = new Nutrient();
+    nutrient.id = formGroup.get('id').value;
+    nutrient.name = formGroup.get('name').value;
+    nutrient.unitName = formGroup.get('unitName').value;
+    nutrient.amount = formGroup.get('amount').value;
+    return nutrient;
+  }
+
+  formArrayToModelArray(formArray: FormArray): Nutrient[] {
+    return formArray.controls.map((formGroup: FormGroup) => this.formGroupToModel(formGroup));
   }
 }

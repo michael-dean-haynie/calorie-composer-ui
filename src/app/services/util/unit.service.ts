@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import convert from 'convert-units';
+import { Food } from 'src/app/models/food.model';
 // import Qty from 'js-quantities';
 
-export type UnitMeasure = 'mass' | 'volume' | 'energy' | 'biological';
+export type UnitType = 'mass' | 'volume' | 'energy' | 'biological';
 export type UnitSystem = 'metric' | 'imperial';
 export interface UnitDescription {
   abbr: string;
-  measure: UnitMeasure;
+  measure: UnitType;
   system: UnitSystem;
   singular: string;
   plural: string;
@@ -57,11 +58,55 @@ export class UnitService {
     .list('mass').filter(desc => ['mg', 'g'].includes(desc.abbr))
     .concat(UnitService.SupplementalUnits) as UnitDescription[];
 
+  // Food Amount Units
+  public static FoodAmountMassUnits = convert()
+    .list('mass').filter(desc => ['mg', 'g', 'kg', 'oz', 'lb'].includes(desc.abbr)) as UnitDescription[];
+
+  public static FoodAmountVolumeUnits = convert()
+    .list('mass').filter(desc => ['ml', 'l', 'tsp', 'Tbs', 'fl-oz', 'cup', 'pnt', 'qt', 'gal'].includes(desc.abbr)) as UnitDescription[];
 
   constructor() { }
 
-  getUnitMeasure(unit: string): UnitMeasure {
+  getUnitType(unit: string): UnitType {
     if (!unit) { return null; }
     return convert().describe(unit)?.measure;
+  }
+
+  // TODO: come up with flow to parse free form units
+  // TODO: maybe have some indicator that there are more units to use if user can parse it out
+
+  // Gets all the units that can be used to describe a concrete amount of a particular food
+  getUnitsForFood(food: Food) {
+    let result: UnitDescription[] = [];
+
+    // mass
+    const includeMass = food.portions.some(portion => this.getUnitType(portion.metricUnit) === 'mass');
+    if (includeMass) {
+      result = result.concat(UnitService.FoodAmountMassUnits);
+    }
+
+    // volume
+    const includeVolume = food.portions.some(portion => this.getUnitType(portion.metricUnit) === 'volume');
+    if (includeVolume) {
+      result = result.concat(UnitService.FoodAmountVolumeUnits);
+    }
+
+    // other
+    const otherUnits = food.portions
+      .filter(portion => portion.householdUnit)
+      .map(portion => portion.householdUnit);
+
+    otherUnits.forEach(unit => {
+      const unitDescription: UnitDescription = {
+        abbr: null,
+        measure: null,
+        system: null,
+        singular: null,
+        plural: unit,
+      };
+      result.push(unitDescription);
+    });
+
+    return result;
   }
 }

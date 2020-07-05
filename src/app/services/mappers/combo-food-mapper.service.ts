@@ -69,7 +69,7 @@ export class ComboFoodMapperService {
       // only concerned about portions marked as food amount ref portion
       .filter(portion => portion.get('isFoodAmountRefPortion').value)
       // map to unit type and remove falsey results
-      .map(portion => this.unitService.getUnitMeasure(portion.get('metricUnit')?.value))
+      .map(portion => this.unitService.getUnitType(portion.get('metricUnit')?.value))
       .filter(measure => measure);
 
     // check for duplicates and return error if existing

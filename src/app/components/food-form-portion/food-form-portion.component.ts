@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
+import { ACGroup } from 'src/app/constants/types/auto-complete-options.type';
 import { UnitDescription, UnitService } from 'src/app/services/util/unit.service';
 
 @Component({
@@ -13,14 +14,14 @@ export class FoodFormPortionComponent {
   @Input() portionFormControl: FormGroup;
   @Input() otherPortionsIndex: number;
 
-  metricMeasureACOptions = [
+  metricMeasureACOptions: ACGroup[] = [
     {
       groupLabel: 'Mass',
-      options: UnitService.MetricMeasureMassUnits.map(unit => this.mapUnitToAutoCompleteOptions(unit))
+      groupOptions: UnitService.MetricMeasureMassUnits.map(unit => this.mapUnitToAutoCompleteOptions(unit))
     },
     {
       groupLabel: 'Volume',
-      options: UnitService.MetricMeasureVolumeUnits.map(unit => this.mapUnitToAutoCompleteOptions(unit))
+      groupOptions: UnitService.MetricMeasureVolumeUnits.map(unit => this.mapUnitToAutoCompleteOptions(unit))
     }
   ];
 

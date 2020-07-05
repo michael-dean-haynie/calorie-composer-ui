@@ -18,7 +18,8 @@ export class ComboFoodFoodAmountMapperService {
     const comboFoodFoodAmount = new ComboFoodFoodAmount();
     comboFoodFoodAmount.id = comboFoodFoodAmountDTO.id;
     comboFoodFoodAmount.food = this.foodMapperService.dtoToModel(comboFoodFoodAmountDTO.food);
-    comboFoodFoodAmount.metricAmount = comboFoodFoodAmountDTO.metricAmount;
+    comboFoodFoodAmount.unit = comboFoodFoodAmountDTO.unit;
+    comboFoodFoodAmount.amount = comboFoodFoodAmountDTO.amount;
     return comboFoodFoodAmount;
   }
 
@@ -30,7 +31,8 @@ export class ComboFoodFoodAmountMapperService {
     return this.fb.group({
       foodName: [''],
       food: [comboFoodFoodAmount.food, Validators.required],
-      metricAmount: [comboFoodFoodAmount.metricAmount, Validators.required]
+      unit: [comboFoodFoodAmount.unit, Validators.required],
+      amount: [comboFoodFoodAmount.amount, Validators.required]
     });
   }
 

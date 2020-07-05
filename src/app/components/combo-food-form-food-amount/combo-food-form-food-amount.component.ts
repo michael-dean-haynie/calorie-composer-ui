@@ -3,8 +3,10 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MatOptionSelectionChange } from '@angular/material/core';
 import { BehaviorSubject } from 'rxjs';
 import { debounceTime, tap } from 'rxjs/operators';
+import { ACGroup } from 'src/app/constants/types/auto-complete-options.type';
 import { Food } from 'src/app/models/food.model';
 import { FoodApiService } from 'src/app/services/api/food-api.service';
+import { UnitService } from 'src/app/services/util/unit.service';
 
 // Indicates whether component treats ctrl value as a selected value or a query for a value;
 type FoodNameCtrlMode = 'selection' | 'query';
@@ -23,8 +25,11 @@ export class ComboFoodFormFoodAmountComponent implements OnInit {
 
   foodACOptions = new BehaviorSubject<Food[]>([]);
 
+  unitACOptions: ACGroup[] = [];
+
   constructor(
-    private foodApiService: FoodApiService
+    private foodApiService: FoodApiService,
+    private unitService: UnitService
   ) { }
 
   ngOnInit(): void {
@@ -36,6 +41,8 @@ export class ComboFoodFormFoodAmountComponent implements OnInit {
           this.foodCtrl.setValue(null);
         }
       }),
+      // TODO: remove
+      tap(() => console.log(this.foodCtrl.value ? this.unitService.getUnitsForFood(this.foodCtrl.value) : 'null right now')),
       debounceTime(200)
     ).subscribe(value => {
       if (this.foodNameCtrlMode === 'query') {
