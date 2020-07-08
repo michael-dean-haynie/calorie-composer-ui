@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
-import { ACGroup } from 'src/app/constants/types/auto-complete-options.type';
+import { AutoCompleteOptGroup } from 'src/app/constants/types/auto-complete-options.type';
 import { UnitDescription, UnitService } from 'src/app/services/util/unit.service';
 
 @Component({
@@ -14,7 +14,7 @@ export class FoodFormPortionComponent {
   @Input() portionFormControl: FormGroup;
   @Input() otherPortionsIndex: number;
 
-  metricMeasureACOptions: ACGroup[] = [
+  metricMeasureACOptions: AutoCompleteOptGroup[] = [
     {
       groupLabel: 'Mass',
       groupOptions: UnitService.MetricMeasureMassUnits.map(unit => this.mapUnitToAutoCompleteOptions(unit))

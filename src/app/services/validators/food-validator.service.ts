@@ -15,9 +15,6 @@ export class FoodValidatorService {
   public isValid(food: Food): boolean {
     const formGroup: FormGroup = this.foodMapperService.modelToFormGroup(food);
     formGroup.markAllAsTouched();
-    console.log(formGroup);
-    console.log(formGroup.errors);
-    // console.log(formGroup.valid);
     return formGroup.valid;
   }
 }

@@ -22,16 +22,11 @@
             <mat-form-field>
                 <mat-label>Unit</mat-label>
                 <!-- TODO: Add dynamic placeholder that is one of appropriate choices -->
-                <!-- TODO: pu@ after adjusting the comboFood models -->
-                <input matInput placeholder="pieces" formControlName="unit" [matAutocomplete]="unitAC">
+                <input matInput placeholder="g" formControlName="unit"
+                    [matAutocomplete]="filteredAutocompleteComponent?.matAutocomplete">
+                <app-filtered-autocomplete [filterChanges]="foodAmountCtrl.get('unit').valueChanges"
+                    [autoCompleteOpts]="unitACOptions"></app-filtered-autocomplete>
             </mat-form-field>
-            <mat-autocomplete #unitAC="matAutocomplete">
-                <mat-optgroup *ngFor="let group of unitACOptions" [label]="group.groupLabel">
-                    <mat-option *ngFor=" let option of group.groupOptions" [value]="option.value">
-                        {{option.label}}
-                    </mat-option>
-                </mat-optgroup>
-            </mat-autocomplete>
         </ng-container>
     </mat-card>
 </ng-container>

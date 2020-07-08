@@ -1,4 +1,9 @@
-export interface ACGroup {
+export interface AutoCompleteOptGroup {
     groupLabel: string;
-    groupOptions: any[];
+    groupOptions: AutoCompleteOpt[];
+}
+
+export interface AutoCompleteOpt {
+    value: string;
+    label: string;
 }

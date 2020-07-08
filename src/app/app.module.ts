@@ -36,6 +36,7 @@ import { MacroPctgPipe } from './pipes/macro-pctg.pipe';
 import { ErrorMsgComponent } from './components/error-msg/error-msg.component';
 import { ComboFoodFormPortionComponent } from './components/combo-food-form-portion/combo-food-form-portion.component';
 import { ComboFoodFormFoodAmountComponent } from './components/combo-food-form-food-amount/combo-food-form-food-amount.component';
+import { FilteredAutocompleteComponent } from './components/filtered-autocomplete/filtered-autocomplete.component';
 
 
 @NgModule({
@@ -57,7 +58,8 @@ import { ComboFoodFormFoodAmountComponent } from './components/combo-food-form-f
     FoodFormPortionComponent,
     ErrorMsgComponent,
     ComboFoodFormPortionComponent,
-    ComboFoodFormFoodAmountComponent
+    ComboFoodFormFoodAmountComponent,
+    FilteredAutocompleteComponent
   ],
   imports: [
     BrowserModule,
