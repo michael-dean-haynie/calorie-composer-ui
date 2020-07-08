@@ -9,7 +9,7 @@
                 <mat-icon>close</mat-icon>
             </button>
         </mat-form-field>
-        <mat-autocomplete #foodAC="matAutocomplete">
+        <mat-autocomplete autoActiveFirstOption #foodAC="matAutocomplete">
             <mat-option *ngFor="let option of foodACOptions | async" [value]="option.description"
                 (onSelectionChange)="updateSelectedFood(option, $event)" class="food-ac-option">
                 <div class="description">{{option.description}}</div>
@@ -18,10 +18,18 @@
         </mat-autocomplete>
 
         <ng-container *ngIf="foodCtrl.value">
+            <!-- Amount -->
+            <mat-form-field floatLabel="always" class="household-measure-amount">
+                <mat-label>Amount</mat-label>
+                <input matInput [appMask]="['non-negative', 'float-hundredths']" placeholder="12.5"
+                    formControlName="amount">
+            </mat-form-field>
+
             <!-- Unit -->
             <mat-form-field>
                 <mat-label>Unit</mat-label>
                 <!-- TODO: Add dynamic placeholder that is one of appropriate choices -->
+                <!-- TODO add validation for unit being one of autocomplete options -->
                 <input matInput placeholder="g" formControlName="unit"
                     [matAutocomplete]="filteredAutocompleteComponent?.matAutocomplete">
                 <app-filtered-autocomplete [filterChanges]="foodAmountCtrl.get('unit').valueChanges"

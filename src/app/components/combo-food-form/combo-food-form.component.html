@@ -46,9 +46,11 @@
             </button>
         </div>
 
-        <app-combo-food-form-food-amount *ngFor="let foodAmount of foodAmounts.controls; let i=index"
-            [foodAmountCtrl]="foodAmount">
-        </app-combo-food-form-food-amount>
+        <div class="foods">
+            <app-combo-food-form-food-amount *ngFor="let foodAmount of foodAmounts.controls; let i=index"
+                [foodAmountCtrl]="foodAmount">
+            </app-combo-food-form-food-amount>
+        </div>
 
 
     </section>

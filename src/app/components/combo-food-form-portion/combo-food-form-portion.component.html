@@ -1,6 +1,7 @@
 <ng-container [formGroup]="comboFoodForm">
     <ng-container [formGroup]="portionFormControl">
         <mat-card>
+            <!-- TODO: disable free-form mode for household measure -->
             <div class="portion">
                 <!-- toggle household measure mode -->
                 <button type="button" mat-icon-button color="primary" (click)="toggleHouseholdMeasureMode()">
