@@ -43,15 +43,11 @@
                 <mat-form-field floatLabel="always" class="base-measure-unit">
                     <mat-label>Unit</mat-label>
                     <input matInput placeholder="g" formControlName="metricUnit"
-                        [matAutocomplete]="metricMeasureAmount">
+                        [matAutocomplete]="filteredAutocompleteComponent?.matAutocomplete">
                     <span matSuffix>&nbsp;)</span>
-                    <mat-autocomplete class="ac-panel right" #metricMeasureAmount="matAutocomplete">
-                        <mat-optgroup *ngFor="let group of metricMeasureACOptions" [label]="group.groupLabel">
-                            <mat-option *ngFor=" let option of group.options" [value]="option.value">
-                                {{option.label}}
-                            </mat-option>
-                        </mat-optgroup>
-                    </mat-autocomplete>
+                    <app-filtered-autocomplete [filterChanges]="portionFormControl.get('metricUnit').valueChanges"
+                        [autoCompleteOpts]="metricMeasureACOptions" [class]="'ac-panel right'">
+                    </app-filtered-autocomplete>
                 </mat-form-field>
             </div>
 

@@ -1,4 +1,4 @@
-<mat-autocomplete #unitAutoComplete="matAutocomplete">
+<mat-autocomplete [class]="class" autoActiveFirstOption #unitAutoComplete="matAutocomplete">
     <ng-container *ngIf="(filteredAutoCompleteOpts | async).length > 1; then multiGroup else singleGroup">
     </ng-container>
 

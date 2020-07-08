@@ -12,6 +12,7 @@ export class FilteredAutocompleteComponent implements OnInit {
 
   @Input() filterChanges: Observable<string>;
   @Input() autoCompleteOpts: AutoCompleteOptGroup[];
+  @Input() class: string;
 
   @ViewChild(MatAutocomplete) matAutocomplete: ElementRef;
 

@@ -1,6 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
+import { AutoCompleteOpt, AutoCompleteOptGroup } from 'src/app/constants/types/auto-complete-options.type';
 import { UnitDescription, UnitService } from 'src/app/services/util/unit.service';
+import { FilteredAutocompleteComponent } from '../filtered-autocomplete/filtered-autocomplete.component';
 
 @Component({
   selector: 'app-combo-food-form-portion',
@@ -13,14 +15,16 @@ export class ComboFoodFormPortionComponent {
   @Input() portionFormControl: FormGroup;
   @Input() otherPortionsIndex: number;
 
-  metricMeasureACOptions = [
+  @ViewChild(FilteredAutocompleteComponent) filteredAutocompleteComponent: FilteredAutocompleteComponent;
+
+  metricMeasureACOptions: AutoCompleteOptGroup[] = [
     {
       groupLabel: 'Mass',
-      options: UnitService.MetricMeasureMassUnits.map(unit => this.mapUnitToAutoCompleteOptions(unit))
+      groupOptions: UnitService.MetricMeasureMassUnits.map(unit => this.mapUnitToAutoCompleteOptions(unit))
     },
     {
       groupLabel: 'Volume',
-      options: UnitService.MetricMeasureVolumeUnits.map(unit => this.mapUnitToAutoCompleteOptions(unit))
+      groupOptions: UnitService.MetricMeasureVolumeUnits.map(unit => this.mapUnitToAutoCompleteOptions(unit))
     }
   ];
 
@@ -38,7 +42,7 @@ export class ComboFoodFormPortionComponent {
     otherPortions.removeAt(this.otherPortionsIndex);
   }
 
-  private mapUnitToAutoCompleteOptions(unit: UnitDescription): any {
+  private mapUnitToAutoCompleteOptions(unit: UnitDescription): AutoCompleteOpt {
     return {
       label: `${unit.plural} (${unit.abbr})`,
       value: unit.abbr
