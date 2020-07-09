@@ -23,3 +23,52 @@ mat-form-field {
         }
     }
 }
+
+.caloric-breakdown {
+    width: 100%;
+    table-layout: fixed;
+
+    tr.mat-header-row {
+        height: unset;
+        th {
+            padding-top: 1ch;
+            padding-bottom: 1ch;
+        }
+    }
+
+    th, td {
+        text-align: center;
+    }
+
+    .mat-header-cell, .mat-cell {
+        &:first-child {
+            padding-left: 0;
+        }
+        &:last-child {
+            padding-right: 0;
+        }
+    }
+
+    td {
+        position: relative;
+        border: 0;
+        
+        .vis-pctg-ind {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            
+            &.fat {
+                background: var(--fat-clr-light);
+            }
+            
+            &.carbs {
+                background: var(--carbohydrate-clr-light);
+            }
+            
+            &.protein {
+                background: var(--protein-clr-light);
+            }
+        }
+    }
+}

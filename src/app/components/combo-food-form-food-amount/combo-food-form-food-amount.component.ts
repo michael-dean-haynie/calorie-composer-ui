@@ -6,11 +6,18 @@ import { debounceTime, tap } from 'rxjs/operators';
 import { AutoCompleteOptGroup } from 'src/app/constants/types/auto-complete-options.type';
 import { Food } from 'src/app/models/food.model';
 import { FoodApiService } from 'src/app/services/api/food-api.service';
+import { NutrientCalculationService } from 'src/app/services/util/nutrient-calculation.service';
 import { UnitDescription, UnitService } from 'src/app/services/util/unit.service';
 import { FilteredAutocompleteComponent } from '../filtered-autocomplete/filtered-autocomplete.component';
 
 // Indicates whether component treats ctrl value as a selected value or a query for a value;
 type FoodNameCtrlMode = 'selection' | 'query';
+
+interface CaloricBreakdown {
+  fat: number;
+  carbs: number;
+  protein: number;
+};
 
 @Component({
   selector: 'app-combo-food-form-food-amount',
@@ -29,9 +36,13 @@ export class ComboFoodFormFoodAmountComponent implements OnInit {
   foodACOptions = new BehaviorSubject<Food[]>([]);
   unitACOptions: AutoCompleteOptGroup[] = [];
 
+  caloricBreakdownDataSource = new BehaviorSubject<CaloricBreakdown[]>(null);
+  caloricBreakdownDisplayedColumns = ['fat', 'carbs', 'protein'];
+
   constructor(
     private foodApiService: FoodApiService,
-    private unitService: UnitService
+    private unitService: UnitService,
+    private nutrientCalculationService: NutrientCalculationService
   ) { }
 
   ngOnInit(): void {
@@ -68,6 +79,7 @@ export class ComboFoodFormFoodAmountComponent implements OnInit {
     if (event.source.selected) {
       this.foodNameCtrlMode = 'selection';
       this.foodCtrl.setValue(food);
+      this.caloricBreakdownDataSource.next([this.mapFoodToCaloricBreakdown(this.foodCtrl.value)]);
     }
   }
 
@@ -110,6 +122,14 @@ export class ComboFoodFormFoodAmountComponent implements OnInit {
         label: unit.plural,
         value: unit.plural
       };
+  }
+
+  private mapFoodToCaloricBreakdown(food: Food): CaloricBreakdown {
+    return {
+      fat: this.nutrientCalculationService.macroPctg(food, 'Fat'),
+      carbs: this.nutrientCalculationService.macroPctg(food, 'Carbohydrate'),
+      protein: this.nutrientCalculationService.macroPctg(food, 'Protein')
+    };
   }
 
 }

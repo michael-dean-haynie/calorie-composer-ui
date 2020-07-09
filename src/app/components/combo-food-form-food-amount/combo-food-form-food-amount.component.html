@@ -36,5 +36,42 @@
                     [autoCompleteOpts]="unitACOptions"></app-filtered-autocomplete>
             </mat-form-field>
         </ng-container>
+
+        <!-- Caloric breakdown -->
+        <ng-container *ngIf="foodCtrl.value">
+            <table mat-table [dataSource]="caloricBreakdownDataSource" class="mat-elevation-z8 caloric-breakdown">
+
+                <!-- Fat Column -->
+                <ng-container matColumnDef="fat">
+                    <th mat-header-cell *matHeaderCellDef> Fat </th>
+                    <td mat-cell *matCellDef="let element">
+                        <div>{{element.fat | number: '1.0-1'}}%</div>
+                        <div class="vis-pctg-ind fat" [style.height]="element.fat+'%'"></div>
+                    </td>
+                </ng-container>
+
+                <!-- Carbs Column -->
+                <ng-container matColumnDef="carbs">
+                    <th mat-header-cell *matHeaderCellDef> Carbs </th>
+                    <td mat-cell *matCellDef="let element">
+                        <div>{{element.carbs | number: '1.0-1'}}%</div>
+                        <div class="vis-pctg-ind carbs" [style.height]="element.carbs+'%'"></div>
+                    </td>
+                </ng-container>
+
+                <!-- Protein Column -->
+                <ng-container matColumnDef="protein">
+                    <th mat-header-cell *matHeaderCellDef> Protein </th>
+                    <td mat-cell *matCellDef="let element">
+                        <div>{{element.protein | number: '1.0-1'}}%</div>
+                        <div class="vis-pctg-ind protein" [style.height]="element.protein+'%'"></div>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="caloricBreakdownDisplayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: caloricBreakdownDisplayedColumns;"></tr>
+            </table>
+
+        </ng-container>
     </mat-card>
 </ng-container>
