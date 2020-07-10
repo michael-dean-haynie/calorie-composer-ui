@@ -3,6 +3,7 @@ import convert from 'convert-units';
 import { MacroNutrientType } from 'src/app/constants/types/macro-nutrient.type';
 import { PortionMeasureType } from 'src/app/constants/types/portion-measure-type.type';
 import { ComboFoodFoodAmount } from 'src/app/models/combo-food-food-amount.model';
+import { ComboFood } from 'src/app/models/combo-food.model';
 import { Food } from 'src/app/models/food.model';
 import { Portion } from 'src/app/models/portion.model';
 import { UnitService } from './unit.service';
@@ -98,7 +99,8 @@ export class NutrientCalculationService {
 
     if (!intermediatePortion) {
       console.error('food portions:', foodAmount.food.portions);
-      throw new Error(`Could not find suitable portion for nutrient calculation of ComboFoodFoodAmount. foodAmmount unit: ${foodAmount.unit}, foodAmountUnitType: ${foodAmountUnitType}`);
+      console.error(`Could not find suitable portion for nutrient calculation of ComboFoodFoodAmount. foodAmmount unit: ${foodAmount.unit}, foodAmountUnitType: ${foodAmountUnitType}`);
+      return;
     }
 
     // Step 2: select a nutrient ref portion that can map selected portions to nutrient values
@@ -109,7 +111,8 @@ export class NutrientCalculationService {
 
     if (!nutrientRefPortion) {
       console.error('food portions:', foodAmount.food.portions);
-      throw new Error(`Could not find suitable nutrient ref portion for nutrient calculation of ComboFoodFoodAmount. foodAmmount unit: ${foodAmount.unit}, foodAmountUnitType: ${foodAmountUnitType}`);
+      console.error(`Could not find suitable nutrient ref portion for nutrient calculation of ComboFoodFoodAmount. foodAmmount unit: ${foodAmount.unit}, foodAmountUnitType: ${foodAmountUnitType}`);
+      return;
     }
 
 
@@ -131,8 +134,25 @@ export class NutrientCalculationService {
     return macroAmt;
   }
 
+  foodAmtMacroCals(foodAmount: ComboFoodFoodAmount, macro: MacroNutrientType): number {
+    return this.foodAmtMacroAmt(foodAmount, macro) * this.calsPerMacro.get(macro);
+  }
 
-  public convertConcreteFoodAmountIntoConcreteAmountOfIntermediatePortion(
+  foodAmtMacroPctg(foodAmount: ComboFoodFoodAmount, comboFood: ComboFood, macro: MacroNutrientType): number {
+
+    const macros: MacroNutrientType[] = ['Fat', 'Carbohydrate', 'Protein'];
+
+    const sumReducer = (accumulator, currentValue) => accumulator + currentValue;
+
+    const totalCalsFromMacros = macros
+      .map(macroNutrient => comboFood.foodAmounts.map(foodAmt => this.foodAmtMacroCals(foodAmt, macroNutrient)).reduce(sumReducer))
+      .reduce(sumReducer);
+
+    return (this.foodAmtMacroCals(foodAmount, macro) / totalCalsFromMacros) * 100;
+  }
+
+
+  private convertConcreteFoodAmountIntoConcreteAmountOfIntermediatePortion(
     foodAmount: ComboFoodFoodAmount, intermediatePortion: Portion, measureType: PortionMeasureType, isCustomUnitType: boolean
   ): number {
     if (measureType === 'metric') {
@@ -147,7 +167,7 @@ export class NutrientCalculationService {
     }
   }
 
-  public convertConcreteAmountOFIntermediatePortionsToConcreteAmountOfNutrientRefPortions(
+  private convertConcreteAmountOFIntermediatePortionsToConcreteAmountOfNutrientRefPortions(
     intermediatePortion: Portion, intermediatePortions: number, nutrientRefPortion: Portion
   ): number {
     return convert(intermediatePortion.metricAmount).from(intermediatePortion.metricUnit).to(nutrientRefPortion.metricUnit)

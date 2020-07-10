@@ -39,6 +39,8 @@ export class ComboFoodMapperService {
     const otherPortions = this.portionService.getNonSSPortions(comboFood.portions);
 
     return this.fb.group({
+      id: [comboFood.id],
+      isDraft: [comboFood.isDraft],
       description: [comboFood.description, Validators.required],
       servingSizePortion: this.comboFoodPortionMapperService.modelToFormGroup(ssp),
       otherPortions: this.fb.array(otherPortions.map(portion => this.comboFoodPortionMapperService.modelToFormGroup(portion))),
@@ -48,6 +50,23 @@ export class ComboFoodMapperService {
           : [this.comboFoodFoodAmountMapperService.modelToFormGroup(this.comboFoodFoodAmountMapperService.defaultModel())]
       )
     }, { validators: [this.foodAmountRefPortionRequired, this.oneFoodAmountRefPortionPerUnitType] });
+  }
+
+  formGroupToModel(formGroup: FormGroup): ComboFood {
+    const comboFood = new ComboFood();
+    comboFood.id = formGroup.get('id').value;
+    comboFood.isDraft = formGroup.get('isDraft').value;
+    comboFood.description = formGroup.get('description').value;
+    comboFood.foodAmounts = this.comboFoodFoodAmountMapperService.formArrayToModelArray(formGroup.get('foodAmounts') as FormArray);
+
+    // collect portions
+    comboFood.portions = [];
+    comboFood.portions.push(this.comboFoodPortionMapperService.formGroupToModel(formGroup.get('servingSizePortion') as FormGroup));
+    comboFood.portions = comboFood.portions.concat(
+      this.comboFoodPortionMapperService.formArrayToModelArray(formGroup.get('otherPortions') as FormArray)
+    );
+
+    return comboFood;
   }
 
   // Must have at least one portion flagged as a food amount reference portion

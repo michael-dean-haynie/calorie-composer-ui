@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ComboFoodFoodAmountDTO } from 'src/app/contracts/combo-food-food-amount-dto';
 import { ComboFoodFoodAmount } from 'src/app/models/combo-food-food-amount.model';
 import { FoodMapperService } from './food-mapper.service';
@@ -44,6 +44,10 @@ export class ComboFoodFoodAmountMapperService {
     comboFoodFoodAmount.unit = formGroup.get('unit').value;
     comboFoodFoodAmount.amount = formGroup.get('amount').value;
     return comboFoodFoodAmount;
+  }
+
+  formArrayToModelArray(formArray: FormArray): ComboFoodFoodAmount[] {
+    return formArray.controls.map((formGroup: FormGroup) => this.formGroupToModel(formGroup));
   }
 
   defaultModel(): ComboFoodFoodAmount {

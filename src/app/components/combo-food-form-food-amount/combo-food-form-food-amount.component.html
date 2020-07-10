@@ -1,5 +1,5 @@
 <ng-container [formGroup]="foodAmountCtrl">
-    <mat-card>
+    <mat-card class="mat-elevation-z8">
         <mat-form-field>
             <!-- Food Name -->
             <mat-label>Food Name</mat-label>
@@ -37,34 +37,34 @@
             </mat-form-field>
         </ng-container>
 
-        <!-- Caloric breakdown -->
-        <ng-container *ngIf="foodCtrl.value">
-            <table mat-table [dataSource]="caloricBreakdownDataSource" class="mat-elevation-z8 caloric-breakdown">
+        <!-- Caloric Breakdown -->
+        <ng-container *ngIf="foodCtrl.value && false">
+            <table mat-table [dataSource]="caloricBreakdownDataSource" class="mat-elevation-z2 caloric-breakdown">
 
                 <!-- Fat Column -->
                 <ng-container matColumnDef="fat">
                     <th mat-header-cell *matHeaderCellDef> Fat </th>
-                    <td mat-cell *matCellDef="let element">
-                        <div>{{element.fat | number: '1.0-1'}}%</div>
-                        <div class="vis-pctg-ind fat" [style.height]="element.fat+'%'"></div>
+                    <td mat-cell *matCellDef="let elm">
+                        <div>{{elm.fat | number: '1.0-1'}}%</div>
+                        <div class="vis-pctg-ind fat" [style.height]="elm.fat+'%'"></div>
                     </td>
                 </ng-container>
 
                 <!-- Carbs Column -->
                 <ng-container matColumnDef="carbs">
                     <th mat-header-cell *matHeaderCellDef> Carbs </th>
-                    <td mat-cell *matCellDef="let element">
-                        <div>{{element.carbs | number: '1.0-1'}}%</div>
-                        <div class="vis-pctg-ind carbs" [style.height]="element.carbs+'%'"></div>
+                    <td mat-cell *matCellDef="let elm">
+                        <div>{{elm.carbs | number: '1.0-1'}}%</div>
+                        <div class="vis-pctg-ind carbs" [style.height]="elm.carbs+'%'"></div>
                     </td>
                 </ng-container>
 
                 <!-- Protein Column -->
                 <ng-container matColumnDef="protein">
                     <th mat-header-cell *matHeaderCellDef> Protein </th>
-                    <td mat-cell *matCellDef="let element">
-                        <div>{{element.protein | number: '1.0-1'}}%</div>
-                        <div class="vis-pctg-ind protein" [style.height]="element.protein+'%'"></div>
+                    <td mat-cell *matCellDef="let elm">
+                        <div>{{elm.protein | number: '1.0-1'}}%</div>
+                        <div class="vis-pctg-ind protein" [style.height]="elm.protein+'%'"></div>
                     </td>
                 </ng-container>
 
@@ -74,6 +74,43 @@
 
         </ng-container>
 
-        <button (click)=logit() type="button">logit</button>
+        <!-- Caloric Breakdown as a Constituent-->
+        <ng-container *ngIf="foodAmountIsFullyDefined">
+            <table mat-table [dataSource]="caloricBreakdownCstDataSource" class="mat-elevation-z2 caloric-breakdown">
+
+                <!-- Fat Column -->
+                <ng-container matColumnDef="fat">
+                    <th mat-header-cell *matHeaderCellDef> Fat </th>
+                    <td mat-cell *matCellDef="let elm">
+                        <div>{{elm.fat.amount}}g ({{elm.fat.pctg | number: '1.0-1'}}%)</div>
+                        <div class="vis-pctg-ind fat" [style.height]="elm.fat.pctg+'%'"></div>
+                    </td>
+                </ng-container>
+
+                <!-- Carbs Column -->
+                <ng-container matColumnDef="carbs">
+                    <th mat-header-cell *matHeaderCellDef> Carbs </th>
+                    <td mat-cell *matCellDef="let elm">
+                        <div>{{elm.carbs.amount}}g ({{elm.carbs.pctg | number: '1.0-1'}}%)</div>
+                        <div class="vis-pctg-ind carbs" [style.height]="elm.carbs.pctg+'%'"></div>
+                    </td>
+                </ng-container>
+
+                <!-- Protein Column -->
+                <ng-container matColumnDef="protein">
+                    <th mat-header-cell *matHeaderCellDef> Protein </th>
+                    <td mat-cell *matCellDef="let elm">
+                        <div>{{elm.protein.amount}}g ({{elm.protein.pctg | number: '1.0-1'}}%)</div>
+                        <div class="vis-pctg-ind protein" [style.height]="elm.protein.pctg+'%'"></div>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="caloricBreakdownCstDisplayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: caloricBreakdownCstDisplayedColumns;"></tr>
+            </table>
+
+        </ng-container>
+
+        <!-- <button (click)=logit() type="button">logit</button> -->
     </mat-card>
 </ng-container>

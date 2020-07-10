@@ -1,14 +1,17 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Host, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatOptionSelectionChange } from '@angular/material/core';
 import { BehaviorSubject } from 'rxjs';
 import { debounceTime, tap } from 'rxjs/operators';
 import { AutoCompleteOptGroup } from 'src/app/constants/types/auto-complete-options.type';
+import { ComboFoodFoodAmount } from 'src/app/models/combo-food-food-amount.model';
 import { Food } from 'src/app/models/food.model';
 import { FoodApiService } from 'src/app/services/api/food-api.service';
 import { ComboFoodFoodAmountMapperService } from 'src/app/services/mappers/combo-food-food-amount-mapper.service';
+import { ComboFoodMapperService } from 'src/app/services/mappers/combo-food-mapper.service';
 import { NutrientCalculationService } from 'src/app/services/util/nutrient-calculation.service';
 import { UnitDescription, UnitService } from 'src/app/services/util/unit.service';
+import { ComboFoodFormComponent } from '../combo-food-form/combo-food-form.component';
 import { FilteredAutocompleteComponent } from '../filtered-autocomplete/filtered-autocomplete.component';
 
 // Indicates whether component treats ctrl value as a selected value or a query for a value;
@@ -18,7 +21,14 @@ interface CaloricBreakdown {
   fat: number;
   carbs: number;
   protein: number;
-};
+}
+
+// Caloric breakdown as constituent of whole
+interface CaloricBreakdownCst {
+  fat: { amount: number, pctg: number };
+  carbs: { amount: number, pctg: number };
+  protein: { amount: number, pctg: number };
+}
 
 @Component({
   selector: 'app-combo-food-form-food-amount',
@@ -40,11 +50,16 @@ export class ComboFoodFormFoodAmountComponent implements OnInit {
   caloricBreakdownDataSource = new BehaviorSubject<CaloricBreakdown[]>(null);
   caloricBreakdownDisplayedColumns = ['fat', 'carbs', 'protein'];
 
+  caloricBreakdownCstDataSource = new BehaviorSubject<CaloricBreakdownCst[]>(null);
+  caloricBreakdownCstDisplayedColumns = ['fat', 'carbs', 'protein'];
+
   constructor(
     private foodApiService: FoodApiService,
     private unitService: UnitService,
     private nutrientCalculationService: NutrientCalculationService,
-    private comboFoodFoodAmountMapperService: ComboFoodFoodAmountMapperService
+    private comboFoodFoodAmountMapperService: ComboFoodFoodAmountMapperService,
+    private comboFoodMapperService: ComboFoodMapperService,
+    @Host() private parent: ComboFoodFormComponent
   ) { }
 
   ngOnInit(): void {
@@ -71,10 +86,28 @@ export class ComboFoodFormFoodAmountComponent implements OnInit {
         this.unitACOptions = this.mapUnitsToACOptions(this.unitService.getUnitsForFood(food));
       }
     });
+
+    this.foodAmountCtrl.valueChanges.subscribe(() => {
+      if (this.foodAmountIsFullyDefined) {
+        this.caloricBreakdownCstDataSource.next([
+          this.mapFoodAmountToCaloricBreakdownCst(
+            this.comboFoodFoodAmountMapperService.formGroupToModel(this.foodAmountCtrl)
+          )
+        ]);
+      }
+    })
   }
 
   get foodCtrl(): FormControl {
     return this.foodAmountCtrl.get('food') as FormControl;
+  }
+
+  get foodAmountIsFullyDefined(): boolean {
+    const foodIsSet = this.foodAmountCtrl.get('food').value;
+    const amountIsSet = !['', null, undefined].some(badVal => badVal === this.foodAmountCtrl.get('amount').value);
+    const unitIsSet = this.foodAmountCtrl.get('unit').value;
+
+    return foodIsSet && amountIsSet && unitIsSet;
   }
 
   updateSelectedFood(food: Food, event: MatOptionSelectionChange): void {
@@ -137,6 +170,29 @@ export class ComboFoodFormFoodAmountComponent implements OnInit {
       fat: this.nutrientCalculationService.macroPctg(food, 'Fat'),
       carbs: this.nutrientCalculationService.macroPctg(food, 'Carbohydrate'),
       protein: this.nutrientCalculationService.macroPctg(food, 'Protein')
+    };
+  }
+
+  private mapFoodAmountToCaloricBreakdownCst(foodAmount: ComboFoodFoodAmount): CaloricBreakdownCst {
+    return {
+      fat: {
+        amount: this.nutrientCalculationService.foodAmtMacroAmt(foodAmount, 'Fat'),
+        pctg: this.nutrientCalculationService.foodAmtMacroPctg(
+          foodAmount, this.comboFoodMapperService.formGroupToModel(this.parent.comboFoodForm), 'Fat'
+        )
+      },
+      carbs: {
+        amount: this.nutrientCalculationService.foodAmtMacroAmt(foodAmount, 'Carbohydrate'),
+        pctg: this.nutrientCalculationService.foodAmtMacroPctg(
+          foodAmount, this.comboFoodMapperService.formGroupToModel(this.parent.comboFoodForm), 'Carbohydrate'
+        )
+      },
+      protein: {
+        amount: this.nutrientCalculationService.foodAmtMacroAmt(foodAmount, 'Protein'),
+        pctg: this.nutrientCalculationService.foodAmtMacroPctg(
+          foodAmount, this.comboFoodMapperService.formGroupToModel(this.parent.comboFoodForm), 'Protein'
+        )
+      },
     };
   }
 

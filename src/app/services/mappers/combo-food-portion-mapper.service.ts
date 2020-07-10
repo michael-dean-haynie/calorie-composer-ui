@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ComboFoodPortionDTO } from 'src/app/contracts/combo-food-portion-dto';
 import { ComboFoodPortion } from 'src/app/models/combo-food-portion.model';
 import { PortionService } from '../util/portion.service';
@@ -33,6 +33,8 @@ export class ComboFoodPortionMapperService {
 
   modelToFormGroup(comboFoodPortion: ComboFoodPortion): FormGroup {
     return this.fb.group({
+      id: [comboFoodPortion.id],
+
       // household measure
       householdMeasureMode: this.portionService.determineHouseholdMeasureMode(comboFoodPortion),
       householdMeasure: [comboFoodPortion.householdMeasure],
@@ -48,6 +50,24 @@ export class ComboFoodPortionMapperService {
       isServingSizePortion: [comboFoodPortion.isServingSizePortion],
     });
   }
+
+  formGroupToModel(formGroup: FormGroup): ComboFoodPortion {
+    const comboFoodPortion = new ComboFoodPortion();
+    comboFoodPortion.id = formGroup.get('id').value;
+    comboFoodPortion.isFoodAmountRefPortion = formGroup.get('isFoodAmountRefPortion').value;
+    comboFoodPortion.isServingSizePortion = formGroup.get('isServingSizePortion').value;
+    comboFoodPortion.metricUnit = formGroup.get('metricUnit').value;
+    comboFoodPortion.metricAmount = formGroup.get('metricAmount').value;
+    comboFoodPortion.householdMeasure = formGroup.get('householdMeasure').value;
+    comboFoodPortion.householdUnit = formGroup.get('householdUnit').value;
+    comboFoodPortion.householdAmount = formGroup.get('householdAmount').value;
+    return comboFoodPortion;
+  }
+
+  formArrayToModelArray(formArray: FormArray): ComboFoodPortion[] {
+    return formArray.controls.map((formGroup: FormGroup) => this.formGroupToModel(formGroup));
+  }
+
 
   defaultSSModel(): ComboFoodPortion {
     const comboFoodPortion = new ComboFoodPortion();
