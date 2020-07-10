@@ -6,6 +6,7 @@ import { debounceTime, tap } from 'rxjs/operators';
 import { AutoCompleteOptGroup } from 'src/app/constants/types/auto-complete-options.type';
 import { Food } from 'src/app/models/food.model';
 import { FoodApiService } from 'src/app/services/api/food-api.service';
+import { ComboFoodFoodAmountMapperService } from 'src/app/services/mappers/combo-food-food-amount-mapper.service';
 import { NutrientCalculationService } from 'src/app/services/util/nutrient-calculation.service';
 import { UnitDescription, UnitService } from 'src/app/services/util/unit.service';
 import { FilteredAutocompleteComponent } from '../filtered-autocomplete/filtered-autocomplete.component';
@@ -42,7 +43,8 @@ export class ComboFoodFormFoodAmountComponent implements OnInit {
   constructor(
     private foodApiService: FoodApiService,
     private unitService: UnitService,
-    private nutrientCalculationService: NutrientCalculationService
+    private nutrientCalculationService: NutrientCalculationService,
+    private comboFoodFoodAmountMapperService: ComboFoodFoodAmountMapperService
   ) { }
 
   ngOnInit(): void {
@@ -87,6 +89,12 @@ export class ComboFoodFormFoodAmountComponent implements OnInit {
     // selection flag is set upon selection and before event makes it to the foonName ctrl
     // food value is also assigned upon selection.
     return this.foodNameCtrlMode === 'selection' && this.foodCtrl.value.description === value;
+  }
+
+  logit(): void {
+    // TODO: remove
+    const model = this.comboFoodFoodAmountMapperService.formGroupToModel(this.foodAmountCtrl);
+    console.log(this.nutrientCalculationService.foodAmtMacroAmt(model, 'Fat'));
   }
 
   private mapUnitsToACOptions(units: UnitDescription[]): AutoCompleteOptGroup[] {

@@ -69,7 +69,14 @@ export class UnitService {
 
   getUnitType(unit: string): UnitType {
     if (!unit) { return null; }
-    return convert().describe(unit)?.measure;
+    let result: UnitType;
+    try {
+      result = convert().describe(unit).measure;
+    } catch (e) {
+      console.warn(`Could not determine known unit type for unit: ${unit}`);
+      result = null;
+    }
+    return result;
   }
 
   // TODO: come up with flow to parse free form units
