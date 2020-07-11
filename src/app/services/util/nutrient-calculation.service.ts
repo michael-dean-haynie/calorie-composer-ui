@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import convert from 'convert-units';
-import { MacroNutrientType } from 'src/app/constants/types/macro-nutrient.type';
+import { CalsPerMacro } from 'src/app/constants/cals-per-macro';
+import { SumReducer } from 'src/app/constants/functions';
+import { MacroNutrientType, MacroNutrientTypes } from 'src/app/constants/types/macro-nutrient.type';
+import { NutrientType } from 'src/app/constants/types/nutrient.type';
 import { PortionMeasureType } from 'src/app/constants/types/portion-measure-type.type';
 import { ComboFoodFoodAmount } from 'src/app/models/combo-food-food-amount.model';
 import { ComboFood } from 'src/app/models/combo-food.model';
@@ -13,12 +16,6 @@ import { UnitService } from './unit.service';
 })
 export class NutrientCalculationService {
 
-  calsPerMacro: Map<MacroNutrientType, number> = new Map([
-    ['Carbohydrate', 4],
-    ['Fat', 9],
-    ['Protein', 4]
-  ]);
-
   constructor(
     private unitService: UnitService
   ) { }
@@ -27,26 +24,46 @@ export class NutrientCalculationService {
   // Food
   // ---------------------------------
 
-  macroAmt(food: Food, macro: MacroNutrientType): number {
-    const nutrient = food.nutrients.find(nutr => nutr.name === macro);
+  /**
+   * Returns the concrete amount of a NutrientType in a Food.
+   * The amount is per 1 nutrient-reference-portion.
+   * Only returns the scalar (no unit). The implied unit is what's defined on the Nutrient in the Food.
+   * 
+   * @param food the food
+   * @param nutrientType the nutrient type to calculate the amount of
+   * @returns scalar amount of the nutrient in the Food.
+   *  Returns 0 if Food does not specify a value for the nutrient.
+   */
+  nutrientAmtInFood(food: Food, nutrientType: NutrientType): number {
+    const nutrient = food.nutrients.find(nutr => nutr.name === nutrientType);
     return nutrient ? nutrient.amount : 0;
   }
 
-  macroCals(food: Food, macro: MacroNutrientType): number {
-    return this.macroAmt(food, macro) * this.calsPerMacro.get(macro);
+  /**
+   * Calculates the concrete amount of kcals in a Food for a MacroNutrientType
+   * The amount is per 1 nutrient-reference-portion.
+   * 
+   * @param food the food
+   * @param macro the macronutrient to calculate the kcals for
+   * @returns the kcals in the food for this particular macronutrient
+   */
+  calsInFoodForMacro(food: Food, macro: MacroNutrientType): number {
+    return this.nutrientAmtInFood(food, macro) * CalsPerMacro.get(macro);
   }
 
-  macroPctg(food: Food, macro: MacroNutrientType): number {
+  /**
+   * Calculates the percentage of kcals in a Food for a MacroNutrientType
+   * 
+   * @param food the food
+   * @param macro the macronutrient for which to calculate the kcal percentage
+   * @returns the percentage of kcals in the food from the macronutrient
+   */
+  pctgCalsInFoodForMacro(food: Food, macro: MacroNutrientType): number {
+    const totalCalsFromMacros = MacroNutrientTypes
+      .map(macroNutrient => this.calsInFoodForMacro(food, macroNutrient))
+      .reduce(SumReducer);
 
-    const macros: MacroNutrientType[] = ['Fat', 'Carbohydrate', 'Protein'];
-
-    const sumReducer = (accumulator, currentValue) => accumulator + currentValue;
-
-    const totalCalsFromMacros = macros
-      .map(macroNutrient => this.macroCals(food, macroNutrient))
-      .reduce(sumReducer);
-
-    return (this.macroCals(food, macro) / totalCalsFromMacros) * 100;
+    return (this.calsInFoodForMacro(food, macro) / totalCalsFromMacros) * 100;
   }
 
   // ---------------------------------
@@ -58,7 +75,7 @@ export class NutrientCalculationService {
     console.log('foodAmount.unit:', foodAmount.unit);
 
     // amount in 1 nutrient ref portion of food
-    const nutrientRefAmt = this.macroAmt(foodAmount.food, macro);
+    const nutrientRefAmt = this.nutrientAmtInFood(foodAmount.food, macro);
     console.log('nutrientRefAmt:', nutrientRefAmt);
 
     // determine unit type of foodAmount unit
@@ -135,7 +152,7 @@ export class NutrientCalculationService {
   }
 
   foodAmtMacroCals(foodAmount: ComboFoodFoodAmount, macro: MacroNutrientType): number {
-    return this.foodAmtMacroAmt(foodAmount, macro) * this.calsPerMacro.get(macro);
+    return this.foodAmtMacroAmt(foodAmount, macro) * CalsPerMacro.get(macro);
   }
 
   foodAmtMacroPctg(foodAmount: ComboFoodFoodAmount, comboFood: ComboFood, macro: MacroNutrientType): number {

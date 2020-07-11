@@ -11,7 +11,7 @@ export class MacroAmtPipe implements PipeTransform {
   constructor(private nutrientCalculationService: NutrientCalculationService) { }
 
   transform(food: Food, macro: MacroNutrientType): number {
-    return this.nutrientCalculationService.macroAmt(food, macro);
+    return this.nutrientCalculationService.nutrientAmtInFood(food, macro);
   }
 
 }

@@ -1,3 +1,6 @@
+/**
+ * Enumerated nutrients.
+ */
 export type NutrientType =
     // vitamins
     'VitaminA' |

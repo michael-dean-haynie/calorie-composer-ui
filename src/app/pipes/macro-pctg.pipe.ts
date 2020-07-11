@@ -11,7 +11,7 @@ export class MacroPctgPipe implements PipeTransform {
   constructor(private nutrientCalculationService: NutrientCalculationService) { }
 
   transform(food: Food, macro: MacroNutrientType): number {
-    return this.nutrientCalculationService.macroPctg(food, macro);
+    return this.nutrientCalculationService.pctgCalsInFoodForMacro(food, macro);
   }
 
 }

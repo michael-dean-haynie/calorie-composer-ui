@@ -171,9 +171,9 @@ export class ComboFoodFormFoodAmountComponent implements OnInit {
 
   private mapFoodToCaloricBreakdown(food: Food): CaloricBreakdown {
     return {
-      fat: this.nutrientCalculationService.macroPctg(food, 'Fat'),
-      carbs: this.nutrientCalculationService.macroPctg(food, 'Carbohydrate'),
-      protein: this.nutrientCalculationService.macroPctg(food, 'Protein')
+      fat: this.nutrientCalculationService.pctgCalsInFoodForMacro(food, 'Fat'),
+      carbs: this.nutrientCalculationService.pctgCalsInFoodForMacro(food, 'Carbohydrate'),
+      protein: this.nutrientCalculationService.pctgCalsInFoodForMacro(food, 'Protein')
     };
   }
 

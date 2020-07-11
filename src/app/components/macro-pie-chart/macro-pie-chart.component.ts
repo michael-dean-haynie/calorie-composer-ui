@@ -38,9 +38,9 @@ export class MacroPieChartComponent implements OnInit {
 
   ngOnInit(): void {
     this.pieChartData = [
-      this.nutrientCalculationService.macroPctg(this.food, 'Fat'),
-      this.nutrientCalculationService.macroPctg(this.food, 'Carbohydrate'),
-      this.nutrientCalculationService.macroPctg(this.food, 'Protein'),
+      this.nutrientCalculationService.pctgCalsInFoodForMacro(this.food, 'Fat'),
+      this.nutrientCalculationService.pctgCalsInFoodForMacro(this.food, 'Carbohydrate'),
+      this.nutrientCalculationService.pctgCalsInFoodForMacro(this.food, 'Protein'),
     ].map(pct => Math.floor(pct));
   }
 
