@@ -24,7 +24,8 @@ interface CaloricBreakdown {
 }
 
 // Caloric breakdown as constituent of whole
-interface CaloricBreakdownCst {
+interface CstCaloricBreakdown {
+  cal: { amount: number, pctg: number },
   fat: { amount: number, pctg: number };
   carbs: { amount: number, pctg: number };
   protein: { amount: number, pctg: number };
@@ -50,8 +51,8 @@ export class ComboFoodFormFoodAmountComponent implements OnInit {
   caloricBreakdownDataSource = new BehaviorSubject<CaloricBreakdown[]>(null);
   caloricBreakdownDisplayedColumns = ['fat', 'carbs', 'protein'];
 
-  caloricBreakdownCstDataSource = new BehaviorSubject<CaloricBreakdownCst[]>(null);
-  caloricBreakdownCstDisplayedColumns = ['fat', 'carbs', 'protein'];
+  cstCaloricBreakdownDataSource = new BehaviorSubject<CstCaloricBreakdown[]>(null);
+  cstCaloricBreakdownDisplayedColumns = ['cal', 'fat', 'carbs', 'protein'];
 
   constructor(
     private foodApiService: FoodApiService,
@@ -87,15 +88,17 @@ export class ComboFoodFormFoodAmountComponent implements OnInit {
       }
     });
 
-    this.foodAmountCtrl.valueChanges.subscribe(() => {
+    this.parent.comboFoodForm.valueChanges.subscribe(() => {
       if (this.foodAmountIsFullyDefined) {
-        this.caloricBreakdownCstDataSource.next([
-          this.mapFoodAmountToCaloricBreakdownCst(
+        this.cstCaloricBreakdownDataSource.next([
+          this.mapFoodAmountToCstCaloricBreakdown(
             this.comboFoodFoodAmountMapperService.formGroupToModel(this.foodAmountCtrl)
           )
         ]);
+      } else {
+        this.cstCaloricBreakdownDataSource.next([]);
       }
-    })
+    });
   }
 
   get foodCtrl(): FormControl {
@@ -105,6 +108,7 @@ export class ComboFoodFormFoodAmountComponent implements OnInit {
   get foodAmountIsFullyDefined(): boolean {
     const foodIsSet = this.foodAmountCtrl.get('food').value;
     const amountIsSet = !['', null, undefined].some(badVal => badVal === this.foodAmountCtrl.get('amount').value);
+    // add check for unit being valid unit
     const unitIsSet = this.foodAmountCtrl.get('unit').value;
 
     return foodIsSet && amountIsSet && unitIsSet;
@@ -173,24 +177,30 @@ export class ComboFoodFormFoodAmountComponent implements OnInit {
     };
   }
 
-  private mapFoodAmountToCaloricBreakdownCst(foodAmount: ComboFoodFoodAmount): CaloricBreakdownCst {
+  private mapFoodAmountToCstCaloricBreakdown(foodAmount: ComboFoodFoodAmount): CstCaloricBreakdown {
+    const comboFood = this.comboFoodMapperService.formGroupToModel(this.parent.comboFoodForm);
+
     return {
+      cal: {
+        amount: this.nutrientCalculationService.comboFoodCalAmt(comboFood),
+        pctg: this.nutrientCalculationService.foodAmtCalPctg(foodAmount, comboFood)
+      },
       fat: {
         amount: this.nutrientCalculationService.foodAmtMacroAmt(foodAmount, 'Fat'),
         pctg: this.nutrientCalculationService.foodAmtMacroPctg(
-          foodAmount, this.comboFoodMapperService.formGroupToModel(this.parent.comboFoodForm), 'Fat'
+          foodAmount, comboFood, 'Fat'
         )
       },
       carbs: {
         amount: this.nutrientCalculationService.foodAmtMacroAmt(foodAmount, 'Carbohydrate'),
         pctg: this.nutrientCalculationService.foodAmtMacroPctg(
-          foodAmount, this.comboFoodMapperService.formGroupToModel(this.parent.comboFoodForm), 'Carbohydrate'
+          foodAmount, comboFood, 'Carbohydrate'
         )
       },
       protein: {
         amount: this.nutrientCalculationService.foodAmtMacroAmt(foodAmount, 'Protein'),
         pctg: this.nutrientCalculationService.foodAmtMacroPctg(
-          foodAmount, this.comboFoodMapperService.formGroupToModel(this.parent.comboFoodForm), 'Protein'
+          foodAmount, comboFood, 'Protein'
         )
       },
     };

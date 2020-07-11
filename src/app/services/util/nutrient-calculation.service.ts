@@ -122,7 +122,7 @@ export class NutrientCalculationService {
     );
     console.log('intermediatePortions:', intermediatePortions);
 
-    const refPortions = this.convertConcreteAmountOFIntermediatePortionsToConcreteAmountOfNutrientRefPortions(
+    const refPortions = this.convertConcreteAmountOfIntermediatePortionsToConcreteAmountOfNutrientRefPortions(
       intermediatePortion, intermediatePortions, nutrientRefPortion
     );
     console.log('refPortions:', refPortions);
@@ -139,16 +139,35 @@ export class NutrientCalculationService {
   }
 
   foodAmtMacroPctg(foodAmount: ComboFoodFoodAmount, comboFood: ComboFood, macro: MacroNutrientType): number {
+    return (this.foodAmtMacroCals(foodAmount, macro) / this.comboFoodCalAmt(comboFood)) * 100;
+  }
 
+  foodAmtCalAmt(foodAmount: ComboFoodFoodAmount): number {
     const macros: MacroNutrientType[] = ['Fat', 'Carbohydrate', 'Protein'];
 
     const sumReducer = (accumulator, currentValue) => accumulator + currentValue;
 
-    const totalCalsFromMacros = macros
+    return macros
+      .map(macroNutrient => this.foodAmtMacroCals(foodAmount, macroNutrient))
+      .reduce(sumReducer);
+  }
+
+  foodAmtCalPctg(foodAmount: ComboFoodFoodAmount, comboFood: ComboFood): number {
+    return (this.foodAmtCalAmt(foodAmount) / this.comboFoodCalAmt(comboFood)) * 100;
+  }
+
+  // ---------------------------------
+  // ComboFood
+  // ---------------------------------
+
+  comboFoodCalAmt(comboFood: ComboFood): number {
+    const macros: MacroNutrientType[] = ['Fat', 'Carbohydrate', 'Protein'];
+
+    const sumReducer = (accumulator, currentValue) => accumulator + currentValue;
+
+    return macros
       .map(macroNutrient => comboFood.foodAmounts.map(foodAmt => this.foodAmtMacroCals(foodAmt, macroNutrient)).reduce(sumReducer))
       .reduce(sumReducer);
-
-    return (this.foodAmtMacroCals(foodAmount, macro) / totalCalsFromMacros) * 100;
   }
 
 
@@ -167,10 +186,10 @@ export class NutrientCalculationService {
     }
   }
 
-  private convertConcreteAmountOFIntermediatePortionsToConcreteAmountOfNutrientRefPortions(
+  private convertConcreteAmountOfIntermediatePortionsToConcreteAmountOfNutrientRefPortions(
     intermediatePortion: Portion, intermediatePortions: number, nutrientRefPortion: Portion
   ): number {
     return convert(intermediatePortion.metricAmount).from(intermediatePortion.metricUnit).to(nutrientRefPortion.metricUnit)
-      / nutrientRefPortion.metricAmount;
+      * intermediatePortions / nutrientRefPortion.metricAmount;
   }
 }

@@ -53,10 +53,14 @@ mat-form-field {
         position: relative;
         border: 0;
         
-        .vis-pctg-ind {
+        .vis-pctg-indicator {
             position: absolute;
             bottom: 0;
             width: 100%;
+
+            &.cal {
+                background: var(--cal-clr-light);
+            }
             
             &.fat {
                 background: var(--fat-clr-light);
@@ -70,5 +74,9 @@ mat-form-field {
                 background: var(--protein-clr-light);
             }
         }
+    }
+
+    .hidden-row {
+        display: none;
     }
 }

@@ -3,6 +3,9 @@ import { MatAutocomplete } from '@angular/material/autocomplete';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AutoCompleteOptGroup } from 'src/app/constants/types/auto-complete-options.type';
 
+
+// TODO: Fix ExpressionChangedAfterItHasBeenCheckedError.
+// https://indepth.dev/everything-you-need-to-know-about-the-expressionchangedafterithasbeencheckederror-error/
 @Component({
   selector: 'app-filtered-autocomplete',
   templateUrl: './filtered-autocomplete.component.html',

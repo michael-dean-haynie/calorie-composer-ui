@@ -30,7 +30,7 @@ export class ComboFoodFoodAmountMapperService {
   modelToFormGroup(comboFoodFoodAmount: ComboFoodFoodAmount): FormGroup {
     return this.fb.group({
       id: [comboFoodFoodAmount.id],
-      foodName: [''],
+      foodName: ['', Validators.required],
       food: [comboFoodFoodAmount.food, Validators.required],
       unit: [comboFoodFoodAmount.unit, Validators.required],
       amount: [comboFoodFoodAmount.amount, Validators.required]
