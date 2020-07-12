@@ -20,10 +20,9 @@ export class ComboFoodPortionMapperService {
     comboFoodPortion.isFoodAmountRefPortion = comboFoodPortionDTO.isFoodAmountRefPortion;
     comboFoodPortion.isServingSizePortion = comboFoodPortionDTO.isServingSizePortion;
     comboFoodPortion.metricUnit = comboFoodPortionDTO.metricUnit;
-    comboFoodPortion.metricAmount = comboFoodPortionDTO.metricAmount;
-    comboFoodPortion.householdMeasure = comboFoodPortionDTO.householdMeasure;
+    comboFoodPortion.metricScalar = comboFoodPortionDTO.metricScalar;
     comboFoodPortion.householdUnit = comboFoodPortionDTO.householdUnit;
-    comboFoodPortion.householdAmount = comboFoodPortionDTO.householdAmount;
+    comboFoodPortion.householdScalar = comboFoodPortionDTO.householdScalar;
     return comboFoodPortion;
   }
 
@@ -37,13 +36,12 @@ export class ComboFoodPortionMapperService {
 
       // household measure
       householdMeasureMode: this.portionService.determineHouseholdMeasureMode(comboFoodPortion),
-      householdMeasure: [comboFoodPortion.householdMeasure],
       householdUnit: [comboFoodPortion.householdUnit],
-      householdAmount: [comboFoodPortion.householdAmount],
+      householdScalar: [comboFoodPortion.householdScalar],
 
       // metric measure
       metricUnit: [this.portionService.determineMetricUnit(comboFoodPortion.metricUnit), Validators.required],
-      metricAmount: [comboFoodPortion.metricAmount?.toString() ?? '', Validators.required],
+      metricScalar: [comboFoodPortion.metricScalar?.toString() ?? '', Validators.required],
 
       // flags
       isFoodAmountRefPortion: [comboFoodPortion.isFoodAmountRefPortion],
@@ -57,10 +55,9 @@ export class ComboFoodPortionMapperService {
     comboFoodPortion.isFoodAmountRefPortion = formGroup.get('isFoodAmountRefPortion').value;
     comboFoodPortion.isServingSizePortion = formGroup.get('isServingSizePortion').value;
     comboFoodPortion.metricUnit = formGroup.get('metricUnit').value;
-    comboFoodPortion.metricAmount = formGroup.get('metricAmount').value;
-    comboFoodPortion.householdMeasure = formGroup.get('householdMeasure').value;
+    comboFoodPortion.metricScalar = formGroup.get('metricScalar').value;
     comboFoodPortion.householdUnit = formGroup.get('householdUnit').value;
-    comboFoodPortion.householdAmount = formGroup.get('householdAmount').value;
+    comboFoodPortion.householdScalar = formGroup.get('householdScalar').value;
     return comboFoodPortion;
   }
 

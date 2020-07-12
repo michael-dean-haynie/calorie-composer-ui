@@ -19,7 +19,7 @@ export class ComboFoodFoodAmountMapperService {
     comboFoodFoodAmount.id = comboFoodFoodAmountDTO.id;
     comboFoodFoodAmount.food = this.foodMapperService.dtoToModel(comboFoodFoodAmountDTO.food);
     comboFoodFoodAmount.unit = comboFoodFoodAmountDTO.unit;
-    comboFoodFoodAmount.amount = comboFoodFoodAmountDTO.amount;
+    comboFoodFoodAmount.scalar = comboFoodFoodAmountDTO.scalar;
     return comboFoodFoodAmount;
   }
 
@@ -33,7 +33,7 @@ export class ComboFoodFoodAmountMapperService {
       foodName: ['', Validators.required],
       food: [comboFoodFoodAmount.food, Validators.required],
       unit: [comboFoodFoodAmount.unit, Validators.required],
-      amount: [comboFoodFoodAmount.amount, Validators.required]
+      scalar: [comboFoodFoodAmount.scalar, Validators.required]
     });
   }
 
@@ -42,7 +42,7 @@ export class ComboFoodFoodAmountMapperService {
     comboFoodFoodAmount.id = formGroup.get('id').value;
     comboFoodFoodAmount.food = formGroup.get('food').value;
     comboFoodFoodAmount.unit = formGroup.get('unit').value;
-    comboFoodFoodAmount.amount = formGroup.get('amount').value;
+    comboFoodFoodAmount.scalar = formGroup.get('scalar').value;
     return comboFoodFoodAmount;
   }
 

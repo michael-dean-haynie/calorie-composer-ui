@@ -3,8 +3,7 @@ export interface ComboFoodPortionDTO {
     isFoodAmountRefPortion: boolean;
     isServingSizePortion: boolean;
     metricUnit?: string;
-    metricAmount?: number;
-    householdMeasure?: string;
+    metricScalar?: number;
     householdUnit?: string;
-    householdAmount?: number;
+    householdScalar?: number;
 }

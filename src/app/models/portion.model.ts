@@ -4,8 +4,8 @@ export class Portion {
     isNutrientRefPortion: boolean;
     isServingSizePortion: boolean;
     metricUnit: string;
-    metricAmount: number;
+    metricScalar: number;
     householdMeasure?: string;
     householdUnit?: string;
-    householdAmount?: number;
+    householdScalar?: number;
 }

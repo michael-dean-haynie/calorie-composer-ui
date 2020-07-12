@@ -36,7 +36,7 @@ export class NutrientCalculationService {
    */
   nutrientAmtInFood(food: Food, nutrientType: NutrientType): number {
     const nutrient = food.nutrients.find(nutr => nutr.name === nutrientType);
-    return nutrient ? nutrient.amount : 0;
+    return nutrient ? nutrient.scalar : 0;
   }
 
   /**
@@ -71,7 +71,7 @@ export class NutrientCalculationService {
   // ---------------------------------
 
   foodAmtMacroAmt(foodAmount: ComboFoodFoodAmount, macro: MacroNutrientType): number {
-    console.log('foodAmount.amount:', foodAmount.amount);
+    console.log('foodAmount.scalar:', foodAmount.scalar);
     console.log('foodAmount.unit:', foodAmount.unit);
 
     // amount in 1 nutrient ref portion of food
@@ -192,13 +192,13 @@ export class NutrientCalculationService {
     foodAmount: ComboFoodFoodAmount, intermediatePortion: Portion, measureType: PortionMeasureType, isCustomUnitType: boolean
   ): number {
     if (measureType === 'metric') {
-      return convert(foodAmount.amount).from(foodAmount.unit).to(intermediatePortion.metricUnit) / intermediatePortion.metricAmount;
+      return convert(foodAmount.scalar).from(foodAmount.unit).to(intermediatePortion.metricUnit) / intermediatePortion.metricScalar;
     }
     else { // measure type is 'household'
       if (!isCustomUnitType) {
-        return convert(foodAmount.amount).from(foodAmount.unit).to(intermediatePortion.householdUnit) / intermediatePortion.householdAmount;
+        return convert(foodAmount.scalar).from(foodAmount.unit).to(intermediatePortion.householdUnit) / intermediatePortion.householdScalar;
       } else {
-        return foodAmount.amount / intermediatePortion.householdAmount;
+        return foodAmount.scalar / intermediatePortion.householdScalar;
       }
     }
   }
@@ -206,7 +206,7 @@ export class NutrientCalculationService {
   private convertConcreteAmountOfIntermediatePortionsToConcreteAmountOfNutrientRefPortions(
     intermediatePortion: Portion, intermediatePortions: number, nutrientRefPortion: Portion
   ): number {
-    return convert(intermediatePortion.metricAmount).from(intermediatePortion.metricUnit).to(nutrientRefPortion.metricUnit)
-      * intermediatePortions / nutrientRefPortion.metricAmount;
+    return convert(intermediatePortion.metricScalar).from(intermediatePortion.metricUnit).to(nutrientRefPortion.metricUnit)
+      * intermediatePortions / nutrientRefPortion.metricScalar;
   }
 }

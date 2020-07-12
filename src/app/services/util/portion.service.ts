@@ -7,10 +7,10 @@ interface CommonPortion {
   id?: string;
   isServingSizePortion: boolean;
   metricUnit?: string;
-  metricAmount?: number;
+  metricScalar?: number;
   householdMeasure?: string;
   householdUnit?: string;
-  householdAmount?: number;
+  householdScalar?: number;
 }
 
 @Injectable({
@@ -42,9 +42,9 @@ export class PortionService {
 
   determineHouseholdMeasureMode<T extends CommonPortion>(portion: T): HouseholdMeasureMode {
     const empty = val => val === undefined || val === null || ('' + val).trim() === '';
-    let result: HouseholdMeasureMode = 'unit-amount';
+    let result: HouseholdMeasureMode = 'unit-scalar';
 
-    if (!empty(portion.householdMeasure) && (empty(portion.householdUnit) || empty(portion.householdAmount))) {
+    if (!empty(portion.householdMeasure) && (empty(portion.householdUnit) || empty(portion.householdScalar))) {
       result = 'free-form';
     }
 

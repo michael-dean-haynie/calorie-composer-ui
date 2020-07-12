@@ -77,12 +77,12 @@
                 <th mat-header-cell *matHeaderCellDef> Amt </th>
                 <td mat-cell *matCellDef="let element">
                     <ng-container *ngIf="!element.get('editMode').value">
-                        {{element.get('amount').value}}
+                        {{element.get('scalar').value}}
                     </ng-container>
                     <ng-container *ngIf="element.get('editMode').value">
                         <mat-form-field floatLabel="never" class="amount-form-field">
                             <input matInput [appMask]="['non-negative', 'float-hundredths']" placeholder="3.5"
-                                [formControl]="element.get('amount')">
+                                [formControl]="element.get('scalar')">
 
                         </mat-form-field>
                     </ng-container>
@@ -94,11 +94,11 @@
                 <th mat-header-cell *matHeaderCellDef> Unit </th>
                 <td mat-cell *matCellDef="let element">
                     <ng-container *ngIf="!element.get('editMode').value">
-                        {{element.get('unitName').value}}
+                        {{element.get('unit').value}}
                     </ng-container>
                     <ng-container *ngIf="element.get('editMode').value">
                         <mat-form-field floatLabel="never" class="unit-form-field">
-                            <input matInput placeholder="g" [formControl]="element.get('unitName')"
+                            <input matInput placeholder="g" [formControl]="element.get('unit')"
                                 [matAutocomplete]="nutrientUnit">
                             <mat-autocomplete #nutrientUnit="matAutocomplete" class="ac-panel right">
                                 <mat-option *ngFor=" let option of nutrientUnitACOptions" [value]="option.value">

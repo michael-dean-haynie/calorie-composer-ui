@@ -4,5 +4,5 @@ export class ComboFoodFoodAmount {
     id?: string;
     food?: Food;
     unit?: string;
-    amount?: number;
+    scalar?: number;
 }

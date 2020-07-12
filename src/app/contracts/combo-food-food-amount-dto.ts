@@ -4,5 +4,5 @@ export interface ComboFoodFoodAmountDTO {
     id?: string;
     food?: FoodDTO;
     unit?: string;
-    amount?: number;
+    scalar?: number;
 }

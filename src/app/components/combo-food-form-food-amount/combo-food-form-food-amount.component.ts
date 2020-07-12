@@ -25,7 +25,7 @@ interface CaloricBreakdown {
 
 // Caloric breakdown as constituent of whole
 interface CstCaloricBreakdown {
-  cal: { amount: number, pctg: number },
+  cal: { amount: number, pctg: number };
   fat: { amount: number, pctg: number };
   carbs: { amount: number, pctg: number };
   protein: { amount: number, pctg: number };
@@ -107,11 +107,11 @@ export class ComboFoodFormFoodAmountComponent implements OnInit {
 
   get foodAmountIsFullyDefined(): boolean {
     const foodIsSet = this.foodAmountCtrl.get('food').value;
-    const amountIsSet = !['', null, undefined].some(badVal => badVal === this.foodAmountCtrl.get('amount').value);
+    const scalarIsSet = !['', null, undefined].some(badVal => badVal === this.foodAmountCtrl.get('scalar').value);
     // add check for unit being valid unit
     const unitIsSet = this.foodAmountCtrl.get('unit').value;
 
-    return foodIsSet && amountIsSet && unitIsSet;
+    return foodIsSet && scalarIsSet && unitIsSet;
   }
 
   updateSelectedFood(food: Food, event: MatOptionSelectionChange): void {

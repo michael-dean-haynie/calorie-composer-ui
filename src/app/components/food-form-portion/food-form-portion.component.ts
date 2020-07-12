@@ -34,7 +34,7 @@ export class FoodFormPortionComponent {
 
   toggleHouseholdMeasureMode(): void {
     const modeControl = this.portionFormControl.get('householdMeasureMode');
-    modeControl.setValue(modeControl.value === 'unit-amount' ? 'free-form' : 'unit-amount');
+    modeControl.setValue(modeControl.value === 'unit-scalar' ? 'free-form' : 'unit-scalar');
   }
 
   removeNonSSPortion(): void {
