@@ -185,7 +185,7 @@ export class ComboFoodFormFoodAmountComponent implements OnInit {
 
     return {
       cal: {
-        amount: this.comboFoodCalcService.calsInComboFood(comboFood),
+        amount: this.foodAmountCalcService.calsInFoodAmount(foodAmount),
         pctg: this.comboFoodCalcService.pctgOfComboFoodCalsInFoodAmount(foodAmount, comboFood)
       },
       fat: {

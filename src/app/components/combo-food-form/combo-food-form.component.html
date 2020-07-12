@@ -54,4 +54,18 @@
 
 
     </section>
+
+    <!-- TODO: Add summary with totals? -->
+
+    <!-- Add notice about it being a draft and not usable in plans until valid. Maybe modal confirmation -->
+    <section>
+        <div class="form-buttons">
+            <button mat-raised-button color="accent" (click)="cancel()">Cancel</button>
+            <span>
+                <button mat-raised-button color="primary" (click)="saveChanges()">
+                    {{comboFoodForm.valid ? 'Save Changes' : 'Save Draft'}}
+                </button>
+            </span>
+        </div>
+    </section>
 </form>

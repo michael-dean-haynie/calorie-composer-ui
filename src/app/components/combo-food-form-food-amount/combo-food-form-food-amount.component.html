@@ -84,7 +84,7 @@
                 <th mat-header-cell *matHeaderCellDef> kcal </th>
                 <td mat-cell *matCellDef="let elm">
                     <div>
-                        <div>{{elm.cal.amount | number: '1.1-1'}} ({{elm.cal.pctg | number: '1.1-1'}}%)</div>
+                        <div>{{elm.cal.amount | number: '1.1-1'}} <br> ({{elm.cal.pctg | number: '1.1-1'}}%)</div>
                     </div>
                     <div class="vis-pctg-indicator cal" [style.height]="elm.cal.pctg+'%'"></div>
                 </td>
@@ -95,7 +95,7 @@
                 <th mat-header-cell *matHeaderCellDef> Fat </th>
                 <td mat-cell *matCellDef="let elm">
                     <div>
-                        <div>{{elm.fat.amount | number: '1.1-1'}}g ({{elm.fat.pctg | number: '1.1-1'}}%)</div>
+                        <div>{{elm.fat.amount | number: '1.1-1'}}g <br> ({{elm.fat.pctg | number: '1.1-1'}}%)</div>
                     </div>
                     <div class="vis-pctg-indicator fat" [style.height]="elm.fat.pctg+'%'"></div>
                 </td>
@@ -105,7 +105,7 @@
             <ng-container matColumnDef="carbs">
                 <th mat-header-cell *matHeaderCellDef> Carbs </th>
                 <td mat-cell *matCellDef="let elm">
-                    <div>{{elm.carbs.amount | number: '1.1-1'}}g ({{elm.carbs.pctg | number: '1.1-1'}}%)</div>
+                    <div>{{elm.carbs.amount | number: '1.1-1'}}g <br> ({{elm.carbs.pctg | number: '1.1-1'}}%)</div>
                     <div class="vis-pctg-indicator carbs" [style.height]="elm.carbs.pctg+'%'"></div>
                 </td>
                 <td mat-footer-cell *matFooterCellDef></td>
@@ -115,7 +115,7 @@
             <ng-container matColumnDef="protein">
                 <th mat-header-cell *matHeaderCellDef> Protein </th>
                 <td mat-cell *matCellDef="let elm">
-                    <div>{{elm.protein.amount | number: '1.1-1'}}g ({{elm.protein.pctg | number: '1.1-1'}}%)</div>
+                    <div>{{elm.protein.amount | number: '1.1-1'}}g <br> ({{elm.protein.pctg | number: '1.1-1'}}%)</div>
                     <div class="vis-pctg-indicator protein" [style.height]="elm.protein.pctg+'%'"></div>
                 </td>
                 <td mat-footer-cell *matFooterCellDef></td>

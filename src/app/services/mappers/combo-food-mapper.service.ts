@@ -47,7 +47,8 @@ export class ComboFoodMapperService {
       foodAmounts: this.fb.array(
         comboFood.foodAmounts.length
           ? comboFood.foodAmounts.map(foodAmount => this.comboFoodFoodAmountMapperService.modelToFormGroup(foodAmount))
-          : [this.comboFoodFoodAmountMapperService.modelToFormGroup(this.comboFoodFoodAmountMapperService.defaultModel())]
+          // : [this.comboFoodFoodAmountMapperService.modelToFormGroup(this.comboFoodFoodAmountMapperService.defaultModel())]
+          : []
       )
     }, { validators: [this.foodAmountRefPortionRequired, this.oneFoodAmountRefPortionPerUnitType] });
   }
@@ -68,6 +69,13 @@ export class ComboFoodMapperService {
 
     return comboFood;
   }
+
+  // TODO: Add validation that there must be one nutrient reference for every recognized unit type and
+  // unrecognized unit ('slices', 'drops', etc) that doesn't have a metric conversion
+  // - Would also require valication for portions. Need to have at least one of the measures filled out (required)
+
+  // TODO: Maybe come up with generic way to resolve these unit conversions. Could theoretically have a ref
+  // portion with unrecognized unit that converts metric measurement.
 
   // Must have at least one portion flagged as a food amount reference portion
   private foodAmountRefPortionRequired: ValidatorFn = (control: FormGroup): ValidationErrors | null => {

@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -34,7 +35,8 @@ export class ComboFoodFormComponent implements OnInit, OnDestroy {
     private comboFoodApiService: ComboFoodApiService,
     private comboFoodMapperService: ComboFoodMapperService,
     private comboFoodPortionMapperService: ComboFoodPortionMapperService,
-    private comboFoodFoodAmountMapperService: ComboFoodFoodAmountMapperService
+    private comboFoodFoodAmountMapperService: ComboFoodFoodAmountMapperService,
+    private location: Location
   ) { }
 
   ngOnInit(): void {
@@ -81,6 +83,14 @@ export class ComboFoodFormComponent implements OnInit, OnDestroy {
 
   removeFoodAmount(index: number) {
     this.foodAmounts.removeAt(index);
+  }
+
+  cancel(): void {
+    this.location.back();
+  }
+
+  saveChanges(): void {
+
   }
 
   private loadExistingComboFood(): void {
