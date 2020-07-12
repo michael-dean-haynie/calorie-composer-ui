@@ -48,7 +48,7 @@
 
         <div class="foods">
             <app-combo-food-form-food-amount *ngFor="let foodAmount of foodAmounts.controls; let i=index"
-                [foodAmountCtrl]="foodAmount">
+                [foodAmountCtrl]="foodAmount" (removeFoodAmount)="removeFoodAmount(i)">
             </app-combo-food-form-food-amount>
         </div>
 

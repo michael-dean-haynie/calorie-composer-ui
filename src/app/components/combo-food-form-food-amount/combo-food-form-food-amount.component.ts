@@ -1,4 +1,4 @@
-import { Component, Host, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Host, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatOptionSelectionChange } from '@angular/material/core';
 import { BehaviorSubject } from 'rxjs';
@@ -41,6 +41,7 @@ interface CstCaloricBreakdown {
 export class ComboFoodFormFoodAmountComponent implements OnInit {
 
   @Input() foodAmountCtrl: FormGroup;
+  @Output() removeFoodAmount = new EventEmitter<any>();
 
   @ViewChild(FilteredAutocompleteComponent) filteredAutocompleteComponent: FilteredAutocompleteComponent;
 
@@ -130,6 +131,10 @@ export class ComboFoodFormFoodAmountComponent implements OnInit {
     // selection flag is set upon selection and before event makes it to the foonName ctrl
     // food value is also assigned upon selection.
     return this.foodNameCtrlMode === 'selection' && this.foodCtrl.value.description === value;
+  }
+
+  remove(): void {
+    this.removeFoodAmount.emit();
   }
 
   private mapUnitsToACOptions(units: UnitDescription[]): AutoCompleteOptGroup[] {

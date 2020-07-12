@@ -79,6 +79,10 @@ export class ComboFoodFormComponent implements OnInit, OnDestroy {
     this.foodAmounts.push(this.comboFoodFoodAmountMapperService.modelToFormGroup(foodAmount));
   }
 
+  removeFoodAmount(index: number) {
+    this.foodAmounts.removeAt(index);
+  }
+
   private loadExistingComboFood(): void {
     this.loading = true;
     this.comboFoodApiService.get(this.comboFoodId).subscribe(comboFood => {
