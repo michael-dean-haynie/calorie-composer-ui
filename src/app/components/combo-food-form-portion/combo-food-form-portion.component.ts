@@ -32,11 +32,6 @@ export class ComboFoodFormPortionComponent {
     private unitService: UnitService
   ) { }
 
-  toggleHouseholdMeasureMode(): void {
-    const modeControl = this.portionFormControl.get('householdMeasureMode');
-    modeControl.setValue(modeControl.value === 'unit-scalar' ? 'free-form' : 'unit-scalar');
-  }
-
   removeNonSSPortion(): void {
     const otherPortions = this.comboFoodForm.get('otherPortions') as FormArray;
     otherPortions.removeAt(this.otherPortionsIndex);

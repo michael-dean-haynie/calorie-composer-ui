@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ComboFoodPortionDTO } from 'src/app/contracts/combo-food-portion-dto';
 import { ComboFoodPortion } from 'src/app/models/combo-food-portion.model';
 import { PortionService } from '../util/portion.service';
@@ -35,13 +35,12 @@ export class ComboFoodPortionMapperService {
       id: [comboFoodPortion.id],
 
       // household measure
-      householdMeasureMode: this.portionService.determineHouseholdMeasureMode(comboFoodPortion),
       householdUnit: [comboFoodPortion.householdUnit],
       householdScalar: [comboFoodPortion.householdScalar],
 
       // metric measure
-      metricUnit: [this.portionService.determineMetricUnit(comboFoodPortion.metricUnit), Validators.required],
-      metricScalar: [comboFoodPortion.metricScalar?.toString() ?? '', Validators.required],
+      metricUnit: [this.portionService.determineMetricUnit(comboFoodPortion.metricUnit)],
+      metricScalar: [comboFoodPortion.metricScalar?.toString() ?? ''],
 
       // flags
       isFoodAmountRefPortion: [comboFoodPortion.isFoodAmountRefPortion],

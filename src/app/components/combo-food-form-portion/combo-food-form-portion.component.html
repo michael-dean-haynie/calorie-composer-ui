@@ -1,39 +1,17 @@
 <ng-container [formGroup]="comboFoodForm">
     <ng-container [formGroup]="portionFormControl">
         <mat-card>
-            <!-- TODO: disable free-form mode for household measure -->
             <div class="portion">
-                <!-- toggle household measure mode -->
-                <button type="button" mat-icon-button color="primary" (click)="toggleHouseholdMeasureMode()">
-                    <mat-icon *ngIf="portionFormControl.get('householdMeasureMode').value === 'unit-scalar'">
-                        flip
-                    </mat-icon>
-                    <mat-icon *ngIf="portionFormControl.get('householdMeasureMode').value === 'free-form'">
-                        crop_din
-                    </mat-icon>
-                </button>
-
-                <!-- household measure in unit-scalar mode -->
-                <ng-container *ngIf="portionFormControl.get('householdMeasureMode').value === 'unit-scalar'">
-                    <mat-form-field floatLabel="always" class="household-measure-amount">
-                        <mat-label>Amount</mat-label>
-                        <input matInput [appMask]="['non-negative', 'float-hundredths']" placeholder="16"
-                            formControlName="householdScalar">
-                    </mat-form-field>
-                    <mat-form-field floatLabel="always" class="household-measure-unit">
-                        <mat-label>Unit</mat-label>
-                        <input matInput placeholder="pieces" formControlName="householdUnit">
-                    </mat-form-field>
-                </ng-container>
-
-                <!-- TODO: Remove also remove mode from formgroup mapping-->
-                <!-- household measure in free-form mode -->
-                <ng-container *ngIf="portionFormControl.get('householdMeasureMode').value === 'free-form'">
-                    <mat-form-field floatLabel="always" class="household-measure-free-form">
-                        <mat-label>Amount</mat-label>
-                        <input matInput placeholder="16 pieces">
-                    </mat-form-field>
-                </ng-container>
+                <!-- household measure -->
+                <mat-form-field floatLabel="always" class="household-measure-amount">
+                    <mat-label>Amount</mat-label>
+                    <input matInput [appMask]="['non-negative', 'float-hundredths']" placeholder="16"
+                        formControlName="householdScalar">
+                </mat-form-field>
+                <mat-form-field floatLabel="always" class="household-measure-unit">
+                    <mat-label>Unit</mat-label>
+                    <input matInput placeholder="pieces" formControlName="householdUnit">
+                </mat-form-field>
 
                 <!-- metric measure -->
                 <mat-form-field floatLabel="always" class="base-measure-amount">
