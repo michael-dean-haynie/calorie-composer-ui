@@ -1,8 +1,16 @@
-import { MacroPctgPipe } from './macro-pctg.pipe';
+import { NutrientCalculationService } from '../services/util/nutrient-calculation.service';
+import { MacroAmtPipe } from './macro-amt.pipe';
 
 describe('MacroPctgPipe', () => {
+  let nutrientCalculationService: NutrientCalculationService;
+  let pipe: MacroAmtPipe;
+
+  beforeEach(() => {
+    nutrientCalculationService = jasmine.createSpyObj(['pctgCalsInFoodForMacro']);
+    pipe = new MacroAmtPipe(nutrientCalculationService);
+  });
+
   it('create an instance', () => {
-    const pipe = new MacroPctgPipe();
     expect(pipe).toBeTruthy();
   });
 });
