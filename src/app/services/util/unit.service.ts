@@ -4,6 +4,7 @@ import { Food } from 'src/app/models/food.model';
 // import Qty from 'js-quantities';
 
 export type UnitType = 'mass' | 'volume' | 'energy' | 'biological';
+export type UnitTypeOrCustom = UnitType | 'custom';
 export type UnitSystem = 'metric' | 'imperial';
 export interface UnitDescription {
   abbr: string;
@@ -75,6 +76,17 @@ export class UnitService {
     } catch (e) {
       console.warn(`Could not determine known unit type for unit: ${unit}`);
       result = null;
+    }
+    return result;
+  }
+
+  getUnitTypeOrCustom(unit: string): UnitTypeOrCustom {
+    if (!unit) { return null; }
+    let result: UnitTypeOrCustom;
+    try {
+      result = convert().describe(unit).measure;
+    } catch (e) {
+      result = 'custom';
     }
     return result;
   }
