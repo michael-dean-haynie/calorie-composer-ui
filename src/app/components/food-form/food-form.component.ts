@@ -80,8 +80,8 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
-  get otherPortions(): FormArray {
-    return this.foodForm.get('otherPortions') as FormArray;
+  get conversionRatios(): FormArray {
+    return this.foodForm.get('conversionRatios') as FormArray;
   }
 
   get nutrients(): FormArray {
@@ -97,7 +97,7 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     const portion = new Portion();
     portion.isServingSizePortion = false;
     portion.isNutrientRefPortion = false;
-    this.otherPortions.push(this.portionMapperService.modelToFormGroup(portion));
+    this.conversionRatios.push(this.portionMapperService.modelToFormGroup(portion));
   }
 
   addNutrient(): void {

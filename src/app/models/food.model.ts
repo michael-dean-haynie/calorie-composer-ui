@@ -1,5 +1,5 @@
+import { ConversionRatio } from './conversion-ratio.model';
 import { Nutrient } from './nutrient.model';
-import { Portion } from './portion.model';
 
 export class Food {
     id?: string;
@@ -8,5 +8,5 @@ export class Food {
     brandOwner: string;
     ingredients: string;
     nutrients: Nutrient[] = [];
-    portions: Portion[] = [];
+    conversionRatios: ConversionRatio[] = [];
 }

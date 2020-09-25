@@ -1,5 +1,5 @@
+import { ConversionRatioDTO } from './conversion-ratio-dto';
 import { NutrientDTO } from './nutrient-dto';
-import { PortionDTO } from './portion-dto';
 
 export interface FoodDTO {
     id?: string;
@@ -8,5 +8,5 @@ export interface FoodDTO {
     brandOwner: string;
     ingredients: string;
     nutrients: NutrientDTO[];
-    portions: PortionDTO[];
+    conversionRatios: ConversionRatioDTO[];
 }

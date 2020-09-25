@@ -37,6 +37,7 @@ import { ErrorMsgComponent } from './components/error-msg/error-msg.component';
 import { ComboFoodFormPortionComponent } from './components/combo-food-form-portion/combo-food-form-portion.component';
 import { ComboFoodFormFoodAmountComponent } from './components/combo-food-form-food-amount/combo-food-form-food-amount.component';
 import { FilteredAutocompleteComponent } from './components/filtered-autocomplete/filtered-autocomplete.component';
+import { FoodFormConversionRatioComponent } from './components/food-form-conversion-ratio/food-form-conversion-ratio.component';
 
 
 @NgModule({
@@ -59,7 +60,8 @@ import { FilteredAutocompleteComponent } from './components/filtered-autocomplet
     ErrorMsgComponent,
     ComboFoodFormPortionComponent,
     ComboFoodFormFoodAmountComponent,
-    FilteredAutocompleteComponent
+    FilteredAutocompleteComponent,
+    FoodFormConversionRatioComponent
   ],
   imports: [
     BrowserModule,

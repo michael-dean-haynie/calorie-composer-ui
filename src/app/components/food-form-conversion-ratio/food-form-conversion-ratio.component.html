@@ -1,0 +1,10 @@
+<ng-container [formGroup]="foodForm">
+    <ng-container [formGroup]="conversionRatioFormControl">
+        <p>
+            <span *ngIf="usesFreeFormValueA()">{{freeFormValueA}}</span>
+            <span *ngIf="!usesFreeFormValueA()">{{amountA}}&nbsp;{{unitA}}</span>
+            <span>&nbsp;:&nbsp;</span>
+            <span *ngIf="usesFreeFormValueB()">{{freeFormValueB}}</span>
+            <span *ngIf="!usesFreeFormValueB()">{{amountB}}&nbsp;{{unitB}}</span>
+    </ng-container>
+</ng-container>

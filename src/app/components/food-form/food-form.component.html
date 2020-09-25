@@ -19,29 +19,35 @@
     </section>
 
     <section>
-        <h3 [ngClass]="{'mat-error': !!foodForm.errors}">Portions</h3>
+        <h3 [ngClass]="{'mat-error': !!foodForm.errors}">Portions and Units</h3>
         <app-error-msg [ctrl]="foodForm"></app-error-msg>
-        <div class="portions-subsections">
+        <div class="portions-and-units-subsections">
             <div>
                 <div class="split-subheader">
-                    <h4>Serving Size</h4>
+                    <h4>Portions</h4>
                 </div>
-                <app-food-form-portion [foodForm]="foodForm" [portionFormControl]="foodForm.get('servingSizePortion')">
-                </app-food-form-portion>
+                <!-- <app-food-form-portion [foodForm]="foodForm" [portionFormControl]="foodForm.get('servingSizePortion')">
+                </app-food-form-portion> -->
             </div>
 
             <div>
                 <div class="split-subheader">
-                    <h4>Other Portions ({{otherPortions.controls.length}})</h4>
+                    <h4>Unit Conversions
+                        <!-- ({{otherPortions.controls.length}})-->
+                    </h4>
                     <button type="button" mat-icon-button color="primary" (click)="addNonSSPortion()">
                         <mat-icon>add_to_photos</mat-icon>
                     </button>
                 </div>
                 <div class="other-portions">
-                    <app-food-form-portion *ngFor="let portion of otherPortions.controls; let i=index"
+                    <!-- <app-food-form-portion *ngFor="let portion of otherPortions.controls; let i=index"
                         [foodForm]="foodForm" [portionFormControl]="foodForm.get(['otherPortions', i])"
                         [otherPortionsIndex]="i">
-                    </app-food-form-portion>
+                    </app-food-form-portion> -->
+                    <app-food-form-conversion-ratio *ngFor="let convRat of conversionRatios.controls; let i=index"
+                        [foodForm]="foodForm" [conversionRatioFormControl]="foodForm.get(['conversionRatios', i])"
+                        [conversionRatiosIndex]="i"></app-food-form-conversion-ratio>
+
                 </div>
             </div>
         </div>

@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FoodDTO } from 'src/app/contracts/food-dto';
 import { Food } from 'src/app/models/food.model';
 import { PortionService } from '../util/portion.service';
 import { UnitService } from '../util/unit.service';
+import { ConversionRatioMapperService } from './conversion-ratio-mapper.service';
 import { NutrientMapperService } from './nutrient-mapper.service';
-import { PortionMapperService } from './portion-mapper.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +14,7 @@ export class FoodMapperService {
 
   constructor(
     private nutrientMapperService: NutrientMapperService,
-    private portionMapperService: PortionMapperService,
+    private conversionRatioMapperService: ConversionRatioMapperService,
     private portionService: PortionService,
     private unitService: UnitService,
     private fb: FormBuilder) { }
@@ -28,8 +28,8 @@ export class FoodMapperService {
     food.ingredients = foodDTO.ingredients;
     food.nutrients = foodDTO.nutrients
       .map(nutrientDTO => this.nutrientMapperService.dtoToModel(nutrientDTO));
-    food.portions = foodDTO.portions
-      .map(portionDTO => this.portionMapperService.dtoToModel(portionDTO));
+    food.conversionRatios = foodDTO.conversionRatios
+      .map(conversionRatioDTO => this.conversionRatioMapperService.dtoToModel(conversionRatioDTO));
 
     return food;
   }
@@ -38,10 +38,11 @@ export class FoodMapperService {
     return food;
   }
 
+  // TODO: Refactor with conversion ratio implementation
   modelToFormGroup(food: Food): FormGroup {
-    // extract serving size portion
-    const ssp = this.portionService.getServingSize(food.portions) ?? this.portionMapperService.defaultSSModel();
-    const otherPortions = this.portionService.getNonSSPortions(food.portions);
+    // // extract serving size portion
+    // const ssp = this.portionService.getServingSize(food.conversionRatios) ?? this.conversionRatioMapperService.defaultSSModel();
+    // const otherPortions = this.portionService.getNonSSPortions(food.conversionRatios);
 
     return this.fb.group({
       id: [food.id],
@@ -50,11 +51,15 @@ export class FoodMapperService {
       brandOwner: [food.brandOwner],
       ingredients: [food.ingredients],
       nutrients: this.fb.array(food.nutrients.map(nutrient => this.nutrientMapperService.modelToFormGroup(nutrient))),
-      servingSizePortion: this.portionMapperService.modelToFormGroup(ssp),
-      otherPortions: this.fb.array(otherPortions.map(portion => this.portionMapperService.modelToFormGroup(portion)))
-    }, { validators: [this.exactlyOneNutrientRefPortionPerUnitType] });
+      conversionRatios: this.fb.array(
+        food.conversionRatios.map(conversionRatio => this.conversionRatioMapperService.modelToFormGroup(conversionRatio))
+      )
+      // servingSizePortion: this.conversionRatioMapperService.modelToFormGroup(ssp),
+      // otherPortions: this.fb.array(otherPortions.map(portion => this.conversionRatioMapperService.modelToFormGroup(portion)))
+    }, { validators: [/*this.exactlyOneNutrientRefPortionPerUnitType*/] });
   }
 
+  // TODO: Refactor with conversion ratio implementation
   formGroupToModel(formGroup: FormGroup): Food {
     const food = new Food();
     food.id = formGroup.get('id').value;
@@ -65,39 +70,40 @@ export class FoodMapperService {
     food.nutrients = this.nutrientMapperService.formArrayToModelArray(formGroup.get('nutrients') as FormArray);
 
     // collect portions
-    food.portions = [];
-    food.portions.push(this.portionMapperService.formGroupToModel(formGroup.get('servingSizePortion') as FormGroup));
-    food.portions = food.portions.concat(this.portionMapperService.formArrayToModelArray(formGroup.get('otherPortions') as FormArray));
+    food.conversionRatios = [];
+    // food.conversionRatios.push(this.conversionRatioMapperService.formGroupToModel(formGroup.get('servingSizePortion') as FormGroup));
+    // food.conversionRatios = food.conversionRatios.concat(this.conversionRatioMapperService.formArrayToModelArray(formGroup.get('otherPortions') as FormArray));
 
     return food;
   }
 
-  // Must have exactly 1 nutrient reference portion per unit type (mass/volume) that there are portions of
-  private exactlyOneNutrientRefPortionPerUnitType: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
-    const servingSizePortion = control.get('servingSizePortion') as FormControl;
-    const otherPortions = control.get('otherPortions') as FormArray;
-    const allPortions = [servingSizePortion].concat(otherPortions.controls as FormControl[]);
+  // TODO: Refactor with conversion ratio implementation and move this to separate service
+  // // Must have exactly 1 nutrient reference portion per unit type (mass/volume) that there are portions of
+  // private exactlyOneNutrientRefPortionPerUnitType: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
+  //   const servingSizePortion = control.get('servingSizePortion') as FormControl;
+  //   const otherPortions = control.get('otherPortions') as FormArray;
+  //   const allPortions = [servingSizePortion].concat(otherPortions.controls as FormControl[]);
 
-    const allUnitTypes = allPortions
-      // map to unit type and remove falsey results
-      .map(portion => this.unitService.getUnitType(portion.get('metricUnit')?.value))
-      .filter(measure => measure);
+  //   const allUnitTypes = allPortions
+  //     // map to unit type and remove falsey results
+  //     .map(portion => this.unitService.getUnitType(portion.get('metricUnit')?.value))
+  //     .filter(measure => measure);
 
-    // remove duplicates
-    const uniqueUnitTypes = new Set(allUnitTypes);
+  //   // remove duplicates
+  //   const uniqueUnitTypes = new Set(allUnitTypes);
 
-    // check for number of nutrient reference portions per unit type and return error if not 1
-    for (const unitType of uniqueUnitTypes) {
-      const refPortionsOfUnitType = allPortions
-        .filter(portion => portion.get('isNutrientRefPortion').value)
-        .filter(portion => this.unitService.getUnitType(portion.get('metricUnit')?.value) === unitType);
+  //   // check for number of nutrient reference portions per unit type and return error if not 1
+  //   for (const unitType of uniqueUnitTypes) {
+  //     const refPortionsOfUnitType = allPortions
+  //       .filter(portion => portion.get('isNutrientRefPortion').value)
+  //       .filter(portion => this.unitService.getUnitType(portion.get('metricUnit')?.value) === unitType);
 
-      if (refPortionsOfUnitType.length !== 1) {
-        return { exactlyOneNutrientRefPortionPerUnitType: true };
-      }
-    }
+  //     if (refPortionsOfUnitType.length !== 1) {
+  //       return { exactlyOneNutrientRefPortionPerUnitType: true };
+  //     }
+  //   }
 
-    return null;
-  }
+  //   return null;
+  // }
 
 }

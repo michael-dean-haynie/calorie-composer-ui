@@ -98,33 +98,34 @@ export class UnitService {
   getUnitsForFood(food: Food) {
     let result: UnitDescription[] = [];
 
-    // mass
-    const includeMass = food.portions.some(portion => this.getUnitType(portion.metricUnit) === 'mass');
-    if (includeMass) {
-      result = result.concat(UnitService.FoodAmountMassUnits);
-    }
+    // TODO: Refactor with conversion ratio implementation
+    // // mass
+    // const includeMass = food.conversionRatios.some(portion => this.getUnitType(portion.metricUnit) === 'mass');
+    // if (includeMass) {
+    //   result = result.concat(UnitService.FoodAmountMassUnits);
+    // }
 
-    // volume
-    const includeVolume = food.portions.some(portion => this.getUnitType(portion.metricUnit) === 'volume');
-    if (includeVolume) {
-      result = result.concat(UnitService.FoodAmountVolumeUnits);
-    }
+    // // volume
+    // const includeVolume = food.conversionRatios.some(portion => this.getUnitType(portion.metricUnit) === 'volume');
+    // if (includeVolume) {
+    //   result = result.concat(UnitService.FoodAmountVolumeUnits);
+    // }
 
-    // other
-    const otherUnits = food.portions
-      .filter(portion => portion.householdUnit)
-      .map(portion => portion.householdUnit);
+    // // other
+    // const otherUnits = food.conversionRatios
+    //   .filter(portion => portion.householdUnit)
+    //   .map(portion => portion.householdUnit);
 
-    otherUnits.forEach(unit => {
-      const unitDescription: UnitDescription = {
-        abbr: null,
-        measure: null,
-        system: null,
-        singular: null,
-        plural: unit,
-      };
-      result.push(unitDescription);
-    });
+    // otherUnits.forEach(unit => {
+    //   const unitDescription: UnitDescription = {
+    //     abbr: null,
+    //     measure: null,
+    //     system: null,
+    //     singular: null,
+    //     plural: unit,
+    //   };
+    //   result.push(unitDescription);
+    // });
 
     return result;
   }
