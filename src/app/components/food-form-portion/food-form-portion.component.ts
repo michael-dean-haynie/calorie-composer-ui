@@ -1,7 +1,8 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { AutoCompleteOptGroup } from 'src/app/constants/types/auto-complete-options.type';
-import { UnitDescription, UnitService } from 'src/app/services/util/unit.service';
+import { UnitDescription } from 'src/app/constants/types/unit-description';
+import { UnitService } from 'src/app/services/util/unit.service';
 import { FilteredAutocompleteComponent } from '../filtered-autocomplete/filtered-autocomplete.component';
 
 @Component({

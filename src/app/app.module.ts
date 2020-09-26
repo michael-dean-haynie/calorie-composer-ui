@@ -19,7 +19,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ChartsModule } from 'ng2-charts';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { ComboFoodFormFoodAmountComponent } from './components/combo-food-form-food-amount/combo-food-form-food-amount.component';
+import { ComboFoodFormPortionComponent } from './components/combo-food-form-portion/combo-food-form-portion.component';
 import { ComboFoodFormComponent } from './components/combo-food-form/combo-food-form.component';
+import { ErrorMsgComponent } from './components/error-msg/error-msg.component';
+import { FilteredAutocompleteComponent } from './components/filtered-autocomplete/filtered-autocomplete.component';
+import { FoodFormConversionRatioComponent } from './components/food-form-conversion-ratio/food-form-conversion-ratio.component';
 import { FoodFormPortionComponent } from './components/food-form-portion/food-form-portion.component';
 import { FoodFormComponent } from './components/food-form/food-form.component';
 import { HomeComponent } from './components/home/home.component';
@@ -33,11 +38,7 @@ import { SearchComponent } from './components/search/search.component';
 import { MaskDirective } from './directives/mask.directive';
 import { MacroAmtPipe } from './pipes/macro-amt.pipe';
 import { MacroPctgPipe } from './pipes/macro-pctg.pipe';
-import { ErrorMsgComponent } from './components/error-msg/error-msg.component';
-import { ComboFoodFormPortionComponent } from './components/combo-food-form-portion/combo-food-form-portion.component';
-import { ComboFoodFormFoodAmountComponent } from './components/combo-food-form-food-amount/combo-food-form-food-amount.component';
-import { FilteredAutocompleteComponent } from './components/filtered-autocomplete/filtered-autocomplete.component';
-import { FoodFormConversionRatioComponent } from './components/food-form-conversion-ratio/food-form-conversion-ratio.component';
+import { UnitPipe } from './pipes/unit.pipe';
 
 
 @NgModule({
@@ -61,7 +62,8 @@ import { FoodFormConversionRatioComponent } from './components/food-form-convers
     ComboFoodFormPortionComponent,
     ComboFoodFormFoodAmountComponent,
     FilteredAutocompleteComponent,
-    FoodFormConversionRatioComponent
+    FoodFormConversionRatioComponent,
+    UnitPipe
   ],
   imports: [
     BrowserModule,
@@ -93,7 +95,8 @@ import { FoodFormConversionRatioComponent } from './components/food-form-convers
   ],
   providers: [
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    UnitPipe
   ],
   bootstrap: [AppComponent]
 })

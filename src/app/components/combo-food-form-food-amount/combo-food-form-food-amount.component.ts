@@ -3,6 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MatOptionSelectionChange } from '@angular/material/core';
 import { BehaviorSubject } from 'rxjs';
 import { AutoCompleteOptGroup } from 'src/app/constants/types/auto-complete-options.type';
+import { UnitDescription } from 'src/app/constants/types/unit-description';
 import { Food } from 'src/app/models/food.model';
 import { FoodApiService } from 'src/app/services/api/food-api.service';
 import { ComboFoodFoodAmountMapperService } from 'src/app/services/mappers/combo-food-food-amount-mapper.service';
@@ -10,7 +11,7 @@ import { ComboFoodMapperService } from 'src/app/services/mappers/combo-food-mapp
 // import { ComboFoodCalculationService } from 'src/app/services/util/combo-food-calculation.service';
 // import { FoodAmountCalculationService } from 'src/app/services/util/food-amount-calculation.service';
 import { NutrientCalculationService } from 'src/app/services/util/nutrient-calculation.service';
-import { UnitDescription, UnitService } from 'src/app/services/util/unit.service';
+import { UnitService } from 'src/app/services/util/unit.service';
 import { ComboFoodFormComponent } from '../combo-food-form/combo-food-form.component';
 import { FilteredAutocompleteComponent } from '../filtered-autocomplete/filtered-autocomplete.component';
 

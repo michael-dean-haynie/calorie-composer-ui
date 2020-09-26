@@ -135,7 +135,7 @@ export class FoodFormComponent implements OnInit, OnDestroy {
   }
 
   getConversionRatioSideDisplayValue(cvRatFG, side) {
-    return this.conversionRatioService.fgSideDisplayValue(cvRatFG, side);
+    return this.conversionRatioService.fgSideDisplayValue(cvRatFG, side, 'nutrient');
   }
 
   private loadExistingFood(): void {

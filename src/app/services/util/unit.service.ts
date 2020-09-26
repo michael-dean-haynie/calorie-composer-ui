@@ -1,18 +1,9 @@
 import { Injectable } from '@angular/core';
 import convert from 'convert-units';
+import { MeasureType } from 'src/app/constants/types/measure-type.type';
+import { UnitDescription } from 'src/app/constants/types/unit-description';
 import { Food } from 'src/app/models/food.model';
 // import Qty from 'js-quantities';
-
-export type UnitType = 'mass' | 'volume' | 'energy' | 'biological';
-export type UnitTypeOrCustom = UnitType | 'custom';
-export type UnitSystem = 'metric' | 'imperial';
-export interface UnitDescription {
-  abbr: string;
-  measure: UnitType;
-  system: UnitSystem;
-  singular: string;
-  plural: string;
-}
 
 @Injectable({
   providedIn: 'root'
@@ -42,6 +33,20 @@ export class UnitService {
       singular: 'International Unit',
       plural: 'International Units'
     },
+    {
+      abbr: 'SERVING_SIZE_REF',
+      measure: 'reference',
+      system: null,
+      singular: null,
+      plural: null
+    },
+    {
+      abbr: 'CONSTITUENTS_SIZE_REF',
+      measure: 'reference',
+      system: null,
+      singular: null,
+      plural: null
+    },
   ];
 
   // Metric Measure Units
@@ -54,10 +59,17 @@ export class UnitService {
   public static MetricMeasureUnits = UnitService.MetricMeasureMassUnits
     .concat(UnitService.MetricMeasureVolumeUnits);
 
+  // Reference Measure Units
+  public static ReferenceMeasureUnits = UnitService.SupplementalUnits.filter(desc => desc.measure === 'reference');
+  public static ServingSizeRefUnit = UnitService.SupplementalUnits.find(desc => desc.abbr === 'SERVING_SIZE_REF');
+  public static ConstituentsSizeRefUnit = UnitService.SupplementalUnits.find(desc => desc.abbr === 'CONSTITUENTS_SIZE_REF');
+
   // Nutrient Units
   public static NutrientUnits = convert()
     .list('mass').filter(desc => ['mg', 'g'].includes(desc.abbr))
-    .concat(UnitService.SupplementalUnits) as UnitDescription[];
+    .concat(UnitService.SupplementalUnits
+      .filter(desc => ['kcal', 'µg', 'IU'].includes(desc.abbr))
+    ) as UnitDescription[];
 
   // Food Amount Units
   public static FoodAmountMassUnits = convert()
@@ -68,25 +80,14 @@ export class UnitService {
 
   constructor() { }
 
-  getUnitType(unit: string): UnitType {
+  getMeasureType(unit: string): MeasureType {
     if (!unit) { return null; }
-    let result: UnitType;
+    let result: MeasureType;
     try {
       result = convert().describe(unit).measure;
     } catch (e) {
-      console.warn(`Could not determine known unit type for unit: ${unit}`);
+      console.warn(`Could not determine known measure type for unit: ${unit}`);
       result = null;
-    }
-    return result;
-  }
-
-  getUnitTypeOrCustom(unit: string): UnitTypeOrCustom {
-    if (!unit) { return null; }
-    let result: UnitTypeOrCustom;
-    try {
-      result = convert().describe(unit).measure;
-    } catch (e) {
-      result = 'custom';
     }
     return result;
   }

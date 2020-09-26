@@ -60,16 +60,16 @@ export class PortionService {
   }
 
   unitScalarsAreCompatable(us1: UnitScalar, us2: UnitScalar): boolean {
-    const us1Type = this.unitService.getUnitTypeOrCustom(us1.unit);
-    const us2Type = this.unitService.getUnitTypeOrCustom(us2.unit);
+    // const us1Type = this.unitService.getUnitTypeOrCustom(us1.unit);
+    // const us2Type = this.unitService.getUnitTypeOrCustom(us2.unit);
 
-    if (us1Type !== us2Type) {
-      return false;
-    }
-    // if they are custom they must also be exact match (e.g. 'pieces' === 'pieces')
-    else if (us1Type === 'custom' && (us1.unit !== us2.unit)) {
-      return false;
-    }
+    // if (us1Type !== us2Type) {
+    //   return false;
+    // }
+    // // if they are custom they must also be exact match (e.g. 'pieces' === 'pieces')
+    // else if (us1Type === 'custom' && (us1.unit !== us2.unit)) {
+    //   return false;
+    // }
 
     return true;
   }
