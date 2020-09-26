@@ -30,7 +30,7 @@ mat-form-field {
     row-gap: var(--default-padding);
 }
 
-.nutrients-table {
+.nutrients-table, .unit-conversions-table {
     width: 100%;
 
     .mat-header-cell, .mat-cell {
@@ -55,17 +55,20 @@ mat-form-field {
         }
     }
 
+    .icons {
+        display: flex;
+        justify-content: flex-end;
+    }
+}
+
+.nutrients-table {
+
     .unit-form-field {
         max-width: 5ch;
     }
 
     .amount-form-field {
         max-width: 8ch;
-    }
-
-    .icons {
-        display: flex;
-        justify-content: flex-end;
     }
 }
 

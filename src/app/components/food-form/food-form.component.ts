@@ -9,6 +9,7 @@ import { Nutrient } from 'src/app/models/nutrient.model';
 import { Portion } from 'src/app/models/portion.model';
 import { FdcApiService } from 'src/app/services/api/fdc-api.service';
 import { FoodApiService } from 'src/app/services/api/food-api.service';
+import { ConversionRatioService } from 'src/app/services/conversion-ratio.service';
 import { FoodMapperService } from 'src/app/services/mappers/food-mapper.service';
 import { NutrientMapperService } from 'src/app/services/mappers/nutrient-mapper.service';
 import { PortionMapperService } from 'src/app/services/mappers/portion-mapper.service';
@@ -28,6 +29,9 @@ export class FoodFormComponent implements OnInit, OnDestroy {
   loading = false;
 
   foodForm: FormGroup;
+
+  conversionRatiosDisplayedColumns = ['sideA', 'equals', 'sideB', 'icons'];
+  conversionRatiosDataSource: BehaviorSubject<any> = new BehaviorSubject([]);
 
   nutrientsDisplayedColumns = ['name', 'amount', 'unit', 'icons'];
   nutrientsDataSource: BehaviorSubject<any> = new BehaviorSubject([]);
@@ -50,6 +54,7 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     private unitService: UnitService,
     private nutrientMetadataService: NutrientMetadataService,
     private nutrientMapperService: NutrientMapperService,
+    private conversionRatioService: ConversionRatioService,
     private location: Location
   ) { }
 
@@ -129,6 +134,10 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     }
   }
 
+  getConversionRatioSideDisplayValue(cvRatFG, side) {
+    return this.conversionRatioService.fgSideDisplayValue(cvRatFG, side);
+  }
+
   private loadExistingFood(): void {
     this.loading = true;
     this.subscriptions.push(
@@ -160,9 +169,9 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     this.foodForm = this.foodMapperService.modelToFormGroup(this.food);
     this.subscriptions.push(
       this.foodForm.valueChanges.subscribe(() => {
-        const nutrients = this.foodForm.get('nutrients') as FormArray;
 
         // inject nutrient index into nutrient form groups and push to data source
+        const nutrients = this.foodForm.get('nutrients') as FormArray;
         this.nutrientsDataSource.next(nutrients.controls.map((nutrient: FormGroup, index: number) => {
           const existingIndexControl = nutrient.get('nutrientIndex');
           if (existingIndexControl) {
@@ -174,6 +183,21 @@ export class FoodFormComponent implements OnInit, OnDestroy {
             nutrient.addControl('nutrientIndex', new FormControl(index));
           }
           return nutrient;
+        }));
+
+        // inject conversion ratio index into conversion ratio form groups and push to data source
+        const conversionRatios = this.foodForm.get('conversionRatios') as FormArray;
+        this.conversionRatiosDataSource.next(conversionRatios.controls.map((cvRat: FormGroup, index: number) => {
+          const existingIndexControl = cvRat.get('conversionRatioIndex');
+          if (existingIndexControl) {
+            // avoid recursive change detection - nice.
+            if ((existingIndexControl.value + 0) !== index) {
+              cvRat.get('conversionRatioIndex').setValue(index);
+            }
+          } else {
+            cvRat.addControl('conversionRatioIndex', new FormControl(index));
+          }
+          return cvRat;
         }));
       })
     );

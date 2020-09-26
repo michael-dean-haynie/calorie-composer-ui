@@ -31,6 +31,7 @@ export class ConversionRatioMapperService {
   modelToFormGroup(conversionRatio: ConversionRatio): FormGroup {
     return this.fb.group({
       id: [conversionRatio.id],
+      editMode: [false],
       amountA: [conversionRatio.amountA],
       unitA: [conversionRatio.unitA],
       freeFormValueA: [conversionRatio.freeFormValueA],
@@ -38,6 +39,18 @@ export class ConversionRatioMapperService {
       unitB: [conversionRatio.unitB],
       freeFormValueB: [conversionRatio.freeFormValueB]
     });
+  }
+
+  formGroupToModel(formGroup: FormGroup): ConversionRatio {
+    const conversionRatio = new ConversionRatio();
+    conversionRatio.id = formGroup.get('id').value;
+    conversionRatio.amountA = formGroup.get('amountA').value;
+    conversionRatio.unitA = formGroup.get('unitA').value;
+    conversionRatio.freeFormValueA = formGroup.get('freeFormValueA').value;
+    conversionRatio.amountB = formGroup.get('amountB').value;
+    conversionRatio.unitB = formGroup.get('unitB').value;
+    conversionRatio.freeFormValueB = formGroup.get('freeFormValueB').value;
+    return conversionRatio;
   }
 
   // TODO: Implement modelToFormGroup, formGroupToModel, formArrayToModelArray?

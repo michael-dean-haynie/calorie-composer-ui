@@ -44,10 +44,71 @@
                         [foodForm]="foodForm" [portionFormControl]="foodForm.get(['otherPortions', i])"
                         [otherPortionsIndex]="i">
                     </app-food-form-portion> -->
-                    <app-food-form-conversion-ratio *ngFor="let convRat of conversionRatios.controls; let i=index"
-                        [foodForm]="foodForm" [conversionRatioFormControl]="foodForm.get(['conversionRatios', i])"
-                        [conversionRatiosIndex]="i"></app-food-form-conversion-ratio>
 
+
+                    <!-- <app-food-form-conversion-ratio *ngFor="let convRat of conversionRatios.controls; let i=index"
+                        [foodForm]="foodForm" [conversionRatioFormControl]="foodForm.get(['conversionRatios', i])"
+                        [conversionRatiosIndex]="i"></app-food-form-conversion-ratio> -->
+
+                    <table mat-table [dataSource]="conversionRatiosDataSource"
+                        class="mat-elevation-z8 unit-conversions-table">
+
+                        <!-- Side A Column -->
+                        <ng-container matColumnDef="sideA">
+                            <td mat-cell *matCellDef="let element">
+                                <ng-container *ngIf="!element.get('editMode').value">
+                                    {{getConversionRatioSideDisplayValue(element, 'a')}}
+                                </ng-container>
+                                <!-- <ng-container *ngIf="element.get('editMode').value">
+                                    <mat-form-field floatLabel="never">
+                                        <input matInput placeholder="Ex. Protein" [formControl]="element.get('name')"
+                                            [matAutocomplete]="nutrientName">
+                                        <mat-autocomplete #nutrientName="matAutocomplete" class="ac-panel left">
+                                            <mat-option *ngFor=" let option of nutrientNameACOptions" [value]="option">
+                                                {{option}}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                    </mat-form-field>
+                                </ng-container> -->
+                            </td>
+                        </ng-container>
+
+                        <!-- Equals Column -->
+                        <ng-container matColumnDef="equals">
+                            <td mat-cell *matCellDef="let element">
+                                =
+                            </td>
+                        </ng-container>
+
+                        <!-- Side A Column -->
+                        <ng-container matColumnDef="sideB">
+                            <td mat-cell *matCellDef="let element">
+                                <ng-container *ngIf="!element.get('editMode').value">
+                                    {{getConversionRatioSideDisplayValue(element, 'b')}}
+                                </ng-container>
+                                <!-- <ng-container *ngIf="element.get('editMode').value">
+                                    <mat-form-field floatLabel="never">
+                                        <input matInput placeholder="Ex. Protein" [formControl]="element.get('name')"
+                                            [matAutocomplete]="nutrientName">
+                                        <mat-autocomplete #nutrientName="matAutocomplete" class="ac-panel left">
+                                            <mat-option *ngFor=" let option of nutrientNameACOptions" [value]="option">
+                                                {{option}}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                    </mat-form-field>
+                                </ng-container> -->
+                            </td>
+                        </ng-container>
+
+                        <!-- Icons Column -->
+                        <ng-container matColumnDef="icons">
+                            <td mat-cell *matCellDef="let element">
+                                <!-- put back -->
+                            </td>
+                        </ng-container>
+
+                        <tr mat-row *matRowDef="let row; columns: conversionRatiosDisplayedColumns;"></tr>
+                    </table>
                 </div>
             </div>
         </div>
