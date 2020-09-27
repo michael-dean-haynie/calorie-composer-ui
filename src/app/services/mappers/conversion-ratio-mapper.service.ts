@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ConversionRatioDTO } from 'src/app/contracts/conversion-ratio-dto';
 import { ConversionRatio } from 'src/app/models/conversion-ratio.model';
 
@@ -53,7 +53,7 @@ export class ConversionRatioMapperService {
     return conversionRatio;
   }
 
-  // TODO: Implement modelToFormGroup, formGroupToModel, formArrayToModelArray?
-
-
+  formArrayToModelArray(formArray: FormArray): ConversionRatio[] {
+    return formArray.controls.map((formGroup: FormGroup) => this.formGroupToModel(formGroup));
+  }
 }

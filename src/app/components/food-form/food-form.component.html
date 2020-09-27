@@ -35,7 +35,7 @@
                     <h4>Unit Conversions
                         <!-- ({{otherPortions.controls.length}})-->
                     </h4>
-                    <button type="button" mat-icon-button color="primary" (click)="addNonSSPortion()">
+                    <button type="button" mat-icon-button color="primary" (click)="addConversionRatio()">
                         <mat-icon>add_to_photos</mat-icon>
                     </button>
                 </div>
@@ -103,7 +103,25 @@
                         <!-- Icons Column -->
                         <ng-container matColumnDef="icons">
                             <td mat-cell *matCellDef="let element">
-                                <!-- put back -->
+                                <div class="icons">
+                                    <!-- Delete Conversion Ratio -->
+                                    <button *ngIf="element.get('editMode').value === true" type="button" mat-icon-button
+                                        color="primary"
+                                        (click)="removeConversionRatio(element.get('conversionRatioIndex').value)">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+
+                                    <!-- Toggle Edit Mode -->
+                                    <button *ngIf="!aNutrientIsBeingEdited || element.get('editMode').value === true"
+                                        type="button" mat-icon-button color="primary"
+                                        (click)="toggleNutrientEditMode(element)" [disabled]="element.invalid">
+                                        <mat-icon
+                                            *ngIf="element.get('editMode').value === false && !aNutrientIsBeingEdited">
+                                            edit
+                                        </mat-icon>
+                                        <mat-icon *ngIf="element.get('editMode').value === true">done</mat-icon>
+                                    </button>
+                                </div>
                             </td>
                         </ng-container>
 

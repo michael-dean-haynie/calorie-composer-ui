@@ -4,12 +4,14 @@ import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { NutrientMetadataList } from 'src/app/constants/nutrient-metadata';
+import { ConversionRatio } from 'src/app/models/conversion-ratio.model';
 import { Food } from 'src/app/models/food.model';
 import { Nutrient } from 'src/app/models/nutrient.model';
 import { Portion } from 'src/app/models/portion.model';
 import { FdcApiService } from 'src/app/services/api/fdc-api.service';
 import { FoodApiService } from 'src/app/services/api/food-api.service';
 import { ConversionRatioService } from 'src/app/services/conversion-ratio.service';
+import { ConversionRatioMapperService } from 'src/app/services/mappers/conversion-ratio-mapper.service';
 import { FoodMapperService } from 'src/app/services/mappers/food-mapper.service';
 import { NutrientMapperService } from 'src/app/services/mappers/nutrient-mapper.service';
 import { PortionMapperService } from 'src/app/services/mappers/portion-mapper.service';
@@ -54,6 +56,7 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     private unitService: UnitService,
     private nutrientMetadataService: NutrientMetadataService,
     private nutrientMapperService: NutrientMapperService,
+    private conversionRatioMapperService: ConversionRatioMapperService,
     private conversionRatioService: ConversionRatioService,
     private location: Location
   ) { }
@@ -105,6 +108,10 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     this.conversionRatios.push(this.portionMapperService.modelToFormGroup(portion));
   }
 
+  /**
+   * nutrient table add/remove/toggle
+   */
+
   addNutrient(): void {
     const nutrientCtrl = this.nutrientMapperService.modelToFormGroup(new Nutrient());
     nutrientCtrl.get('editMode').setValue(true);
@@ -117,6 +124,24 @@ export class FoodFormComponent implements OnInit, OnDestroy {
 
   removeNutrient(index: number): void {
     this.nutrients.removeAt(index);
+  }
+
+  /**
+   * conversion ratio table add/remove/toggle
+   */
+
+  addConversionRatio(): void {
+    const conversionRatioCtrl = this.conversionRatioMapperService.modelToFormGroup(new ConversionRatio());
+    conversionRatioCtrl.get('editMode').setValue(true);
+    this.conversionRatios.insert(0, conversionRatioCtrl);
+  }
+
+  toggleConversionRatioEditMode(conversionRatio: FormGroup): void {
+    conversionRatio.get('editMode').setValue(!conversionRatio.get('editMode').value);
+  }
+
+  removeConversionRatio(index: number): void {
+    this.conversionRatios.removeAt(index);
   }
 
   cancel(): void {

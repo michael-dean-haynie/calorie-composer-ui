@@ -68,11 +68,7 @@ export class FoodMapperService {
     food.brandOwner = formGroup.get('brandOwner').value;
     food.ingredients = formGroup.get('ingredients').value;
     food.nutrients = this.nutrientMapperService.formArrayToModelArray(formGroup.get('nutrients') as FormArray);
-
-    // collect portions
-    food.conversionRatios = [];
-    // food.conversionRatios.push(this.conversionRatioMapperService.formGroupToModel(formGroup.get('servingSizePortion') as FormGroup));
-    // food.conversionRatios = food.conversionRatios.concat(this.conversionRatioMapperService.formArrayToModelArray(formGroup.get('otherPortions') as FormArray));
+    food.conversionRatios = this.conversionRatioMapperService.formArrayToModelArray(formGroup.get('conversionRatios') as FormArray);
 
     return food;
   }
