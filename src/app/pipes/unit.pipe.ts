@@ -15,20 +15,7 @@ export class UnitPipe implements PipeTransform {
 
     const matchingReferenceUnit = UnitService.ReferenceMeasureUnits.find(desc => desc.abbr === value);
     if (matchingReferenceUnit) {
-      // Serving Size
-      if (matchingReferenceUnit.abbr === UnitService.ServingSizeRefUnit.abbr) {
-        result = 'serving size';
-      }
-
-      // Constituents Size
-      if (matchingReferenceUnit.abbr === UnitService.ConstituentsSizeRefUnit.abbr) {
-        if (constituentType === 'nutrient') {
-          result = 'nutrient ref amt';
-        }
-        else if (constituentType === 'food') {
-          result = 'ingredient ref amt';
-        }
-      }
+      result = this.unitService.ppReferenceUnit(matchingReferenceUnit.abbr, constituentType);
     }
 
     return result;

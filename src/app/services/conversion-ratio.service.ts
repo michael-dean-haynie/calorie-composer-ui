@@ -32,7 +32,9 @@ export class ConversionRatioService {
     }
   }
 
-  // Form Group Overloads
+  /**
+   * Form Group Overloads
+   */
 
   fgSideUsesFreeFormValue(cvRatFG: FormGroup, side: ConversionRatioSide): boolean {
     const cvRat = this.conversionRatioMapperService.formGroupToModel(cvRatFG);

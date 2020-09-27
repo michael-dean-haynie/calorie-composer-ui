@@ -4,10 +4,12 @@ import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { NutrientMetadataList } from 'src/app/constants/nutrient-metadata';
+import { AutoCompleteOptGroup } from 'src/app/constants/types/auto-complete-options.type';
 import { ConversionRatio } from 'src/app/models/conversion-ratio.model';
 import { Food } from 'src/app/models/food.model';
 import { Nutrient } from 'src/app/models/nutrient.model';
 import { Portion } from 'src/app/models/portion.model';
+import { UnitPipe } from 'src/app/pipes/unit.pipe';
 import { FdcApiService } from 'src/app/services/api/fdc-api.service';
 import { FoodApiService } from 'src/app/services/api/food-api.service';
 import { ConversionRatioService } from 'src/app/services/conversion-ratio.service';
@@ -35,6 +37,24 @@ export class FoodFormComponent implements OnInit, OnDestroy {
   conversionRatiosDisplayedColumns = ['sideA', 'equals', 'sideB', 'icons'];
   conversionRatiosDataSource: BehaviorSubject<any> = new BehaviorSubject([]);
 
+  conversionRatioUnitACOptions: AutoCompleteOptGroup[] = [
+    {
+      groupLabel: 'Mass',
+      groupOptions: UnitService.MetricMassUnits.concat(UnitService.ImperialMassUnits)
+        .map(unit => this.unitService.mapUnitToAutoCompleteOptions(unit, 'nutrient'))
+    },
+    {
+      groupLabel: 'Volume',
+      groupOptions: UnitService.MetricVolumeUnits.concat(UnitService.ImperialVolumeUnits)
+        .map(unit => this.unitService.mapUnitToAutoCompleteOptions(unit, 'nutrient'))
+    },
+    {
+      groupLabel: 'Reference',
+      groupOptions: UnitService.ReferenceMeasureUnits
+        .map(unit => this.unitService.mapUnitToAutoCompleteOptions(unit, 'nutrient'))
+    }
+  ];
+
   nutrientsDisplayedColumns = ['name', 'amount', 'unit', 'icons'];
   nutrientsDataSource: BehaviorSubject<any> = new BehaviorSubject([]);
 
@@ -58,6 +78,7 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     private nutrientMapperService: NutrientMapperService,
     private conversionRatioMapperService: ConversionRatioMapperService,
     private conversionRatioService: ConversionRatioService,
+    private unitPipe: UnitPipe,
     private location: Location
   ) { }
 
@@ -161,6 +182,11 @@ export class FoodFormComponent implements OnInit, OnDestroy {
 
   getConversionRatioSideDisplayValue(cvRatFG, side) {
     return this.conversionRatioService.fgSideDisplayValue(cvRatFG, side, 'nutrient');
+  }
+
+  get ppConversionRatioUnit() {
+    // must curry to introduce the component as the "this" scope
+    return (unit: string): string => this.unitPipe.transform(unit, 'nutrient');
   }
 
   private loadExistingFood(): void {

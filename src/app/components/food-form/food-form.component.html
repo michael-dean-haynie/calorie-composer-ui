@@ -59,44 +59,60 @@
                                 <ng-container *ngIf="!element.get('editMode').value">
                                     {{getConversionRatioSideDisplayValue(element, 'a')}}
                                 </ng-container>
-                                <!-- <ng-container *ngIf="element.get('editMode').value">
-                                    <mat-form-field floatLabel="never">
-                                        <input matInput placeholder="Ex. Protein" [formControl]="element.get('name')"
-                                            [matAutocomplete]="nutrientName">
-                                        <mat-autocomplete #nutrientName="matAutocomplete" class="ac-panel left">
-                                            <mat-option *ngFor=" let option of nutrientNameACOptions" [value]="option">
-                                                {{option}}
-                                            </mat-option>
+                                <ng-container *ngIf="element.get('editMode').value">
+                                    <mat-form-field floatLabel="never" class="amount-form-field">
+                                        <input matInput [appMask]="['non-negative', 'float-hundredths']"
+                                            placeholder="Ex. 1.5" [formControl]="element.get('amountA')">
+                                    </mat-form-field>
+                                    <mat-form-field floatLabel="never" class="unit-form-field">
+                                        <input matInput placeholder="Ex. g" [formControl]="element.get('unitA')"
+                                            [matAutocomplete]="unitA">
+                                        <mat-autocomplete #unitA="matAutocomplete" [displayWith]="ppConversionRatioUnit"
+                                            class="ac-panel left">
+                                            <ng-container *ngFor="let group of conversionRatioUnitACOptions">
+                                                <mat-option *ngFor=" let option of group.groupOptions"
+                                                    [value]="option.value">
+                                                    {{option.label}}
+                                                </mat-option>
+                                            </ng-container>
                                         </mat-autocomplete>
                                     </mat-form-field>
-                                </ng-container> -->
+                                </ng-container>
                             </td>
                         </ng-container>
 
                         <!-- Equals Column -->
                         <ng-container matColumnDef="equals">
                             <td mat-cell *matCellDef="let element">
-                                =
+                                =&nbsp;
                             </td>
                         </ng-container>
 
-                        <!-- Side A Column -->
+                        <!-- Side B Column -->
                         <ng-container matColumnDef="sideB">
                             <td mat-cell *matCellDef="let element">
                                 <ng-container *ngIf="!element.get('editMode').value">
                                     {{getConversionRatioSideDisplayValue(element, 'b')}}
                                 </ng-container>
-                                <!-- <ng-container *ngIf="element.get('editMode').value">
-                                    <mat-form-field floatLabel="never">
-                                        <input matInput placeholder="Ex. Protein" [formControl]="element.get('name')"
-                                            [matAutocomplete]="nutrientName">
-                                        <mat-autocomplete #nutrientName="matAutocomplete" class="ac-panel left">
-                                            <mat-option *ngFor=" let option of nutrientNameACOptions" [value]="option">
-                                                {{option}}
-                                            </mat-option>
+                                <ng-container *ngIf="element.get('editMode').value">
+                                    <mat-form-field floatLabel="never" class="amount-form-field">
+                                        <input matInput [appMask]="['non-negative', 'float-hundredths']"
+                                            placeholder="Ex. 1.5" [formControl]="element.get('amountB')">
+                                    </mat-form-field>
+                                    <mat-form-field floatLabel="never" class="unit-form-field">
+                                        <input matInput placeholder="Ex. g" [formControl]="element.get('unitB')"
+                                            [matAutocomplete]="unitB">
+                                        <mat-autocomplete #unitB="matAutocomplete" [displayWith]="ppConversionRatioUnit"
+                                            class="ac-panel left">
+                                            <ng-container *ngFor="let group of conversionRatioUnitACOptions">
+                                                <mat-option *ngFor=" let option of group.groupOptions"
+                                                    [value]="option.value">
+                                                    {{option.label}}
+                                                </mat-option>
+                                            </ng-container>
                                         </mat-autocomplete>
                                     </mat-form-field>
-                                </ng-container> -->
+                                </ng-container>
                             </td>
                         </ng-container>
 

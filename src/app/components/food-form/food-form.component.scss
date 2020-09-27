@@ -72,6 +72,26 @@ mat-form-field {
     }
 }
 
+.unit-conversions-table {
+    .mat-cell {
+        
+        font-size: .8em;
+    }
+
+    .unit-form-field {
+        max-width: 5ch;
+    }
+
+    .amount-form-field {
+        max-width: 5ch;
+    }
+
+    mat-form-field + mat-form-field {
+        margin-left: 1ch;
+    }
+}
+
+
 .form-buttons {
     display: flex;
     justify-content: space-between;

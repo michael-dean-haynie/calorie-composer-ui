@@ -21,11 +21,11 @@ export class FoodFormPortionComponent {
   metricMeasureACOptions: AutoCompleteOptGroup[] = [
     {
       groupLabel: 'Mass',
-      groupOptions: UnitService.MetricMeasureMassUnits.map(unit => this.mapUnitToAutoCompleteOptions(unit))
+      groupOptions: UnitService.MetricMassUnits.map(unit => this.mapUnitToAutoCompleteOptions(unit))
     },
     {
       groupLabel: 'Volume',
-      groupOptions: UnitService.MetricMeasureVolumeUnits.map(unit => this.mapUnitToAutoCompleteOptions(unit))
+      groupOptions: UnitService.MetricVolumeUnits.map(unit => this.mapUnitToAutoCompleteOptions(unit))
     }
   ];
 

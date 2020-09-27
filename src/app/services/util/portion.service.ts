@@ -28,7 +28,7 @@ export class PortionService {
   }
 
   determineMetricUnit(unitName: string): string {
-    return UnitService.MetricMeasureUnits.find(unitDesc => {
+    return UnitService.MetricUnits.find(unitDesc => {
       return [
         unitDesc.abbr,
         unitDesc.singular.toLowerCase(),
