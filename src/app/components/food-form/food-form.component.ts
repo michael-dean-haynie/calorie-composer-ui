@@ -181,7 +181,8 @@ export class FoodFormComponent implements OnInit, OnDestroy {
   }
 
   getConversionRatioSideDisplayValue(cvRatFG, side) {
-    return this.conversionRatioService.fgSideDisplayValue(cvRatFG, side, 'nutrient');
+    const cvRat = this.conversionRatioMapperService.formGroupToModel(cvRatFG);
+    return this.conversionRatioService.sideDisplayValue(cvRat, side, 'nutrient');
   }
 
   get ppConversionRatioUnit() {

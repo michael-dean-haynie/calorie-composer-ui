@@ -38,11 +38,8 @@ export class FoodMapperService {
     return food;
   }
 
-  // TODO: Refactor with conversion ratio implementation
   modelToFormGroup(food: Food): FormGroup {
-    // // extract serving size portion
-    // const ssp = this.portionService.getServingSize(food.conversionRatios) ?? this.conversionRatioMapperService.defaultSSModel();
-    // const otherPortions = this.portionService.getNonSSPortions(food.conversionRatios);
+
 
     return this.fb.group({
       id: [food.id],
@@ -52,14 +49,13 @@ export class FoodMapperService {
       ingredients: [food.ingredients],
       nutrients: this.fb.array(food.nutrients.map(nutrient => this.nutrientMapperService.modelToFormGroup(nutrient))),
       conversionRatios: this.fb.array(
-        food.conversionRatios.map(conversionRatio => this.conversionRatioMapperService.modelToFormGroup(conversionRatio))
+        food.conversionRatios.map(conversionRatio => this.conversionRatioMapperService.modelToFormGroup(conversionRatio)),
+        { validators: [] }
       )
-      // servingSizePortion: this.conversionRatioMapperService.modelToFormGroup(ssp),
-      // otherPortions: this.fb.array(otherPortions.map(portion => this.conversionRatioMapperService.modelToFormGroup(portion)))
-    }, { validators: [/*this.exactlyOneNutrientRefPortionPerUnitType*/] });
+
+    });
   }
 
-  // TODO: Refactor with conversion ratio implementation
   formGroupToModel(formGroup: FormGroup): Food {
     const food = new Food();
     food.id = formGroup.get('id').value;

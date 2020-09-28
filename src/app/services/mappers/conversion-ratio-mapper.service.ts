@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { ConversionRatioDTO } from 'src/app/contracts/conversion-ratio-dto';
 import { ConversionRatio } from 'src/app/models/conversion-ratio.model';
+import { ConversionRatioService } from '../conversion-ratio.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,8 @@ import { ConversionRatio } from 'src/app/models/conversion-ratio.model';
 export class ConversionRatioMapperService {
 
   constructor(
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private conversionRatioService: ConversionRatioService
   ) { }
 
   dtoToModel(conversionRatioDTO: ConversionRatioDTO): ConversionRatio {
@@ -38,7 +40,8 @@ export class ConversionRatioMapperService {
       amountB: [conversionRatio.amountB],
       unitB: [conversionRatio.unitB],
       freeFormValueB: [conversionRatio.freeFormValueB]
-    });
+    },
+      { validators: [this.noConvertingApplesToApples] });
   }
 
   formGroupToModel(formGroup: FormGroup): ConversionRatio {
@@ -55,5 +58,24 @@ export class ConversionRatioMapperService {
 
   formArrayToModelArray(formArray: FormArray): ConversionRatio[] {
     return formArray.controls.map((formGroup: FormGroup) => this.formGroupToModel(formGroup));
+  }
+
+  /**
+   * Validation
+   */
+
+  // Conversion must involve 2 different units
+  // Converting one amount of apples to another amount of apples is nonsense
+  private noConvertingApplesToApples: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
+    const cvRat = this.formGroupToModel(control);
+
+    // can not be certian of units in free form values - in that case disregard
+    if (this.conversionRatioService.usesFreeFormValue(cvRat)) {
+      return null;
+    }
+
+    if (cvRat.unitA === cvRat.unitB) {
+      return { noConvertingApplesToApples: true };
+    }
   }
 }

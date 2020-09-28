@@ -19,8 +19,8 @@
     </section>
 
     <section>
-        <h3 [ngClass]="{'mat-error': !!foodForm.errors}">Portions and Units</h3>
-        <app-error-msg [ctrl]="foodForm"></app-error-msg>
+        <h3 [ngClass]="{'mat-error': !conversionRatios.valid}">Portions and Units</h3>
+
         <div class="portions-and-units-subsections">
             <div>
                 <div class="split-subheader">
@@ -31,10 +31,9 @@
             </div>
 
             <div>
+                <app-error-msg [ctrl]="conversionRatios" [recursive]="true"></app-error-msg>
                 <div class="split-subheader">
-                    <h4>Unit Conversions
-                        <!-- ({{otherPortions.controls.length}})-->
-                    </h4>
+                    <h4 [ngClass]="{'mat-error': !conversionRatios.valid}">Unit Conversions</h4>
                     <button type="button" mat-icon-button color="primary" (click)="addConversionRatio()">
                         <mat-icon>add_to_photos</mat-icon>
                     </button>

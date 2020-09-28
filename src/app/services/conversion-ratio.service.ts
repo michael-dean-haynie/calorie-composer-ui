@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { ConstituentType } from '../constants/types/constituent-type.type';
 import { ConversionRatioSide } from '../constants/types/conversion-ratio-side.type';
 import { ConversionRatio } from '../models/conversion-ratio.model';
 import { UnitPipe } from '../pipes/unit.pipe';
-import { ConversionRatioMapperService } from './mappers/conversion-ratio-mapper.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +10,6 @@ import { ConversionRatioMapperService } from './mappers/conversion-ratio-mapper.
 export class ConversionRatioService {
 
   constructor(
-    private conversionRatioMapperService: ConversionRatioMapperService,
     private unitPipe: UnitPipe
   ) { }
 
@@ -32,26 +29,6 @@ export class ConversionRatioService {
     }
   }
 
-  /**
-   * Form Group Overloads
-   */
-
-  fgSideUsesFreeFormValue(cvRatFG: FormGroup, side: ConversionRatioSide): boolean {
-    const cvRat = this.conversionRatioMapperService.formGroupToModel(cvRatFG);
-    return this.sideUsesFreeFormValue(cvRat, side);
-  }
-
-  fgUsesFreeFormValue(cvRatFG: FormGroup): boolean {
-    const cvRat = this.conversionRatioMapperService.formGroupToModel(cvRatFG);
-    return this.usesFreeFormValue(cvRat);
-  }
-
-  fgSideDisplayValue(cvRatFG: FormGroup, side: ConversionRatioSide, constituentType: ConstituentType): string {
-    const cvRat = this.conversionRatioMapperService.formGroupToModel(cvRatFG);
-    return this.sideDisplayValue(cvRat, side, constituentType);
-  }
-
-
   private getFreeFormValueForSide(cvRat: ConversionRatio, side: ConversionRatioSide): string {
     const map = new Map<ConversionRatioSide, string>([['a', cvRat.freeFormValueA], ['b', cvRat.freeFormValueB]]);
     return map.get(side);
@@ -69,4 +46,3 @@ export class ConversionRatioService {
   }
 
 }
-// pu@ piping reference units, making form savable, updating karate tests, validating unit conversions part of food form, implement unit conversion logic
