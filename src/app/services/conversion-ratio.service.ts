@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { IsMeaningfulValue } from '../constants/functions';
 import { ConstituentType } from '../constants/types/constituent-type.type';
 import { ConversionRatioSide } from '../constants/types/conversion-ratio-side.type';
 import { ConversionRatio } from '../models/conversion-ratio.model';
@@ -14,7 +15,7 @@ export class ConversionRatioService {
   ) { }
 
   sideUsesFreeFormValue(cvRat: ConversionRatio, side: ConversionRatioSide): boolean {
-    return this.isMeaningfulValue(this.getFreeFormValueForSide(cvRat, side));
+    return IsMeaningfulValue(this.getFreeFormValueForSide(cvRat, side));
   }
 
   usesFreeFormValue(cvRat: ConversionRatio): boolean {
@@ -40,9 +41,4 @@ export class ConversionRatioService {
 
     return `${amount} ${this.unitPipe.transform(unit, constituentType)}`;
   }
-
-  private isMeaningfulValue(value): boolean {
-    return value !== undefined && value !== null && ('' + value).trim() !== '';
-  }
-
 }

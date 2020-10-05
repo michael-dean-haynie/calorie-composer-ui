@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { IsMeaningfulValue } from 'src/app/constants/functions';
 import { ConversionRatioDTO } from 'src/app/contracts/conversion-ratio-dto';
 import { ConversionRatio } from 'src/app/models/conversion-ratio.model';
 import { ConversionRatioService } from '../conversion-ratio.service';
+import { UnitService } from '../util/unit.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +13,8 @@ export class ConversionRatioMapperService {
 
   constructor(
     private fb: FormBuilder,
-    private conversionRatioService: ConversionRatioService
+    private conversionRatioService: ConversionRatioService,
+    private unitService: UnitService
   ) { }
 
   dtoToModel(conversionRatioDTO: ConversionRatioDTO): ConversionRatio {
@@ -41,7 +44,7 @@ export class ConversionRatioMapperService {
       unitB: [conversionRatio.unitB],
       freeFormValueB: [conversionRatio.freeFormValueB]
     },
-      { validators: [this.noConvertingApplesToApples] });
+      { validators: [this.noConvertingApplesToApples, this.eitherUnitAndAmountOrFreeForm, this.noOverridingStandardizedUnitConversions] });
   }
 
   formGroupToModel(formGroup: FormGroup): ConversionRatio {
@@ -77,5 +80,40 @@ export class ConversionRatioMapperService {
     if (cvRat.unitA === cvRat.unitB) {
       return { noConvertingApplesToApples: true };
     }
+  }
+
+
+  // TODO: make this better once I decide how free-form editing will work
+  private eitherUnitAndAmountOrFreeForm: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
+    const cvRat = this.formGroupToModel(control);
+    const error = { eitherUnitAndAmountOrFreeForm: true };
+
+    // side a
+    if (!this.conversionRatioService.sideUsesFreeFormValue(cvRat, 'a')) {
+      if (!IsMeaningfulValue(cvRat.amountA) || !IsMeaningfulValue(cvRat.unitA)) {
+        return error;
+      }
+    }
+
+    // side b
+    if (!this.conversionRatioService.sideUsesFreeFormValue(cvRat, 'b')) {
+      if (!IsMeaningfulValue(cvRat.amountB) || !IsMeaningfulValue(cvRat.unitB)) {
+        return error;
+      }
+    }
+
+    return null;
+  }
+
+  // can't be making 1 mg = 5 g
+  private noOverridingStandardizedUnitConversions: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
+    const cvRat = this.formGroupToModel(control);
+    const error = { noOverridingStandardizedUnitConversions: true };
+
+    if (this.unitService.unitsHaveStandardizedConversion(cvRat.unitA, cvRat.unitB)) {
+      return error;
+    }
+
+    return null;
   }
 }

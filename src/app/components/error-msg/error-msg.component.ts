@@ -10,7 +10,8 @@ export class ErrorMsgComponent {
 
   private static msgMap: Map<string, string> = new Map<string, string>([
     ['required', 'This field is required.'],
-    ['noConvertingApplesToApples', 'Cannot convert one amt of a unit to another amt of the same unit. That\'s nonsense.']
+    ['noConvertingApplesToApples', 'Cannot convert one amt of a unit to another amt of the same unit. That\'s nonsense.'],
+    ['noOverridingStandardizedUnitConversions', 'Cannot override standardized unit conversions. C\'mon dude.']
   ]);
 
   @Input() ctrl: AbstractControl;

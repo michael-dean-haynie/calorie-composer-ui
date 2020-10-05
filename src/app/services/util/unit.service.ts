@@ -105,16 +105,37 @@ export class UnitService {
 
   constructor() { }
 
-  getMeasureType(unit: string): MeasureType {
-    if (!unit) { return null; }
-    let result: MeasureType;
+  isStandardizedUnit(unit: string): boolean {
     try {
-      result = convert().describe(unit).measure;
+      convert().describe(unit);
+      return true;
+    }
+    catch (e) {
+      return false;
+    }
+  }
+
+  unitsHaveStandardizedConversion(unitA: string, unitB: string): boolean {
+    try {
+      convert(1).from(unitA).to(unitB);
+      return true;
+    }
+    catch (e) {
+      return false;
+    }
+  }
+
+  getMeasureType(unit: string): MeasureType {
+    if (!unit) {
+      console.warn(`Could not determine known measure type for unit: ${unit}`);
+      return null;
+    }
+    try {
+      return convert().describe(unit).measure;
     } catch (e) {
       console.warn(`Could not determine known measure type for unit: ${unit}`);
-      result = null;
+      return null;
     }
-    return result;
   }
 
   ppReferenceUnit(refUnit: string, constituentType: ConstituentType): string {
