@@ -11,6 +11,8 @@ import { Food } from 'src/app/models/food.model';
 })
 export class UnitService {
 
+  public static CONVERT = convert;
+
   /**
    * Supplemental Units
    */
@@ -95,6 +97,7 @@ export class UnitService {
 
   /**
    * Food Amount Units
+   * The standardized units that I've decided to use in this app
    */
 
   public static FoodAmountMassUnits = convert()
@@ -103,12 +106,24 @@ export class UnitService {
   public static FoodAmountVolumeUnits = convert()
     .list('volume').filter(desc => ['ml', 'l', 'tsp', 'Tbs', 'fl-oz', 'cup', 'pnt', 'qt', 'gal'].includes(desc.abbr)) as UnitDescription[];
 
+  public static GetFoodAmountUnitsByMeasure = (measure: MeasureType) => {
+    if (measure === 'mass') {
+      return UnitService.FoodAmountMassUnits;
+    }
+    if (measure === 'volume') {
+      return UnitService.FoodAmountVolumeUnits;
+    }
+    return [];
+  }
+
   constructor() { }
 
   isStandardizedUnit(unit: string): boolean {
     try {
       convert().describe(unit);
-      return true;
+      return UnitService.FoodAmountMassUnits.concat(UnitService.FoodAmountVolumeUnits)
+        .map(desc => desc.abbr)
+        .includes(unit);
     }
     catch (e) {
       return false;
@@ -133,9 +148,22 @@ export class UnitService {
     try {
       return convert().describe(unit).measure;
     } catch (e) {
-      console.warn(`Could not determine known measure type for unit: ${unit}`);
-      return null;
+      const supplementalUnit = UnitService.SupplementalUnits.find(desc => desc.abbr === unit);
+      if (supplementalUnit) {
+        return supplementalUnit.measure;
+      }
+      else {
+        return 'custom';
+      }
     }
+  }
+
+  getStandardizedConversions(unit: string): string[] {
+    if (this.isStandardizedUnit(unit)) {
+      const measureType = this.getMeasureType(unit);
+      return UnitService.GetFoodAmountUnitsByMeasure(measureType).map(desc => desc.abbr);
+    }
+    return [];
   }
 
   ppReferenceUnit(refUnit: string, constituentType: ConstituentType): string {

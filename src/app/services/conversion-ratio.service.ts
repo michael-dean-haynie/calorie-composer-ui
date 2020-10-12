@@ -2,8 +2,11 @@ import { Injectable } from '@angular/core';
 import { IsMeaningfulValue } from '../constants/functions';
 import { ConstituentType } from '../constants/types/constituent-type.type';
 import { ConversionRatioSide } from '../constants/types/conversion-ratio-side.type';
+import { PathLink } from '../constants/types/path-link.type';
+import { Path } from '../constants/types/path.type';
 import { ConversionRatio } from '../models/conversion-ratio.model';
 import { UnitPipe } from '../pipes/unit.pipe';
+import { UnitService } from './util/unit.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +14,8 @@ import { UnitPipe } from '../pipes/unit.pipe';
 export class ConversionRatioService {
 
   constructor(
-    private unitPipe: UnitPipe
+    private unitPipe: UnitPipe,
+    private unitService: UnitService
   ) { }
 
   sideUsesFreeFormValue(cvRat: ConversionRatio, side: ConversionRatioSide): boolean {
@@ -30,6 +34,35 @@ export class ConversionRatioService {
     }
   }
 
+  isFilledOut(cvRat: ConversionRatio): boolean {
+    return IsMeaningfulValue(cvRat.unitA)
+      && IsMeaningfulValue(cvRat.amountA)
+      && IsMeaningfulValue(cvRat.unitB)
+      && IsMeaningfulValue(cvRat.amountB);
+  }
+
+  getAllPaths(cvRats: ConversionRatio[]): Path[] {
+    const allPaths: Path[] = [];
+    const currentPath: Path = [];
+    this.getAllPathsRecursive(cvRats, allPaths, currentPath);
+    // console.table(allPaths.map(path => path.map(pl => this.plSmry(pl))));
+    return allPaths;
+  }
+
+  producesContradictions(cvRats: ConversionRatio[]): boolean {
+    // console.table(cvRats.map(cvRat => this.cvRatSmry(cvRat)));
+    const allPaths: Path[] = [];
+    const currentPath: Path = [];
+    try {
+      this.getAllPathsRecursive(cvRats, allPaths, currentPath, true);
+      // console.table(allPaths.map(path => path.map(pl => this.plSmry(pl))));
+    } catch (e) { // exception was thrown because contradition was found
+      console.log(e);
+      return true;
+    }
+    return false;
+  }
+
   private getFreeFormValueForSide(cvRat: ConversionRatio, side: ConversionRatioSide): string {
     const map = new Map<ConversionRatioSide, string>([['a', cvRat.freeFormValueA], ['b', cvRat.freeFormValueB]]);
     return map.get(side);
@@ -40,5 +73,162 @@ export class ConversionRatioService {
     const unit = side === 'a' ? cvRat.unitA : cvRat.unitB;
 
     return `${amount} ${this.unitPipe.transform(unit, constituentType)}`;
+  }
+
+  private getAllPathsRecursive(
+    cvRats: ConversionRatio[],
+    allPaths: Path[],
+    currentPath: Path,
+    checkForContradictions: boolean = false
+  ): void {
+
+    // console.group(`getAllPaths() cp: ${this.pSmry(currentPath)}`);
+    // for first level call
+    if (!currentPath.length) {
+      cvRats.forEach(cvRat => {
+        // add root path
+        let newPath = [new PathLink(cvRat.unitA, cvRat.amountA, cvRat.unitB, cvRat.amountB)];
+        if (checkForContradictions) {
+          // if there's already a path that has the same source/target, throw contradiction exception
+          const contadictions = allPaths.filter(path => {
+            return path[0].source === newPath[0].source && path[path.length - 1].target === newPath[newPath.length - 1].target;
+          });
+          if (contadictions.length) {
+            throw new Error('Contradictions exist! ' +
+              `subject: ${this.pSmry(newPath)}, contradictions: ${contadictions.map(con => this.pSmry(con)).join(',')}`);
+          }
+        }
+        allPaths.push(newPath);
+        // console.log(`%cAdded to allPaths: ${this.pSmry(allPaths[allPaths.length - 1])}`, 'color: green');
+        let pathStart = [new PathLink(cvRat.unitA, cvRat.amountA, cvRat.unitB, cvRat.amountB)];
+
+        // fillout from root path
+        this.getAllPathsRecursive(cvRats, allPaths, pathStart);
+
+        // add inverse root path
+        newPath = [new PathLink(cvRat.unitB, cvRat.amountB, cvRat.unitA, cvRat.amountA)]
+        if (checkForContradictions) {
+          // if there's already a path that has the same source/target, throw contradiction exception
+          const contadictions = allPaths.filter(path => {
+            return path[0].source === newPath[0].source && path[path.length - 1].target === newPath[newPath.length - 1].target;
+          });
+          if (contadictions.length) {
+            throw new Error('Contradictions exist! ' +
+              `subject: ${this.pSmry(newPath)}, contradictions: ${contadictions.map(con => this.pSmry(con)).join(',')}`);
+          }
+        }
+        allPaths.push(newPath);
+        // console.log(`%cAdded to allPaths: ${this.pSmry(allPaths[allPaths.length - 1])}`, 'color: green');
+        pathStart = [new PathLink(cvRat.unitB, cvRat.amountB, cvRat.unitA, cvRat.amountA)];
+
+        // fillout from inverse root path
+        this.getAllPathsRecursive(cvRats, allPaths, pathStart);
+      });
+
+
+      // for nth level calls
+    } else {
+      const latestTarget = currentPath[currentPath.length - 1].target;
+      const otherUnitsInCurrentPath = currentPath
+        .map(pathLink => {
+          return [pathLink.source, pathLink.target];
+        })
+        .reduce((accumulator, currentValue) => {
+          // add values that don't already exist
+          return accumulator.concat(currentValue.filter(newVal => !accumulator.includes(newVal)));
+        }, [])
+        .filter(unit => unit !== latestTarget);
+      // // console.log('units in path so far besides latest target:', otherUnitsInCurrentPath);
+
+
+      /**
+       * find all the conversion ratios that include the latest target, but not any other unit in the current path
+       */
+      const persuableCvRats = cvRats
+        .filter(cvRat => this.conversionRatioIncludesUnit(cvRat, latestTarget))
+        .filter(cvRat => {
+          return !otherUnitsInCurrentPath.some(unit => this.conversionRatioIncludesUnit(cvRat, unit));
+        });
+      // console.log('persuable conversion ratios', this.cvRatsSmry(persuableCvRats));
+
+      persuableCvRats.forEach(cvRat => {
+        const newPath = currentPath.concat(this.getPathLinkFromCvRat(cvRat, latestTarget));
+        if (checkForContradictions) {
+          // if there's already a path that has the same source/target, throw contradiction exception
+          const contadictions = allPaths.filter(path => {
+            return path[0].source === newPath[0].source && path[path.length - 1].target === newPath[newPath.length - 1].target;
+          });
+          if (contadictions.length) {
+            throw new Error('Contradictions exist! ' +
+              `subject: ${this.pSmry(newPath)}, contradictions: ${contadictions.map(con => this.pSmry(con)).join(',')}`);
+          }
+        }
+        allPaths.push(newPath);
+        // console.log(`%cAdded to allPaths: ${this.pSmry(allPaths[allPaths.length - 1])}`, 'color: green');
+        const newCurrentPath = currentPath.concat([this.getPathLinkFromCvRat(cvRat, latestTarget)]);
+        this.getAllPathsRecursive(cvRats, allPaths, newCurrentPath);
+      });
+
+
+      /**
+       * find all standardized ratios that have a target that isn't in the current path ...
+       * ... and haven't already been reached by another path starting with the same unit as current path
+       */
+      const persuableStandardizedUnits = this.unitService.getStandardizedConversions(latestTarget)
+        .filter(unit => !otherUnitsInCurrentPath.concat([latestTarget]).includes(unit))
+        .filter(unit => !this.targetUnitPreviouslyReached(unit, allPaths, currentPath));
+      // console.log(`persuable standardized units: ${persuableStandardizedUnits.join(', ')}`);
+
+      for (const unit of persuableStandardizedUnits) {
+        // check previous iterations haven't made this one un-persuable
+        if (!this.targetUnitPreviouslyReached(unit, allPaths, currentPath)) {
+          allPaths.push(currentPath.concat(new PathLink(latestTarget, 1, unit, UnitService.CONVERT(1).from(latestTarget).to(unit))));
+          // console.log(`%cAdded to allPaths: ${this.pSmry(allPaths[allPaths.length - 1])}`, 'color: green');
+          const newCurrentPath = currentPath.concat(
+            new PathLink(latestTarget, 1, unit, UnitService.CONVERT(1).from(latestTarget).to(unit)));
+          this.getAllPathsRecursive(cvRats, allPaths, newCurrentPath);
+        }
+      }
+
+
+    }
+    // console.groupEnd();
+  }
+
+  private targetUnitPreviouslyReached(targetUnit: string, allPaths: Path[], currentPath: Path): boolean {
+    return allPaths.some(path => {
+      return path[0].source === currentPath[0].source
+        && path[path.length - 1].target === targetUnit;
+    });
+  }
+
+  private cvRatSmry(cvRat: ConversionRatio): string {
+    return `(${cvRat.amountA} ${cvRat.unitA} : ${cvRat.amountB} ${cvRat.unitB})`;
+  }
+
+  private cvRatsSmry(cvRats: ConversionRatio[]): string[] {
+    return cvRats.map(cvRat => this.cvRatSmry(cvRat));
+  }
+
+  private plSmry(pl: PathLink) {
+    return `(${pl.sourceAmount} ${pl.source} -> ${pl.targetAmount} ${pl.target})`;
+  }
+
+  private pSmry(path: Path) {
+    return path.map(pl => this.plSmry(pl)).join('');
+  }
+
+  private pEnds(path: Path) {
+    return `(${path[0].source} -> ${path[path.length - 1].target})`;
+  }
+
+  private getPathLinkFromCvRat(cvRat: ConversionRatio, source: string) {
+    return source === cvRat.unitA
+      ? new PathLink(cvRat.unitA, cvRat.amountA, cvRat.unitB, cvRat.amountB)
+      : new PathLink(cvRat.unitB, cvRat.amountB, cvRat.unitA, cvRat.amountA);
+  }
+
+  private conversionRatioIncludesUnit(cvRat: ConversionRatio, unit: string): boolean {
+    return cvRat.unitA === unit || cvRat.unitB === unit;
   }
 }

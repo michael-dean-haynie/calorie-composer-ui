@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { FoodDTO } from 'src/app/contracts/food-dto';
 import { Food } from 'src/app/models/food.model';
+import { ConversionRatioService } from '../conversion-ratio.service';
 import { PortionService } from '../util/portion.service';
 import { UnitService } from '../util/unit.service';
 import { ConversionRatioMapperService } from './conversion-ratio-mapper.service';
@@ -17,6 +18,7 @@ export class FoodMapperService {
     private conversionRatioMapperService: ConversionRatioMapperService,
     private portionService: PortionService,
     private unitService: UnitService,
+    private conversionRatioService: ConversionRatioService,
     private fb: FormBuilder) { }
 
   dtoToModel(foodDTO: FoodDTO): Food {
@@ -50,7 +52,7 @@ export class FoodMapperService {
       nutrients: this.fb.array(food.nutrients.map(nutrient => this.nutrientMapperService.modelToFormGroup(nutrient))),
       conversionRatios: this.fb.array(
         food.conversionRatios.map(conversionRatio => this.conversionRatioMapperService.modelToFormGroup(conversionRatio)),
-        { validators: [] }
+        { validators: [this.noContradictingOtherConversionRatios] }
       )
 
     });
@@ -69,33 +71,21 @@ export class FoodMapperService {
     return food;
   }
 
-  // TODO: Refactor with conversion ratio implementation and move this to separate service
-  // // Must have exactly 1 nutrient reference portion per unit type (mass/volume) that there are portions of
-  // private exactlyOneNutrientRefPortionPerUnitType: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
-  //   const servingSizePortion = control.get('servingSizePortion') as FormControl;
-  //   const otherPortions = control.get('otherPortions') as FormArray;
-  //   const allPortions = [servingSizePortion].concat(otherPortions.controls as FormControl[]);
+  //     can not have more than one conversion ratio going from mass to volume
+  //        or the like for any 2 measures
+  //        take into account "built up" or "indirect" conversion ratios: i.e. 32 g = 1 serving size = 1 serving size = 2 Tbsp
+  //                                                                           32 g = 2 Tbsp
+  //                                                                           mass -> volume
+  private noContradictingOtherConversionRatios: ValidatorFn = (control: FormArray): ValidationErrors | null => {
+    const conversionRatios = this.conversionRatioMapperService.formArrayToModelArray(control)
+      .filter(cvRat => !this.conversionRatioService.usesFreeFormValue(cvRat))
+      .filter(cvRat => this.conversionRatioService.isFilledOut(cvRat));
+    const error = { noContradictingOtherConversionRatios: true };
 
-  //   const allUnitTypes = allPortions
-  //     // map to unit type and remove falsey results
-  //     .map(portion => this.unitService.getUnitType(portion.get('metricUnit')?.value))
-  //     .filter(measure => measure);
-
-  //   // remove duplicates
-  //   const uniqueUnitTypes = new Set(allUnitTypes);
-
-  //   // check for number of nutrient reference portions per unit type and return error if not 1
-  //   for (const unitType of uniqueUnitTypes) {
-  //     const refPortionsOfUnitType = allPortions
-  //       .filter(portion => portion.get('isNutrientRefPortion').value)
-  //       .filter(portion => this.unitService.getUnitType(portion.get('metricUnit')?.value) === unitType);
-
-  //     if (refPortionsOfUnitType.length !== 1) {
-  //       return { exactlyOneNutrientRefPortionPerUnitType: true };
-  //     }
-  //   }
-
-  //   return null;
-  // }
-
+    // this.conversionRatioService.getAllPaths(conversionRatios);
+    if (this.conversionRatioService.producesContradictions(conversionRatios)) {
+      return error;
+    }
+    return null;
+  }
 }
