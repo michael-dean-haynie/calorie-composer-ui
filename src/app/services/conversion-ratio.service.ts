@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { IsMeaningfulValue } from '../constants/functions';
 import { ConstituentType } from '../constants/types/constituent-type.type';
+import { ContradictionsError } from '../constants/types/contradictions-error.error';
+import { ContradictionsResult } from '../constants/types/contradictions-result.type';
 import { ConversionRatioSide } from '../constants/types/conversion-ratio-side.type';
 import { PathLink } from '../constants/types/path-link.type';
 import { Path } from '../constants/types/path.type';
@@ -44,23 +46,22 @@ export class ConversionRatioService {
   getAllPaths(cvRats: ConversionRatio[]): Path[] {
     const allPaths: Path[] = [];
     const currentPath: Path = [];
-    this.getAllPathsRecursive(cvRats, allPaths, currentPath);
+    this.getAllPathsRecursive(cvRats, allPaths, currentPath, false, null);
     // console.table(allPaths.map(path => path.map(pl => this.plSmry(pl))));
     return allPaths;
   }
 
-  producesContradictions(cvRats: ConversionRatio[]): boolean {
-    // console.table(cvRats.map(cvRat => this.cvRatSmry(cvRat)));
+  checkForContradictions(cvRats: ConversionRatio[], constituentType: ConstituentType): ContradictionsResult {
     const allPaths: Path[] = [];
     const currentPath: Path = [];
     try {
-      this.getAllPathsRecursive(cvRats, allPaths, currentPath, true);
-      // console.table(allPaths.map(path => path.map(pl => this.plSmry(pl))));
-    } catch (e) { // exception was thrown because contradition was found
-      console.log(e);
-      return true;
+      this.getAllPathsRecursive(cvRats, allPaths, currentPath, true, constituentType);
+    } catch (e) {
+      if (e instanceof ContradictionsError) {
+        return e.result;
+      }
     }
-    return false;
+    return { contradictionsExist: false };
   }
 
   private getFreeFormValueForSide(cvRat: ConversionRatio, side: ConversionRatioSide): string {
@@ -79,7 +80,8 @@ export class ConversionRatioService {
     cvRats: ConversionRatio[],
     allPaths: Path[],
     currentPath: Path,
-    checkForContradictions: boolean = false
+    checkForContradictions: boolean,
+    constituentType: ConstituentType
   ): void {
 
     // console.group(`getAllPaths() cp: ${this.pSmry(currentPath)}`);
@@ -94,8 +96,9 @@ export class ConversionRatioService {
             return path[0].source === newPath[0].source && path[path.length - 1].target === newPath[newPath.length - 1].target;
           });
           if (contadictions.length) {
-            throw new Error('Contradictions exist! ' +
-              `subject: ${this.pSmry(newPath)}, contradictions: ${contadictions.map(con => this.pSmry(con)).join(',')}`);
+            throw new ContradictionsError(
+              new ContradictionsResult(true, [newPath, ...contadictions].map(path => this.conversionChain(path, constituentType)))
+            );
           }
         }
         allPaths.push(newPath);
@@ -103,7 +106,7 @@ export class ConversionRatioService {
         let pathStart = [new PathLink(cvRat.unitA, cvRat.amountA, cvRat.unitB, cvRat.amountB)];
 
         // fillout from root path
-        this.getAllPathsRecursive(cvRats, allPaths, pathStart);
+        this.getAllPathsRecursive(cvRats, allPaths, pathStart, checkForContradictions, constituentType);
 
         // add inverse root path
         newPath = [new PathLink(cvRat.unitB, cvRat.amountB, cvRat.unitA, cvRat.amountA)]
@@ -113,8 +116,9 @@ export class ConversionRatioService {
             return path[0].source === newPath[0].source && path[path.length - 1].target === newPath[newPath.length - 1].target;
           });
           if (contadictions.length) {
-            throw new Error('Contradictions exist! ' +
-              `subject: ${this.pSmry(newPath)}, contradictions: ${contadictions.map(con => this.pSmry(con)).join(',')}`);
+            throw new ContradictionsError(
+              new ContradictionsResult(true, [newPath, ...contadictions].map(path => this.conversionChain(path, constituentType)))
+            );
           }
         }
         allPaths.push(newPath);
@@ -122,7 +126,7 @@ export class ConversionRatioService {
         pathStart = [new PathLink(cvRat.unitB, cvRat.amountB, cvRat.unitA, cvRat.amountA)];
 
         // fillout from inverse root path
-        this.getAllPathsRecursive(cvRats, allPaths, pathStart);
+        this.getAllPathsRecursive(cvRats, allPaths, pathStart, checkForContradictions, constituentType);
       });
 
 
@@ -159,14 +163,15 @@ export class ConversionRatioService {
             return path[0].source === newPath[0].source && path[path.length - 1].target === newPath[newPath.length - 1].target;
           });
           if (contadictions.length) {
-            throw new Error('Contradictions exist! ' +
-              `subject: ${this.pSmry(newPath)}, contradictions: ${contadictions.map(con => this.pSmry(con)).join(',')}`);
+            throw new ContradictionsError(
+              new ContradictionsResult(true, [newPath, ...contadictions].map(path => this.conversionChain(path, constituentType)))
+            );
           }
         }
         allPaths.push(newPath);
         // console.log(`%cAdded to allPaths: ${this.pSmry(allPaths[allPaths.length - 1])}`, 'color: green');
         const newCurrentPath = currentPath.concat([this.getPathLinkFromCvRat(cvRat, latestTarget)]);
-        this.getAllPathsRecursive(cvRats, allPaths, newCurrentPath);
+        this.getAllPathsRecursive(cvRats, allPaths, newCurrentPath, checkForContradictions, constituentType);
       });
 
 
@@ -186,7 +191,7 @@ export class ConversionRatioService {
           // console.log(`%cAdded to allPaths: ${this.pSmry(allPaths[allPaths.length - 1])}`, 'color: green');
           const newCurrentPath = currentPath.concat(
             new PathLink(latestTarget, 1, unit, UnitService.CONVERT(1).from(latestTarget).to(unit)));
-          this.getAllPathsRecursive(cvRats, allPaths, newCurrentPath);
+          this.getAllPathsRecursive(cvRats, allPaths, newCurrentPath, checkForContradictions, constituentType);
         }
       }
 
@@ -220,6 +225,16 @@ export class ConversionRatioService {
 
   private pEnds(path: Path) {
     return `(${path[0].source} -> ${path[path.length - 1].target})`;
+  }
+
+  private conversionChain(path: Path, ct: ConstituentType): string {
+    return path.map((pl, index) => {
+      let text = '';
+      if (index > 0) {
+        text += ' -> ';
+      }
+      return text + `(${pl.sourceAmount} ${this.unitPipe.transform(pl.source, ct)} = ${pl.targetAmount} ${this.unitPipe.transform(pl.target, ct)})`;
+    }).join('');
   }
 
   private getPathLinkFromCvRat(cvRat: ConversionRatio, source: string) {

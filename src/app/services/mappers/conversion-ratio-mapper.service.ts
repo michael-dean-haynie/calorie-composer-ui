@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { IsMeaningfulValue } from 'src/app/constants/functions';
+import { FormArray, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { ConversionRatioDTO } from 'src/app/contracts/conversion-ratio-dto';
 import { ConversionRatio } from 'src/app/models/conversion-ratio.model';
 import { ConversionRatioService } from '../conversion-ratio.service';
@@ -37,11 +36,11 @@ export class ConversionRatioMapperService {
     return this.fb.group({
       id: [conversionRatio.id],
       editMode: [false],
-      amountA: [conversionRatio.amountA],
-      unitA: [conversionRatio.unitA],
+      amountA: [conversionRatio.amountA, Validators.required],
+      unitA: [conversionRatio.unitA, Validators.required],
       freeFormValueA: [conversionRatio.freeFormValueA],
-      amountB: [conversionRatio.amountB],
-      unitB: [conversionRatio.unitB],
+      amountB: [conversionRatio.amountB, Validators.required],
+      unitB: [conversionRatio.unitB, Validators.required],
       freeFormValueB: [conversionRatio.freeFormValueB]
     },
       { validators: [this.noConvertingApplesToApples, this.eitherUnitAndAmountOrFreeForm, this.noOverridingStandardizedUnitConversions] });
@@ -77,30 +76,35 @@ export class ConversionRatioMapperService {
       return null;
     }
 
+    // ignore conversionRatios that aren't fully filled out yet
+    if (!this.conversionRatioService.isFilledOut(cvRat)) {
+      return null;
+    }
+
     if (cvRat.unitA === cvRat.unitB) {
-      return { noConvertingApplesToApples: true };
+      return { noConvertingApplesToApples: 'Cannot convert one amt of a unit to another amt of the same unit. That\'s nonsense.' };
     }
   }
 
 
   // TODO: make this better once I decide how free-form editing will work
   private eitherUnitAndAmountOrFreeForm: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
-    const cvRat = this.formGroupToModel(control);
-    const error = { eitherUnitAndAmountOrFreeForm: true };
+    // const cvRat = this.formGroupToModel(control);
+    // const error = { eitherUnitAndAmountOrFreeForm: true };
 
-    // side a
-    if (!this.conversionRatioService.sideUsesFreeFormValue(cvRat, 'a')) {
-      if (!IsMeaningfulValue(cvRat.amountA) || !IsMeaningfulValue(cvRat.unitA)) {
-        return error;
-      }
-    }
+    // // side a
+    // if (!this.conversionRatioService.sideUsesFreeFormValue(cvRat, 'a')) {
+    //   if (!IsMeaningfulValue(cvRat.amountA) || !IsMeaningfulValue(cvRat.unitA)) {
+    //     return error;
+    //   }
+    // }
 
-    // side b
-    if (!this.conversionRatioService.sideUsesFreeFormValue(cvRat, 'b')) {
-      if (!IsMeaningfulValue(cvRat.amountB) || !IsMeaningfulValue(cvRat.unitB)) {
-        return error;
-      }
-    }
+    // // side b
+    // if (!this.conversionRatioService.sideUsesFreeFormValue(cvRat, 'b')) {
+    //   if (!IsMeaningfulValue(cvRat.amountB) || !IsMeaningfulValue(cvRat.unitB)) {
+    //     return error;
+    //   }
+    // }
 
     return null;
   }
@@ -108,7 +112,7 @@ export class ConversionRatioMapperService {
   // can't be making 1 mg = 5 g
   private noOverridingStandardizedUnitConversions: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
     const cvRat = this.formGroupToModel(control);
-    const error = { noOverridingStandardizedUnitConversions: true };
+    const error = { noOverridingStandardizedUnitConversions: 'Cannot override standardized unit conversions. C\'mon dude.' };
 
     if (this.unitService.unitsHaveStandardizedConversion(cvRat.unitA, cvRat.unitB)) {
       return error;

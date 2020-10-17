@@ -1,8 +1,10 @@
 import { Location } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { MatExpansionPanel } from '@angular/material/expansion';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
+import { IsMeaningfulValue } from 'src/app/constants/functions';
 import { NutrientMetadataList } from 'src/app/constants/nutrient-metadata';
 import { AutoCompleteOptGroup } from 'src/app/constants/types/auto-complete-options.type';
 import { ConversionRatio } from 'src/app/models/conversion-ratio.model';
@@ -27,7 +29,10 @@ type FormMode = 'create' | 'update' | 'import';
   templateUrl: './food-form.component.html',
   styleUrls: ['./food-form.component.scss']
 })
-export class FoodFormComponent implements OnInit, OnDestroy {
+export class FoodFormComponent implements OnInit, OnDestroy, AfterViewInit {
+
+  @ViewChildren(MatExpansionPanel) expansionPanelsQuery: QueryList<MatExpansionPanel>;
+  expansionPanels: MatExpansionPanel[];
 
   formMode: FormMode;
   loading = false;
@@ -103,6 +108,25 @@ export class FoodFormComponent implements OnInit, OnDestroy {
         }
       })
     );
+  }
+
+  ngAfterViewInit(): void {
+    this.expansionPanelsQuery.changes.subscribe((changes: QueryList<MatExpansionPanel>) => {
+      this.expansionPanels = changes.toArray();
+
+      // Expand empty (newly added) cvRat expansionPanels
+      this.expansionPanels.forEach((exp, index) => {
+        const cvRat: FormGroup = this.conversionRatios.controls[index] as FormGroup;
+
+        if (!IsMeaningfulValue(cvRat.get('amountA').value)
+          && !IsMeaningfulValue(cvRat.get('unitA').value)
+          && !IsMeaningfulValue(cvRat.get('amountB').value)
+          && !IsMeaningfulValue(cvRat.get('unitB').value)) {
+          exp.open();
+        }
+      })
+    });
+
   }
 
   ngOnDestroy(): void {
@@ -190,6 +214,14 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     return (unit: string): string => this.unitPipe.transform(unit, 'nutrient');
   }
 
+  cvRatTouched(cvRat: FormGroup) {
+    if (cvRat.get('amountA').touched && cvRat.get('unitA').touched
+      && cvRat.get('amountB').touched && cvRat.get('unitB').touched) {
+      return true;
+    }
+    return false;
+  }
+
   private loadExistingFood(): void {
     this.loading = true;
     this.subscriptions.push(
@@ -236,30 +268,23 @@ export class FoodFormComponent implements OnInit, OnDestroy {
           }
           return nutrient;
         }));
-
-        // inject conversion ratio index into conversion ratio form groups and push to data source
-        const conversionRatios = this.foodForm.get('conversionRatios') as FormArray;
-        this.conversionRatiosDataSource.next(conversionRatios.controls.map((cvRat: FormGroup, index: number) => {
-          const existingIndexControl = cvRat.get('conversionRatioIndex');
-          if (existingIndexControl) {
-            // avoid recursive change detection - nice.
-            if ((existingIndexControl.value + 0) !== index) {
-              cvRat.get('conversionRatioIndex').setValue(index);
-            }
-          } else {
-            cvRat.addControl('conversionRatioIndex', new FormControl(index));
-          }
-          return cvRat;
-        }));
       })
     );
 
     // trigger initial value changes
     this.foodForm.updateValueAndValidity({ onlySelf: false, emitEvent: true });
 
-    // mark as touched if import mode
-    if (this.formMode === 'import') {
+    // mark all existing fields as touched unless in create mode
+    if (this.formMode !== 'create') {
       this.foodForm.markAllAsTouched();
     }
   }
+
+  // check if it should actually expand. stop if nessesary
+  checkExpansion(expanding: boolean, cvRat: FormGroup, expPan: MatExpansionPanel): void {
+    if (!expanding && !cvRat.valid) {
+      expPan.open();
+    }
+  }
+
 }

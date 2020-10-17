@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { ContradictionsResult } from 'src/app/constants/types/contradictions-result.type';
 import { FoodDTO } from 'src/app/contracts/food-dto';
 import { Food } from 'src/app/models/food.model';
 import { ConversionRatioService } from '../conversion-ratio.service';
@@ -80,10 +81,12 @@ export class FoodMapperService {
     const conversionRatios = this.conversionRatioMapperService.formArrayToModelArray(control)
       .filter(cvRat => !this.conversionRatioService.usesFreeFormValue(cvRat))
       .filter(cvRat => this.conversionRatioService.isFilledOut(cvRat));
-    const error = { noContradictingOtherConversionRatios: true };
+    const error = { noContradictingOtherConversionRatios: null };
 
     // this.conversionRatioService.getAllPaths(conversionRatios);
-    if (this.conversionRatioService.producesContradictions(conversionRatios)) {
+    const result: ContradictionsResult = this.conversionRatioService.checkForContradictions(conversionRatios, 'nutrient');
+    if (result.contradictionsExist) {
+      error.noContradictingOtherConversionRatios = result;
       return error;
     }
     return null;

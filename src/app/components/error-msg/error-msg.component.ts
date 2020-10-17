@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup, ValidationErrors } from '@angular/forms';
+import { ContradictionsResult } from 'src/app/constants/types/contradictions-result.type';
 
 @Component({
   selector: 'app-error-msg',
@@ -9,9 +10,7 @@ import { AbstractControl, FormArray, FormControl, FormGroup, ValidationErrors } 
 export class ErrorMsgComponent {
 
   private static msgMap: Map<string, string> = new Map<string, string>([
-    ['required', 'This field is required.'],
-    ['noConvertingApplesToApples', 'Cannot convert one amt of a unit to another amt of the same unit. That\'s nonsense.'],
-    ['noOverridingStandardizedUnitConversions', 'Cannot override standardized unit conversions. C\'mon dude.']
+    ['required', 'This field is required.']
   ]);
 
   @Input() ctrl: AbstractControl;
@@ -24,7 +23,7 @@ export class ErrorMsgComponent {
     return !!this.findErrors();
   }
 
-  get msg(): string {
+  get error(): any {
     // collect errors that are present
     const foundErrors = this.findErrors();
 
@@ -35,21 +34,36 @@ export class ErrorMsgComponent {
     // get list of errors that are present and should be displayed
     const errorsToDisplay = this.errors?.filter(err => foundErrors.includes(err)) ?? foundErrors;
 
-    // return msg for first error
+    // return msg or obj for first error
     const errorKeys = Object.keys(errorsToDisplay);
     if (Object.keys(errorsToDisplay).length) {
+
+      // error is custom object
+      if (errorsToDisplay[errorKeys[0]] instanceof ContradictionsResult) {
+        return errorsToDisplay[errorKeys[0]];
+      }
+
+      // error has it's own string
+      if (typeof errorsToDisplay[errorKeys[0]] === 'string') {
+        return errorsToDisplay[errorKeys[0]];
+      }
+
       return ErrorMsgComponent.msgMap.get(errorKeys[0]) || errorKeys[0];
     } else {
       return '';
     }
   }
 
+  instanceOfContradictionsResult(obj: any): boolean {
+    return obj && obj instanceof ContradictionsResult;
+  }
+
   private findErrors(): ValidationErrors | null {
-    return this.recursive ? this.getRecursiveErrors(this.ctrl) : this.ctrl.errors;
+    return this.recursive ? this.findErrorsRecursive(this.ctrl) : this.ctrl.errors;
   }
 
 
-  private getRecursiveErrors(ctrl: AbstractControl): ValidationErrors | null {
+  private findErrorsRecursive(ctrl: AbstractControl): ValidationErrors | null {
     if (ctrl instanceof FormControl) {
       return ctrl.errors;
     }
@@ -58,7 +72,7 @@ export class ErrorMsgComponent {
       let errors = ctrl.errors;
       Object.keys(ctrl.controls).forEach(nestedCtrlName => {
         const nestedCtrl = ctrl.get(nestedCtrlName);
-        const nestedErrors = this.getRecursiveErrors(nestedCtrl);
+        const nestedErrors = this.findErrorsRecursive(nestedCtrl);
         if (nestedErrors) {
           errors = errors ? { ...errors, ...nestedErrors } : nestedErrors;
         }

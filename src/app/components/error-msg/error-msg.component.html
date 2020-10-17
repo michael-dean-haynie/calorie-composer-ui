@@ -1,1 +1,11 @@
-<mat-error *ngIf="doShowErrors">{{msg}}</mat-error>
+<mat-error *ngIf="doShowErrors">
+    <ng-container *ngIf="instanceOfContradictionsResult(error); else default">
+        <p>The following conversion chains are either redundant or contradictory:</p>
+        <ul>
+            <li *ngFor="let cvChain of error['conversionChains']">{{cvChain}}</li>
+        </ul>
+    </ng-container>
+    <ng-template #default>
+        {{error}}
+    </ng-template>
+</mat-error>

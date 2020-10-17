@@ -52,3 +52,15 @@
       }
   }
 }
+
+// Angular Material Customizations
+::ng-deep :root {
+  
+  // Expansion Panel
+  .mat-expansion-panel-header {
+    padding-left: var(--default-padding);
+    padding-right: var(--default-padding);
+
+  }
+}
+
