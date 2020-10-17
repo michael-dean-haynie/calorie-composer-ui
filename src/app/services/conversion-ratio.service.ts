@@ -36,6 +36,14 @@ export class ConversionRatioService {
     }
   }
 
+  sideReadyToConvertFromFreeform(cvRat: ConversionRatio, side: ConversionRatioSide): boolean {
+    if (side === 'a') {
+      return IsMeaningfulValue(cvRat.amountA) && IsMeaningfulValue(cvRat.unitA) && IsMeaningfulValue(cvRat.freeFormValueA);
+    } else {
+      return IsMeaningfulValue(cvRat.amountB) && IsMeaningfulValue(cvRat.unitB) && IsMeaningfulValue(cvRat.freeFormValueB);
+    }
+  }
+
   isFilledOut(cvRat: ConversionRatio): boolean {
     return IsMeaningfulValue(cvRat.unitA)
       && IsMeaningfulValue(cvRat.amountA)

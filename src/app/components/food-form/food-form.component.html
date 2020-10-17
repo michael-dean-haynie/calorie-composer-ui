@@ -36,7 +36,6 @@
                         <mat-icon>add_to_photos</mat-icon>
                     </button>
                 </div>
-                <!-- cut from here -->
                 <mat-accordion class="conversion-ratios" multi hideToggle="true">
                     <ng-container *ngFor="let cvRat of conversionRatios.controls; let i = index">
                         <mat-expansion-panel #exp (expandedChange)="checkExpansion($event, cvRat, exp)"
@@ -58,62 +57,100 @@
                                             <mat-icon>delete</mat-icon>&nbsp;Delete
                                         </button>
                                     </div>
-                                    <div>
+                                    <div *ngIf="!usesFreeFormValue(cvRat)">
                                         <button mat-stroked-button color="primary" [disabled]="cvRat.invalid">
                                             <mat-icon>done</mat-icon>&nbsp;Done
                                         </button>
                                     </div>
+                                    <div *ngIf="usesFreeFormValue(cvRat)">
+                                        <button mat-stroked-button color="primary"
+                                            (click)="convertFromFreeform($event, cvRat)"
+                                            [disabled]="!readyToConvertFromFreeform(cvRat)">
+                                            <mat-icon>save_alt</mat-icon>&nbsp;Enter
+                                        </button>
+                                    </div>
                                 </mat-panel-title>
                             </mat-expansion-panel-header>
+                            <ng-container *ngIf="usesFreeFormValue(cvRat)">
+                                <ng-container *ngFor="let side of getSidesUsingFreeFormValue(cvRat)">
+                                    <p class="freeform-message">
+                                        The portion "
+                                        <span class="bold">{{getConversionRatioSideDisplayValue(cvRat, side)}}</span>
+                                        " needs to be entered as a seperate amount and unit:
+                                    </p>
+                                    <div class="freeform-form">
+                                        <mat-form-field floatLabel="never" class="amount-form-field">
+                                            <input matInput [appMask]="['non-negative', 'float-hundredths']"
+                                                placeholder="Amount"
+                                                [formControl]="side === 'a' ? cvRat.get('amountA'): cvRat.get('amountB')">
+                                        </mat-form-field>
+                                        <mat-form-field floatLabel="never" class="unit-form-field">
+                                            <input matInput placeholder="Unit"
+                                                [formControl]="side === 'a' ? cvRat.get('unitA'): cvRat.get('unitB')"
+                                                [matAutocomplete]="unitA">
+                                            <mat-autocomplete #unitA="matAutocomplete"
+                                                [displayWith]="ppConversionRatioUnit" class="ac-panel left">
+                                                <ng-container *ngFor="let group of conversionRatioUnitACOptions">
+                                                    <mat-option *ngFor=" let option of group.groupOptions"
+                                                        [value]="option.value">
+                                                        {{option.label}}
+                                                    </mat-option>
+                                                </ng-container>
+                                            </mat-autocomplete>
+                                        </mat-form-field>
+                                    </div>
 
-                            <div class="conversion-ratio-form">
-                                <div class="conversion-ratio-form__side-a">
-                                    <mat-form-field floatLabel="never" class="amount-form-field">
-                                        <input matInput [appMask]="['non-negative', 'float-hundredths']"
-                                            placeholder="Ex. 1" [formControl]="cvRat.get('amountA')">
-                                    </mat-form-field>
-                                    <mat-form-field floatLabel="never" class="unit-form-field">
-                                        <input matInput placeholder="Ex. serving size"
-                                            [formControl]="cvRat.get('unitA')" [matAutocomplete]="unitA">
-                                        <mat-autocomplete #unitA="matAutocomplete" [displayWith]="ppConversionRatioUnit"
-                                            class="ac-panel left">
-                                            <ng-container *ngFor="let group of conversionRatioUnitACOptions">
-                                                <mat-option *ngFor=" let option of group.groupOptions"
-                                                    [value]="option.value">
-                                                    {{option.label}}
-                                                </mat-option>
-                                            </ng-container>
-                                        </mat-autocomplete>
-                                    </mat-form-field>
-                                </div>
-                                <div class="conversion-ratio-form__equals">
-                                    <span>&#61;</span>
-                                </div>
-                                <div class="conversion-ratio-form__side-b">
-                                    <mat-form-field floatLabel="never" class="amount-form-field">
-                                        <input matInput [appMask]="['non-negative', 'float-hundredths']"
-                                            placeholder="Ex. 1.5" [formControl]="cvRat.get('amountB')">
-                                    </mat-form-field>
-                                    <mat-form-field floatLabel="never" class="unit-form-field">
-                                        <input matInput placeholder="Ex. cups" [formControl]="cvRat.get('unitB')"
-                                            [matAutocomplete]="unitB">
-                                        <mat-autocomplete #unitB="matAutocomplete" [displayWith]="ppConversionRatioUnit"
-                                            class="ac-panel left">
-                                            <ng-container *ngFor="let group of conversionRatioUnitACOptions">
-                                                <mat-option *ngFor=" let option of group.groupOptions"
-                                                    [value]="option.value">
-                                                    {{option.label}}
-                                                </mat-option>
-                                            </ng-container>
-                                        </mat-autocomplete>
-                                    </mat-form-field>
-                                </div>
-                                <div *ngIf="cvRat.invalid">
-                                    <app-error-msg [ctrl]="cvRat"></app-error-msg>
-                                </div>
-                            </div>
+                                </ng-container>
+                            </ng-container>
 
-
+                            <ng-container *ngIf="!usesFreeFormValue(cvRat)">
+                                <div class="conversion-ratio-form">
+                                    <div class="conversion-ratio-form__side-a">
+                                        <mat-form-field floatLabel="never" class="amount-form-field">
+                                            <input matInput [appMask]="['non-negative', 'float-hundredths']"
+                                                placeholder="Ex. 1" [formControl]="cvRat.get('amountA')">
+                                        </mat-form-field>
+                                        <mat-form-field floatLabel="never" class="unit-form-field">
+                                            <input matInput placeholder="Ex. serving size"
+                                                [formControl]="cvRat.get('unitA')" [matAutocomplete]="unitA">
+                                            <mat-autocomplete #unitA="matAutocomplete"
+                                                [displayWith]="ppConversionRatioUnit" class="ac-panel left">
+                                                <ng-container *ngFor="let group of conversionRatioUnitACOptions">
+                                                    <mat-option *ngFor=" let option of group.groupOptions"
+                                                        [value]="option.value">
+                                                        {{option.label}}
+                                                    </mat-option>
+                                                </ng-container>
+                                            </mat-autocomplete>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="conversion-ratio-form__equals">
+                                        <span>&#61;</span>
+                                    </div>
+                                    <div class="conversion-ratio-form__side-b">
+                                        <mat-form-field floatLabel="never" class="amount-form-field">
+                                            <input matInput [appMask]="['non-negative', 'float-hundredths']"
+                                                placeholder="Ex. 1.5" [formControl]="cvRat.get('amountB')">
+                                        </mat-form-field>
+                                        <mat-form-field floatLabel="never" class="unit-form-field">
+                                            <input matInput placeholder="Ex. cups" [formControl]="cvRat.get('unitB')"
+                                                [matAutocomplete]="unitB">
+                                            <mat-autocomplete #unitB="matAutocomplete"
+                                                [displayWith]="ppConversionRatioUnit" class="ac-panel left">
+                                                <ng-container *ngFor="let group of conversionRatioUnitACOptions">
+                                                    <mat-option *ngFor=" let option of group.groupOptions"
+                                                        [value]="option.value">
+                                                        {{option.label}}
+                                                    </mat-option>
+                                                </ng-container>
+                                            </mat-autocomplete>
+                                        </mat-form-field>
+                                    </div>
+                                    <div *ngIf="cvRat.invalid">
+                                        <app-error-msg [ctrl]="cvRat"></app-error-msg>
+                                    </div>
+                                </div>
+                            </ng-container>
 
                         </mat-expansion-panel>
                     </ng-container>

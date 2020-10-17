@@ -135,6 +135,20 @@ mat-form-field {
     
 }
 
+.freeform-form {
+    display: grid;
+    column-gap: 2ch;
+    grid-template-columns: auto auto;
+
+    .amount-form-field {
+        min-width: 7ch;
+    }
+
+    .unit-form-field {
+        width: auto;
+    }
+}
+
 
 .form-buttons {
     display: flex;
@@ -144,5 +158,9 @@ mat-form-field {
 .mat-expansion-panel-invalid {
     background-color: var(--invalid-background);
     border: 1px solid red;
+}
+
+.freeform-message {
+    margin-top: var(--default-padding);
 }
 

@@ -7,6 +7,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { IsMeaningfulValue } from 'src/app/constants/functions';
 import { NutrientMetadataList } from 'src/app/constants/nutrient-metadata';
 import { AutoCompleteOptGroup } from 'src/app/constants/types/auto-complete-options.type';
+import { ConversionRatioSide } from 'src/app/constants/types/conversion-ratio-side.type';
 import { ConversionRatio } from 'src/app/models/conversion-ratio.model';
 import { Food } from 'src/app/models/food.model';
 import { Nutrient } from 'src/app/models/nutrient.model';
@@ -222,6 +223,43 @@ export class FoodFormComponent implements OnInit, OnDestroy, AfterViewInit {
     return false;
   }
 
+  usesFreeFormValue(cvRatFG: FormGroup): boolean {
+    const cvRat = this.conversionRatioMapperService.formGroupToModel(cvRatFG);
+    return this.conversionRatioService.usesFreeFormValue(cvRat);
+  }
+
+  getSidesUsingFreeFormValue(cvRatFG: FormGroup): ConversionRatioSide[] {
+    const cvRat = this.conversionRatioMapperService.formGroupToModel(cvRatFG);
+    const result = [];
+    if (this.conversionRatioService.sideUsesFreeFormValue(cvRat, 'a')) {
+      result.push('a');
+    }
+    if (this.conversionRatioService.sideUsesFreeFormValue(cvRat, 'b')) {
+      result.push('b');
+    }
+    return result;
+  }
+
+  readyToConvertFromFreeform(cvRatFG: FormGroup): boolean {
+    const cvRat = this.conversionRatioMapperService.formGroupToModel(cvRatFG);
+    const sides = this.getSidesUsingFreeFormValue(cvRatFG);
+    return sides.every(side => this.conversionRatioService.sideReadyToConvertFromFreeform(cvRat, side));
+  }
+
+  convertFromFreeform(event: Event, cvRatFG: FormGroup) {
+    event.stopPropagation();
+    cvRatFG.get('freeFormValueA').setValue(null);
+    cvRatFG.get('freeFormValueB').setValue(null);
+  }
+
+
+  // check if it should actually expand. stop if nessesary
+  checkExpansion(expanding: boolean, cvRat: FormGroup, expPan: MatExpansionPanel): void {
+    if (!expanding && !cvRat.valid) {
+      expPan.open();
+    }
+  }
+
   private loadExistingFood(): void {
     this.loading = true;
     this.subscriptions.push(
@@ -279,12 +317,4 @@ export class FoodFormComponent implements OnInit, OnDestroy, AfterViewInit {
       this.foodForm.markAllAsTouched();
     }
   }
-
-  // check if it should actually expand. stop if nessesary
-  checkExpansion(expanding: boolean, cvRat: FormGroup, expPan: MatExpansionPanel): void {
-    if (!expanding && !cvRat.valid) {
-      expPan.open();
-    }
-  }
-
 }

@@ -53,7 +53,7 @@ export class FoodMapperService {
       nutrients: this.fb.array(food.nutrients.map(nutrient => this.nutrientMapperService.modelToFormGroup(nutrient))),
       conversionRatios: this.fb.array(
         food.conversionRatios.map(conversionRatio => this.conversionRatioMapperService.modelToFormGroup(conversionRatio)),
-        { validators: [this.noContradictingOtherConversionRatios] }
+        { validators: [this.noContradictingOtherConversionRatios, this.noConversionRatiosWithFreeFormValues] }
       )
 
     });
@@ -88,6 +88,16 @@ export class FoodMapperService {
     if (result.contradictionsExist) {
       error.noContradictingOtherConversionRatios = result;
       return error;
+    }
+    return null;
+  }
+
+  private noConversionRatiosWithFreeFormValues: ValidatorFn = (control: FormArray): ValidationErrors | null => {
+    const freeFormValuesExist = this.conversionRatioMapperService.formArrayToModelArray(control)
+      .some(cvRat => this.conversionRatioService.usesFreeFormValue(cvRat));
+
+    if (freeFormValuesExist) {
+      return { noConversionRatiosWithFreeFormValues: 'Unit conversions need to be entered properly.' };
     }
     return null;
   }

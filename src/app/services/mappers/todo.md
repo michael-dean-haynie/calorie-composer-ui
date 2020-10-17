@@ -10,7 +10,7 @@
 pu@ + make delete / done buttons functional
     + smooth out adding a new conversion ratio
     + smooth out validation messages inside and outside
-    - figure out how to handle free form values
+    + figure out how to handle free form values
     - get auto complete to respond to text input
 
 
