@@ -1,9 +1,10 @@
 import { Location } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatExpansionPanel } from '@angular/material/expansion';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 import { IsMeaningfulValue } from 'src/app/constants/functions';
 import { NutrientMetadataList } from 'src/app/constants/nutrient-metadata';
 import { AutoCompleteOptGroup } from 'src/app/constants/types/auto-complete-options.type';
@@ -85,7 +86,8 @@ export class FoodFormComponent implements OnInit, OnDestroy, AfterViewInit {
     private conversionRatioMapperService: ConversionRatioMapperService,
     private conversionRatioService: ConversionRatioService,
     private unitPipe: UnitPipe,
-    private location: Location
+    private location: Location,
+    private fb: FormBuilder
   ) { }
 
   ngOnInit(): void {
@@ -178,7 +180,7 @@ export class FoodFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
   addConversionRatio(): void {
     const conversionRatioCtrl = this.conversionRatioMapperService.modelToFormGroup(new ConversionRatio());
-    conversionRatioCtrl.get('editMode').setValue(true);
+    this.addFilteredAutoCompleteOptions(conversionRatioCtrl);
     this.conversionRatios.insert(0, conversionRatioCtrl);
   }
 
@@ -260,6 +262,28 @@ export class FoodFormComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  private filteredOptions(optionGroups: AutoCompleteOptGroup[], input: FormControl): Observable<AutoCompleteOptGroup[]> {
+    return input.valueChanges.pipe(
+      startWith(''), // so AC pops up initially
+      map(inputVal => {
+
+        if (!IsMeaningfulValue(inputVal)) {
+          return optionGroups;
+        }
+
+        return optionGroups.map(group => {
+          // remove options in group that don't match filter value
+          // also - don't dork with original list.
+          const shallowGroupClone = { ...group };
+          shallowGroupClone.groupOptions = group.groupOptions.filter(opt => {
+            return opt.label.toLowerCase().includes(inputVal.toLowerCase());
+          });
+          return shallowGroupClone;
+        });
+      })
+    );
+  }
+
   private loadExistingFood(): void {
     this.loading = true;
     this.subscriptions.push(
@@ -309,6 +333,9 @@ export class FoodFormComponent implements OnInit, OnDestroy, AfterViewInit {
       })
     );
 
+    // add filtered autocomplete options obs
+    this.conversionRatios.controls.forEach((cvRat: FormGroup) => this.addFilteredAutoCompleteOptions(cvRat));
+
     // trigger initial value changes
     this.foodForm.updateValueAndValidity({ onlySelf: false, emitEvent: true });
 
@@ -316,5 +343,14 @@ export class FoodFormComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.formMode !== 'create') {
       this.foodForm.markAllAsTouched();
     }
+  }
+
+  private addFilteredAutoCompleteOptions(cvRat: FormGroup): void {
+    cvRat.addControl(
+      'unitAFilteredAutoCompleteOptions',
+      this.fb.control(this.filteredOptions(this.conversionRatioUnitACOptions, cvRat.get('unitA') as FormControl)));
+    cvRat.addControl(
+      'unitBFilteredAutoCompleteOptions',
+      this.fb.control(this.filteredOptions(this.conversionRatioUnitACOptions, cvRat.get('unitB') as FormControl)));
   }
 }
