@@ -39,6 +39,7 @@ import { MaskDirective } from './directives/mask.directive';
 import { MacroAmtPipe } from './pipes/macro-amt.pipe';
 import { MacroPctgPipe } from './pipes/macro-pctg.pipe';
 import { UnitPipe } from './pipes/unit.pipe';
+import { ConversionRatiosFormComponent } from './components/conversion-ratios-form/conversion-ratios-form.component';
 
 
 @NgModule({
@@ -63,7 +64,8 @@ import { UnitPipe } from './pipes/unit.pipe';
     ComboFoodFormFoodAmountComponent,
     FilteredAutocompleteComponent,
     FoodFormConversionRatioComponent,
-    UnitPipe
+    UnitPipe,
+    ConversionRatiosFormComponent
   ],
   imports: [
     BrowserModule,

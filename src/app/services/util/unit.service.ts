@@ -174,21 +174,6 @@ export class UnitService {
     return map.get(refUnit);
   }
 
-  mapUnitToAutoCompleteOptions(unit: UnitDescription, constituentType: ConstituentType): any {
-    const isReferenceUnit = UnitService.ReferenceMeasureUnits.some(desc => desc.abbr === unit.abbr);
-    if (isReferenceUnit) {
-      return {
-        label: this.ppReferenceUnit(unit.abbr, constituentType),
-        value: unit.abbr
-      };
-    }
-
-    return {
-      label: `${unit.plural} (${unit.abbr})`,
-      value: unit.abbr
-    };
-  }
-
   // TODO: come up with flow to parse free form units
   // TODO: maybe have some indicator that there are more units to use if user can parse it out
 
