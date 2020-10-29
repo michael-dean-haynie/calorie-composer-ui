@@ -55,7 +55,6 @@ export class FoodMapperService {
         food.conversionRatios.map(conversionRatio => this.conversionRatioMapperService.modelToFormGroup(conversionRatio)),
         { validators: [this.noContradictingOtherConversionRatios, this.noConversionRatiosWithFreeFormValues] }
       )
-
     });
   }
 

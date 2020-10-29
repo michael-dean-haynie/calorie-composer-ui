@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IsMeaningfulValue } from '../constants/functions';
+import { IsMeaningfulValue, ProductReducer } from '../constants/functions';
 import { ConstituentType } from '../constants/types/constituent-type.type';
 import { ContradictionsError } from '../constants/types/contradictions-error.error';
 import { ContradictionsResult } from '../constants/types/contradictions-result.type';
@@ -51,6 +51,30 @@ export class ConversionRatioService {
       && IsMeaningfulValue(cvRat.amountB);
   }
 
+  getPathSource(path: Path): string {
+    return path[0].source;
+  }
+
+  getPathTarget(path: Path): string {
+    return path[path.length - 1].target;
+  }
+
+  getPathProduct(path: Path): number {
+    if (!path) {
+      return undefined;
+    }
+    return path.map(pl => pl.ratio).reduce(ProductReducer);
+  }
+
+  getPathsForUnit(cvRats: ConversionRatio[], source: string): Path[] {
+    const foo = this.getAllPaths(cvRats).filter(path => {
+      return this.getPathSource(path) === source;
+    });
+    console.table(foo.map(path => path.map(pl => this.plSmry(pl))));
+    return foo;
+
+  }
+
   getAllPaths(cvRats: ConversionRatio[]): Path[] {
     const allPaths: Path[] = [];
     const currentPath: Path = [];
@@ -91,6 +115,12 @@ export class ConversionRatioService {
     checkForContradictions: boolean,
     constituentType: ConstituentType
   ): void {
+
+    if (!cvRats.length) {
+      return;
+    }
+
+    cvRats = cvRats.filter(cvr => this.isFilledOut(cvr));
 
     // console.group(`getAllPaths() cp: ${this.pSmry(currentPath)}`);
     // for first level call
@@ -160,7 +190,8 @@ export class ConversionRatioService {
         .filter(cvRat => this.conversionRatioIncludesUnit(cvRat, latestTarget))
         .filter(cvRat => {
           return !otherUnitsInCurrentPath.some(unit => this.conversionRatioIncludesUnit(cvRat, unit));
-        });
+        })
+        .filter(cvRat => this.isFilledOut(cvRat));
       // console.log('persuable conversion ratios', this.cvRatsSmry(persuableCvRats));
 
       persuableCvRats.forEach(cvRat => {

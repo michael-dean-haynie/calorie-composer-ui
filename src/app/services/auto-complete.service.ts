@@ -3,8 +3,8 @@ import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { IsMeaningfulValue } from '../constants/functions';
-import { AutoCompleteOptGroup } from '../constants/types/auto-complete-options.type';
 import { ConstituentType } from '../constants/types/constituent-type.type';
+import { OptGroup } from '../constants/types/select-options';
 import { UnitDescription } from '../constants/types/unit-description';
 import { UnitService } from './util/unit.service';
 
@@ -17,7 +17,7 @@ export class AutoCompleteService {
     private unitService: UnitService
   ) { }
 
-  optionsForConversionRatioUnit(constituentType: ConstituentType): AutoCompleteOptGroup[] {
+  optionsForConversionRatioUnit(constituentType: ConstituentType): OptGroup[] {
     return [
       {
         groupLabel: 'Mass',
@@ -37,7 +37,7 @@ export class AutoCompleteService {
     ];
   }
 
-  filteredOptions(optionGroups: AutoCompleteOptGroup[], control: FormControl): Observable<AutoCompleteOptGroup[]> {
+  filteredOptions(optionGroups: OptGroup[], control: FormControl): Observable<OptGroup[]> {
     return control.valueChanges.pipe(
       startWith(''), // so AC pops up initially
       map(inputVal => {

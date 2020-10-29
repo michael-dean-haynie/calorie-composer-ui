@@ -19,13 +19,35 @@
     </section>
 
     <section>
-        <h3 [ngClass]="{'mat-error': !conversionRatios.valid}">Portions</h3>
+        <h3>Portions</h3>
 
         <div class="portions-and-units-subsections">
             <div>
                 <div class="split-subheader">
                     <h4>Serving Size</h4>
                 </div>
+                <mat-card class="serving-size__card">
+                    <ng-container *ngIf="ssOpts.length">
+                        <div class="serving-size">
+                            <div class="serving-size__amount">{{ssAmount | number:'1.0-4'}}</div>
+                            <div class="serving-size__unit">
+                                <mat-form-field>
+                                    <!-- <mat-label>Favorite food</mat-label> -->
+                                    <mat-select [(value)]="ssSelection">
+                                        <mat-option *ngFor="let opt of ssOpts" [value]="opt.value">
+                                            {{opt.label}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="!ssOpts.length">
+                        <div class="ss-needs-defined">Serving size needs to be defined in Units.</div>
+                    </ng-container>
+
+                </mat-card>
+
             </div>
 
             <div>
@@ -45,7 +67,11 @@
     </section>
 
     <section>
-        <h3>Nutrients</h3>
+        <div class="split-header">
+            <h3>Nutrients</h3>
+            <div *ngIf="nutrientRefAmt" class="nutrients-per">per {{nutrientRefAmt}}</div>
+        </div>
+
         <table mat-table [dataSource]="nutrientsDataSource" class="mat-elevation-z8 nutrients-table">
 
             <!-- Name Column -->

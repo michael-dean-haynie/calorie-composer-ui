@@ -2,7 +2,7 @@ import { Component, EventEmitter, Host, Input, OnInit, Output, ViewChild } from 
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatOptionSelectionChange } from '@angular/material/core';
 import { BehaviorSubject } from 'rxjs';
-import { AutoCompleteOptGroup } from 'src/app/constants/types/auto-complete-options.type';
+import { OptGroup } from 'src/app/constants/types/select-options';
 import { UnitDescription } from 'src/app/constants/types/unit-description';
 import { Food } from 'src/app/models/food.model';
 import { FoodApiService } from 'src/app/services/api/food-api.service';
@@ -48,7 +48,7 @@ export class ComboFoodFormFoodAmountComponent implements OnInit {
   foodNameCtrlMode: FoodNameCtrlMode = 'query';
 
   foodACOptions = new BehaviorSubject<Food[]>([]);
-  unitACOptions: AutoCompleteOptGroup[] = [];
+  unitACOptions: OptGroup[] = [];
 
   caloricBreakdownDataSource = new BehaviorSubject<CaloricBreakdown[]>(null);
   caloricBreakdownDisplayedColumns = ['fat', 'carbs', 'protein'];
@@ -139,7 +139,7 @@ export class ComboFoodFormFoodAmountComponent implements OnInit {
     //   this.removeFoodAmount.emit();
   }
 
-  private mapUnitsToACOptions(units: UnitDescription[]): AutoCompleteOptGroup[] {
+  private mapUnitsToACOptions(units: UnitDescription[]): OptGroup[] {
     //   return [
     //     {
     //       groupLabel: 'Mass',

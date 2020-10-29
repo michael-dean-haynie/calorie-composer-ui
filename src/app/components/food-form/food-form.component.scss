@@ -12,6 +12,19 @@ mat-form-field {
     row-gap: var(--default-padding);
 }
 
+.split-header {
+    height: 44px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    // might need to add back in?
+    padding-right: var(--default-padding);
+
+    h3 {
+        margin-bottom: 0;
+    }
+}
+
 .split-subheader {
     height: 40px;
     display: flex;
@@ -25,12 +38,34 @@ mat-form-field {
     }
 }
 
-.other-portions{
+.serving-size__card {
+    padding: 0 var(--default-padding);
+}
+
+.serving-size {
     display: grid;
-    // must be definitely sized to prevent grid blowout
-    // https://css-tricks.com/preventing-a-grid-blowout/
-    grid-template-columns: 100%;
-    row-gap: var(--default-padding);
+    grid-template-columns: min-content 1fr;
+    column-gap: 2ch;
+
+    .serving-size__amount {
+        align-self: end;
+
+        // to align with .mat-form-field-wrapper and .mat-form-field-underline
+        padding-bottom: calc(1.25em + 1px); 
+    }
+
+    .serving-size__unit {
+        justify-self: start;
+    }
+}
+
+.ss-needs-defined {
+    padding: var(--default-padding) 0;
+    font-style: italic;
+}
+
+.nutrients-per {
+    font-style: italic;
 }
 
 .nutrients-table, .unit-conversions-table {

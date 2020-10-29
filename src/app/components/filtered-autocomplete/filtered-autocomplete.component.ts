@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { MatAutocomplete } from '@angular/material/autocomplete';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { AutoCompleteOptGroup } from 'src/app/constants/types/auto-complete-options.type';
+import { OptGroup } from 'src/app/constants/types/select-options';
 
 
 // TODO: Fix ExpressionChangedAfterItHasBeenCheckedError.
@@ -14,12 +14,12 @@ import { AutoCompleteOptGroup } from 'src/app/constants/types/auto-complete-opti
 export class FilteredAutocompleteComponent implements OnInit {
 
   @Input() filterChanges: Observable<string>;
-  @Input() autoCompleteOpts: AutoCompleteOptGroup[];
+  @Input() autoCompleteOpts: OptGroup[];
   @Input() class: string;
 
   @ViewChild(MatAutocomplete) matAutocomplete: ElementRef;
 
-  filteredAutoCompleteOpts = new BehaviorSubject<AutoCompleteOptGroup[]>([]);
+  filteredAutoCompleteOpts = new BehaviorSubject<OptGroup[]>([]);
 
   constructor() { }
 
@@ -33,7 +33,7 @@ export class FilteredAutocompleteComponent implements OnInit {
     });
   }
 
-  private filterAutoCompleteOptions(groups: AutoCompleteOptGroup[], filterString: string): AutoCompleteOptGroup[] {
+  private filterAutoCompleteOptions(groups: OptGroup[], filterString: string): OptGroup[] {
     const newGroups = this.autoCompleteOpts
       .map(group => {
         // remove options in group that don't match filter value

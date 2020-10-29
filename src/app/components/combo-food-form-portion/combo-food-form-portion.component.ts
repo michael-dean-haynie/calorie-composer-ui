@@ -1,6 +1,6 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
-import { AutoCompleteOpt, AutoCompleteOptGroup } from 'src/app/constants/types/auto-complete-options.type';
+import { Opt, OptGroup } from 'src/app/constants/types/select-options';
 import { UnitDescription } from 'src/app/constants/types/unit-description';
 import { UnitService } from 'src/app/services/util/unit.service';
 import { FilteredAutocompleteComponent } from '../filtered-autocomplete/filtered-autocomplete.component';
@@ -18,7 +18,7 @@ export class ComboFoodFormPortionComponent {
 
   @ViewChild(FilteredAutocompleteComponent) filteredAutocompleteComponent: FilteredAutocompleteComponent;
 
-  metricMeasureACOptions: AutoCompleteOptGroup[] = [
+  metricMeasureACOptions: OptGroup[] = [
     {
       groupLabel: 'Mass',
       groupOptions: UnitService.MetricMassUnits.map(unit => this.mapUnitToAutoCompleteOptions(unit))
@@ -38,7 +38,7 @@ export class ComboFoodFormPortionComponent {
     otherPortions.removeAt(this.otherPortionsIndex);
   }
 
-  private mapUnitToAutoCompleteOptions(unit: UnitDescription): AutoCompleteOpt {
+  private mapUnitToAutoCompleteOptions(unit: UnitDescription): Opt {
     return {
       label: `${unit.plural} (${unit.abbr})`,
       value: unit.abbr

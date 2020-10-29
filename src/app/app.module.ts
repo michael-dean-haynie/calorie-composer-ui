@@ -1,3 +1,4 @@
+import { DecimalPipe } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -22,6 +23,7 @@ import { AppComponent } from './app.component';
 import { ComboFoodFormFoodAmountComponent } from './components/combo-food-form-food-amount/combo-food-form-food-amount.component';
 import { ComboFoodFormPortionComponent } from './components/combo-food-form-portion/combo-food-form-portion.component';
 import { ComboFoodFormComponent } from './components/combo-food-form/combo-food-form.component';
+import { ConversionRatiosFormComponent } from './components/conversion-ratios-form/conversion-ratios-form.component';
 import { ErrorMsgComponent } from './components/error-msg/error-msg.component';
 import { FilteredAutocompleteComponent } from './components/filtered-autocomplete/filtered-autocomplete.component';
 import { FoodFormConversionRatioComponent } from './components/food-form-conversion-ratio/food-form-conversion-ratio.component';
@@ -39,7 +41,6 @@ import { MaskDirective } from './directives/mask.directive';
 import { MacroAmtPipe } from './pipes/macro-amt.pipe';
 import { MacroPctgPipe } from './pipes/macro-pctg.pipe';
 import { UnitPipe } from './pipes/unit.pipe';
-import { ConversionRatiosFormComponent } from './components/conversion-ratios-form/conversion-ratios-form.component';
 
 
 @NgModule({
@@ -98,7 +99,8 @@ import { ConversionRatiosFormComponent } from './components/conversion-ratios-fo
   providers: [
     MatDatepickerModule,
     MatNativeDateModule,
-    UnitPipe
+    UnitPipe,
+    DecimalPipe
   ],
   bootstrap: [AppComponent]
 })

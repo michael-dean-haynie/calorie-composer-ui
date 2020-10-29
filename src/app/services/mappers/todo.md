@@ -12,7 +12,9 @@ pu@ + make delete / done buttons functional
     + smooth out validation messages inside and outside
     + figure out how to handle free form values
     + get auto complete to respond to text input
-    - display serving sizes
+    + display serving sizes
+    + display nutrient ref size
+    - add validations must define serving size and constituent ref
 
 
 

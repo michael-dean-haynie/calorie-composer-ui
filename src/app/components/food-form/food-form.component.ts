@@ -1,13 +1,18 @@
-import { Location } from '@angular/common';
+import { DecimalPipe, Location } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { NutrientMetadataList } from 'src/app/constants/nutrient-metadata';
+import { Path } from 'src/app/constants/types/path.type';
+import { Opt } from 'src/app/constants/types/select-options';
 import { Food } from 'src/app/models/food.model';
 import { Nutrient } from 'src/app/models/nutrient.model';
+import { UnitPipe } from 'src/app/pipes/unit.pipe';
 import { FdcApiService } from 'src/app/services/api/fdc-api.service';
 import { FoodApiService } from 'src/app/services/api/food-api.service';
+import { ConversionRatioService } from 'src/app/services/conversion-ratio.service';
+import { ConversionRatioMapperService } from 'src/app/services/mappers/conversion-ratio-mapper.service';
 import { FoodMapperService } from 'src/app/services/mappers/food-mapper.service';
 import { NutrientMapperService } from 'src/app/services/mappers/nutrient-mapper.service';
 import { UnitService } from 'src/app/services/util/unit.service';
@@ -29,6 +34,13 @@ export class FoodFormComponent implements OnInit, OnDestroy {
 
   foodForm: FormGroup;
 
+  ssPaths: Path[] = [];
+  ssOpts: Opt[] = [];
+  ssSelection: string;
+
+  nrPaths: Path[] = []
+  nutrientRefAmt: string;
+
   nutrientsDisplayedColumns = ['name', 'amount', 'unit', 'icons'];
   nutrientsDataSource: BehaviorSubject<any> = new BehaviorSubject([]);
 
@@ -47,6 +59,10 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     private fdcApiService: FdcApiService,
     private foodMapperService: FoodMapperService,
     private nutrientMapperService: NutrientMapperService,
+    private conversionRatioMapperService: ConversionRatioMapperService,
+    private conversionRatioService: ConversionRatioService,
+    private unitPipe: UnitPipe,
+    private decimalPipe: DecimalPipe,
     private location: Location,
   ) { }
 
@@ -88,6 +104,15 @@ export class FoodFormComponent implements OnInit, OnDestroy {
   get aNutrientIsBeingEdited(): boolean {
     const nutrients = this.foodForm.get('nutrients') as FormArray;
     return nutrients.controls.some(ctrl => ctrl.get('editMode').value);
+  }
+
+  get ssAmount(): number {
+    const path = this.ssPaths.find(pth => this.conversionRatioService.getPathTarget(pth) === this.ssSelection);
+    return this.conversionRatioService.getPathProduct(path);
+  }
+
+  getServingSizeOptions(): any[] {
+    return [{ val: 1 }];
   }
 
   addNutrient(): void {
@@ -178,6 +203,9 @@ export class FoodFormComponent implements OnInit, OnDestroy {
       })
     );
 
+    // setup listeners
+    this.listenForChangesToConversionRatios();
+
     // trigger initial value changes
     this.foodForm.updateValueAndValidity({ onlySelf: false, emitEvent: true });
 
@@ -185,5 +213,49 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     if (this.formMode !== 'create') {
       this.foodForm.markAllAsTouched();
     }
+  }
+
+  private listenForChangesToConversionRatios(): void {
+    this.subscriptions.push(this.conversionRatios.valueChanges.subscribe(() => {
+
+      // update serving size paths
+      const cvRats = this.conversionRatioMapperService.formArrayToModelArray(this.conversionRatios);
+      this.ssPaths = this.conversionRatioService.getPathsForUnit(cvRats, 'SERVING_SIZE_REF');
+
+      // update serving size units
+      this.ssOpts = this.ssPaths.map(ssp => {
+        const unit = this.conversionRatioService.getPathTarget(ssp);
+        return {
+          value: unit,
+          label: this.unitPipe.transform(unit, 'nutrient')
+        };
+      });
+
+      // update selected serving size unit
+      if (!this.ssOpts.map(opt => opt.value).includes(this.ssSelection) && this.ssOpts.length) {
+        this.ssSelection = this.ssOpts[0].value;
+      }
+
+      // update nutrient ref paths
+      this.nrPaths = this.conversionRatioService.getPathsForUnit(cvRats, 'CONSTITUENTS_SIZE_REF');
+
+      // update nutrientRefAmt (prefer g/ml if possible)
+      if (this.nrPaths.length) {
+        let nrPath = this.nrPaths.find(path => this.conversionRatioService.getPathTarget(path) === 'g');
+        if (!nrPath) {
+          nrPath = this.nrPaths.find(path => this.conversionRatioService.getPathTarget(path) === 'ml');
+        }
+        if (!nrPath) {
+          nrPath = this.nrPaths.length ? this.nrPaths[0] : undefined;
+        }
+
+        const nrAmount = this.decimalPipe.transform(this.conversionRatioService.getPathProduct(nrPath), '1.0-4');
+        const nrUnit = this.conversionRatioService.getPathTarget(nrPath);
+        this.nutrientRefAmt = `${nrAmount} ${nrUnit}`;
+      }
+      else {
+        this.nutrientRefAmt = undefined;
+      }
+    }));
   }
 }

@@ -1,6 +1,6 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
-import { AutoCompleteOptGroup } from 'src/app/constants/types/auto-complete-options.type';
+import { OptGroup } from 'src/app/constants/types/select-options';
 import { UnitDescription } from 'src/app/constants/types/unit-description';
 import { UnitService } from 'src/app/services/util/unit.service';
 import { FilteredAutocompleteComponent } from '../filtered-autocomplete/filtered-autocomplete.component';
@@ -18,7 +18,7 @@ export class FoodFormPortionComponent {
 
   @ViewChild(FilteredAutocompleteComponent) filteredAutocompleteComponent: FilteredAutocompleteComponent;
 
-  metricMeasureACOptions: AutoCompleteOptGroup[] = [
+  metricMeasureACOptions: OptGroup[] = [
     {
       groupLabel: 'Mass',
       groupOptions: UnitService.MetricMassUnits.map(unit => this.mapUnitToAutoCompleteOptions(unit))
