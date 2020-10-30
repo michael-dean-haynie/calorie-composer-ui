@@ -66,13 +66,14 @@ export class ConversionRatioService {
     return path.map(pl => pl.ratio).reduce(ProductReducer);
   }
 
+  getAllUnits(cvRats: ConversionRatio[]): string[] {
+    return [...new Set(this.getAllPaths(cvRats).map(path => this.getPathSource(path)))];
+  }
+
   getPathsForUnit(cvRats: ConversionRatio[], source: string): Path[] {
-    const foo = this.getAllPaths(cvRats).filter(path => {
+    return this.getAllPaths(cvRats).filter(path => {
       return this.getPathSource(path) === source;
     });
-    console.table(foo.map(path => path.map(pl => this.plSmry(pl))));
-    return foo;
-
   }
 
   getAllPaths(cvRats: ConversionRatio[]): Path[] {

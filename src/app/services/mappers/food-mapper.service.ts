@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { ContradictionsResult } from 'src/app/constants/types/contradictions-result.type';
+import { RefUnit } from 'src/app/constants/types/reference-unit.type';
 import { FoodDTO } from 'src/app/contracts/food-dto';
 import { Food } from 'src/app/models/food.model';
+import { UnitPipe } from 'src/app/pipes/unit.pipe';
 import { ConversionRatioService } from '../conversion-ratio.service';
 import { PortionService } from '../util/portion.service';
 import { UnitService } from '../util/unit.service';
@@ -19,6 +21,7 @@ export class FoodMapperService {
     private conversionRatioMapperService: ConversionRatioMapperService,
     private portionService: PortionService,
     private unitService: UnitService,
+    private unitPipe: UnitPipe,
     private conversionRatioService: ConversionRatioService,
     private fb: FormBuilder) { }
 
@@ -53,7 +56,15 @@ export class FoodMapperService {
       nutrients: this.fb.array(food.nutrients.map(nutrient => this.nutrientMapperService.modelToFormGroup(nutrient))),
       conversionRatios: this.fb.array(
         food.conversionRatios.map(conversionRatio => this.conversionRatioMapperService.modelToFormGroup(conversionRatio)),
-        { validators: [this.noContradictingOtherConversionRatios, this.noConversionRatiosWithFreeFormValues] }
+        {
+          validators: [
+            this.noContradictingOtherConversionRatios,
+            this.noConversionRatiosWithFreeFormValues,
+            this.servingSizeAndConstituentsSizeMustExist,
+            this.constituentsSizeMustBeConvertableToAllOtherDefinedUnits,
+            this.mustHaveANonRefUnit
+          ]
+        }
       )
     });
   }
@@ -71,18 +82,17 @@ export class FoodMapperService {
     return food;
   }
 
-  //     can not have more than one conversion ratio going from mass to volume
-  //        or the like for any 2 measures
-  //        take into account "built up" or "indirect" conversion ratios: i.e. 32 g = 1 serving size = 1 serving size = 2 Tbsp
-  //                                                                           32 g = 2 Tbsp
-  //                                                                           mass -> volume
+  //  can not have more than one conversion ratio going from mass to volume
+  //     or the like for any 2 measures
+  //     take into account "built up" or "indirect" conversion ratios: i.e. 32 g = 1 serving size = 1 serving size = 2 Tbsp
+  //                                                                        32 g = 2 Tbsp
+  //                                                                        mass -> volume
   private noContradictingOtherConversionRatios: ValidatorFn = (control: FormArray): ValidationErrors | null => {
     const conversionRatios = this.conversionRatioMapperService.formArrayToModelArray(control)
       .filter(cvRat => !this.conversionRatioService.usesFreeFormValue(cvRat))
       .filter(cvRat => this.conversionRatioService.isFilledOut(cvRat));
     const error = { noContradictingOtherConversionRatios: null };
 
-    // this.conversionRatioService.getAllPaths(conversionRatios);
     const result: ContradictionsResult = this.conversionRatioService.checkForContradictions(conversionRatios, 'nutrient');
     if (result.contradictionsExist) {
       error.noContradictingOtherConversionRatios = result;
@@ -97,6 +107,54 @@ export class FoodMapperService {
 
     if (freeFormValuesExist) {
       return { noConversionRatiosWithFreeFormValues: 'Unit conversions need to be entered properly.' };
+    }
+    return null;
+  }
+
+  private servingSizeAndConstituentsSizeMustExist: ValidatorFn = (control: FormArray): ValidationErrors | null => {
+    const cvRats = this.conversionRatioMapperService.formArrayToModelArray(control)
+      .filter(cvRat => !this.conversionRatioService.usesFreeFormValue(cvRat))
+      .filter(cvRat => this.conversionRatioService.isFilledOut(cvRat));
+
+    const allUnits = this.conversionRatioService.getAllUnits(cvRats);
+
+    if (!allUnits.includes(RefUnit.SERVING)) {
+      return { servingSizeAndConstituentsSizeMustExist: 'Serving size must be defined.' };
+    }
+    if (!allUnits.includes(RefUnit.CONSTITUENTS)) {
+      return { servingSizeAndConstituentsSizeMustExist: 'Nutrient ref amt must be defined.' };
+    }
+    return null;
+  }
+
+  private constituentsSizeMustBeConvertableToAllOtherDefinedUnits: ValidatorFn = (control: FormArray): ValidationErrors | null => {
+    const cvRats = this.conversionRatioMapperService.formArrayToModelArray(control)
+      .filter(cvRat => !this.conversionRatioService.usesFreeFormValue(cvRat))
+      .filter(cvRat => this.conversionRatioService.isFilledOut(cvRat));
+
+    const allUnits = this.conversionRatioService.getAllUnits(cvRats).filter(unit => unit !== RefUnit.CONSTITUENTS);
+    const constituentPaths = this.conversionRatioService.getPathsForUnit(cvRats, RefUnit.CONSTITUENTS);
+    const unitsWithoutConstituentPath = allUnits.filter(unit => {
+      return !constituentPaths.find(cp => this.conversionRatioService.getPathTarget(cp) === unit);
+    });
+
+    if (unitsWithoutConstituentPath.length) {
+      const ppUnit = this.unitPipe.transform(unitsWithoutConstituentPath[0], 'nutrient');
+      return { constituentsSizeMustBeConvertableToAllOtherDefinedUnits: `${ppUnit} must be convertable to the nutrient ref amt` };
+    }
+    return null;
+  }
+
+  private mustHaveANonRefUnit: ValidatorFn = (control: FormArray): ValidationErrors | null => {
+    const cvRats = this.conversionRatioMapperService.formArrayToModelArray(control)
+      .filter(cvRat => !this.conversionRatioService.usesFreeFormValue(cvRat))
+      .filter(cvRat => this.conversionRatioService.isFilledOut(cvRat));
+
+    const allUnits = this.conversionRatioService.getAllUnits(cvRats)
+      .filter(unit => unit !== RefUnit.CONSTITUENTS && unit !== RefUnit.SERVING);
+
+    if (allUnits.length < 1) {
+      return { constituentsSizeMustBeConvertableToAllOtherDefinedUnits: `Must specify at least 1 unit besides serving size and nutrient ref amt` };
     }
     return null;
   }

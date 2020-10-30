@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import convert from 'convert-units';
 import { ConstituentType } from 'src/app/constants/types/constituent-type.type';
 import { MeasureType } from 'src/app/constants/types/measure-type.type';
+import { RefUnit } from 'src/app/constants/types/reference-unit.type';
 import { UnitDescription } from 'src/app/constants/types/unit-description';
 import { Food } from 'src/app/models/food.model';
 // import Qty from 'js-quantities';
@@ -39,14 +40,14 @@ export class UnitService {
       plural: 'International Units'
     },
     {
-      abbr: 'SERVING_SIZE_REF',
+      abbr: RefUnit.SERVING,
       measure: 'reference',
       system: null,
       singular: null,
       plural: null
     },
     {
-      abbr: 'CONSTITUENTS_SIZE_REF',
+      abbr: RefUnit.CONSTITUENTS,
       measure: 'reference',
       system: null,
       singular: null,
@@ -82,8 +83,8 @@ export class UnitService {
    */
 
   public static ReferenceMeasureUnits = UnitService.SupplementalUnits.filter(desc => desc.measure === 'reference');
-  public static ServingSizeRefUnit = UnitService.SupplementalUnits.find(desc => desc.abbr === 'SERVING_SIZE_REF');
-  public static ConstituentsSizeRefUnit = UnitService.SupplementalUnits.find(desc => desc.abbr === 'CONSTITUENTS_SIZE_REF');
+  public static ServingSizeRefUnit = UnitService.SupplementalUnits.find(desc => desc.abbr === RefUnit.SERVING);
+  public static ConstituentsSizeRefUnit = UnitService.SupplementalUnits.find(desc => desc.abbr === RefUnit.CONSTITUENTS);
 
   /**
    * Nutrient Units
@@ -168,8 +169,8 @@ export class UnitService {
 
   ppReferenceUnit(refUnit: string, constituentType: ConstituentType): string {
     const map = new Map<string, string>([
-      ['SERVING_SIZE_REF', 'serving size'],
-      ['CONSTITUENTS_SIZE_REF', constituentType === 'nutrient' ? 'nutrient ref amt' : 'ingredient ref amt']
+      [RefUnit.SERVING, 'serving size'],
+      [RefUnit.CONSTITUENTS, constituentType === 'nutrient' ? 'nutrient ref amt' : 'ingredient ref amt']
     ]);
     return map.get(refUnit);
   }

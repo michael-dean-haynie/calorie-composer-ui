@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { NutrientMetadataList } from 'src/app/constants/nutrient-metadata';
 import { Path } from 'src/app/constants/types/path.type';
+import { RefUnit } from 'src/app/constants/types/reference-unit.type';
 import { Opt } from 'src/app/constants/types/select-options';
 import { Food } from 'src/app/models/food.model';
 import { Nutrient } from 'src/app/models/nutrient.model';
@@ -220,7 +221,7 @@ export class FoodFormComponent implements OnInit, OnDestroy {
 
       // update serving size paths
       const cvRats = this.conversionRatioMapperService.formArrayToModelArray(this.conversionRatios);
-      this.ssPaths = this.conversionRatioService.getPathsForUnit(cvRats, 'SERVING_SIZE_REF');
+      this.ssPaths = this.conversionRatioService.getPathsForUnit(cvRats, RefUnit.SERVING);
 
       // update serving size units
       this.ssOpts = this.ssPaths.map(ssp => {
@@ -237,7 +238,7 @@ export class FoodFormComponent implements OnInit, OnDestroy {
       }
 
       // update nutrient ref paths
-      this.nrPaths = this.conversionRatioService.getPathsForUnit(cvRats, 'CONSTITUENTS_SIZE_REF');
+      this.nrPaths = this.conversionRatioService.getPathsForUnit(cvRats, RefUnit.CONSTITUENTS);
 
       // update nutrientRefAmt (prefer g/ml if possible)
       if (this.nrPaths.length) {

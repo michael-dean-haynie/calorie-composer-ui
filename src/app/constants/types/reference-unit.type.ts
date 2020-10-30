@@ -1,0 +1,4 @@
+export const RefUnit = {
+    SERVING: 'SERVING_SIZE_REF',
+    CONSTITUENTS: 'CONSTITUENTS_SIZE_REF'
+};
