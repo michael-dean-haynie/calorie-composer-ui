@@ -44,13 +44,14 @@
                         " needs to be entered with a separate <em>amount</em> and <em>unit</em>:
                     </p>
                     <div class="freeform-form">
-                        <mat-form-field floatLabel="never" class="amount-form-field">
-                            <input matInput [appMask]="['non-negative', 'float-hundredths']" placeholder="Amount"
+                        <mat-form-field class="amount-form-field">
+                            <mat-label>Amount</mat-label>
+                            <input matInput [appMask]="['non-negative', 'float-hundredths']"
                                 [formControl]="side === 'a' ? cvRat.get('amountA'): cvRat.get('amountB')">
                         </mat-form-field>
-                        <mat-form-field floatLabel="never" class="unit-form-field">
-                            <input matInput placeholder="Unit"
-                                [formControl]="side === 'a' ? cvRat.get('unitA'): cvRat.get('unitB')"
+                        <mat-form-field class="unit-form-field">
+                            <mat-label>Unit</mat-label>
+                            <input matInput [formControl]="side === 'a' ? cvRat.get('unitA'): cvRat.get('unitB')"
                                 [matAutocomplete]="unitA">
                             <mat-autocomplete #unitA="matAutocomplete" [displayWith]="ppConversionRatioUnit"
                                 class="ac-panel left">
@@ -69,12 +70,14 @@
             <ng-container *ngIf="!usesFreeFormValue(cvRat)">
                 <div class="conversion-ratio-form">
                     <div class="conversion-ratio-form__side-a">
-                        <mat-form-field floatLabel="never" class="amount-form-field">
-                            <input matInput [appMask]="['non-negative', 'float-hundredths']" placeholder="Ex. 1"
+                        <mat-form-field floatLabel="always" class="amount-form-field">
+                            <mat-label>Amount</mat-label>
+                            <input matInput [appMask]="['non-negative', 'float-hundredths']" placeholder="Ex. 1.5"
                                 [formControl]="cvRat.get('amountA')">
                         </mat-form-field>
-                        <mat-form-field floatLabel="never" class="unit-form-field">
-                            <input matInput placeholder="Ex. serving size" [formControl]="cvRat.get('unitA')"
+                        <mat-form-field floatLabel="always" class="unit-form-field">
+                            <mat-label>Unit</mat-label>
+                            <input matInput placeholder="Ex. cup" [formControl]="cvRat.get('unitA')"
                                 [matAutocomplete]="unitA">
                             <mat-autocomplete #unitA="matAutocomplete" [displayWith]="ppConversionRatioUnit"
                                 class="ac-panel left">
@@ -91,12 +94,14 @@
                         <span>&#61;</span>
                     </div>
                     <div class="conversion-ratio-form__side-b">
-                        <mat-form-field floatLabel="never" class="amount-form-field">
-                            <input matInput [appMask]="['non-negative', 'float-hundredths']" placeholder="Ex. 1.5"
+                        <mat-form-field floatLabel="always" class="amount-form-field">
+                            <mat-label>Amount</mat-label>
+                            <input matInput [appMask]="['non-negative', 'float-hundredths']" placeholder="Ex. 1"
                                 [formControl]="cvRat.get('amountB')">
                         </mat-form-field>
-                        <mat-form-field floatLabel="never" class="unit-form-field">
-                            <input matInput placeholder="Ex. cups" [formControl]="cvRat.get('unitB')"
+                        <mat-form-field floatLabel="always" class="unit-form-field">
+                            <mat-label>Unit</mat-label>
+                            <input matInput placeholder="Ex. serving size" [formControl]="cvRat.get('unitB')"
                                 [matAutocomplete]="unitB">
                             <mat-autocomplete #unitB="matAutocomplete" [displayWith]="ppConversionRatioUnit"
                                 class="ac-panel left">

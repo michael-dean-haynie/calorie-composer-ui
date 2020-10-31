@@ -30,7 +30,6 @@ export class NutrientMapperService {
   modelToFormGroup(nutrient: Nutrient): FormGroup {
     return this.fb.group({
       id: [nutrient.id],
-      editMode: [false],
       name: [this.nutriantMetadataService.tryAliasToDisplayName(nutrient.name), Validators.required],
       unit: [nutrient.unit, Validators.required],
       scalar: [nutrient.scalar, Validators.required]

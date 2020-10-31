@@ -17,10 +17,10 @@ mat-form-field {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    // might need to add back in?
     padding-right: var(--default-padding);
 
     h3 {
+        display: inline-block;
         margin-bottom: 0;
     }
 }
@@ -113,5 +113,9 @@ mat-form-field {
 .form-buttons {
     display: flex;
     justify-content: space-between;
+}
+
+.nothing-to-see {
+    font-style: italic;
 }
 

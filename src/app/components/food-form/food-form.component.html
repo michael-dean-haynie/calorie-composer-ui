@@ -61,114 +61,33 @@
 
                 <app-conversion-ratios-form [conversionRatios]="conversionRatios" [constituentType]="'nutrient'">
                 </app-conversion-ratios-form>
+                <div *ngIf="conversionRatios.controls.length < 1" class="nothing-to-see">
+                    No units have been added yet.
+                </div>
 
             </div>
         </div>
     </section>
 
     <section>
+        <app-error-msg [ctrl]="nutrients"></app-error-msg>
         <div class="split-header">
-            <h3>Nutrients</h3>
-            <div *ngIf="nutrientRefAmt" class="nutrients-per">per {{nutrientRefAmt}}</div>
+            <div>
+                <h3 [ngClass]="{'mat-error': !nutrients.valid}">Nutrients</h3>
+                &nbsp;
+                <span *ngIf="nutrientRefAmt" class="nutrients-per">per {{nutrientRefAmt}}</span>
+            </div>
+            <button type="button" mat-icon-button color="primary" (click)="addNutrient()">
+                <mat-icon>add_to_photos</mat-icon>
+            </button>
         </div>
 
-        <table mat-table [dataSource]="nutrientsDataSource" class="mat-elevation-z8 nutrients-table">
-
-            <!-- Name Column -->
-            <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef> Name </th>
-                <td mat-cell *matCellDef="let element">
-                    <ng-container *ngIf="!element.get('editMode').value">
-                        {{element.get('name').value}}
-                    </ng-container>
-                    <ng-container *ngIf="element.get('editMode').value">
-                        <mat-form-field floatLabel="never">
-                            <input matInput placeholder="Ex. Protein" [formControl]="element.get('name')"
-                                [matAutocomplete]="nutrientName">
-                            <mat-autocomplete #nutrientName="matAutocomplete" class="ac-panel left">
-                                <mat-option *ngFor=" let option of nutrientNameACOptions" [value]="option">
-                                    {{option}}
-                                </mat-option>
-                            </mat-autocomplete>
-                        </mat-form-field>
-                    </ng-container>
-                </td>
-            </ng-container>
-
-            <!-- Amount Column -->
-            <ng-container matColumnDef="amount">
-                <th mat-header-cell *matHeaderCellDef> Amt </th>
-                <td mat-cell *matCellDef="let element">
-                    <ng-container *ngIf="!element.get('editMode').value">
-                        {{element.get('scalar').value}}
-                    </ng-container>
-                    <ng-container *ngIf="element.get('editMode').value">
-                        <mat-form-field floatLabel="never" class="amount-form-field">
-                            <input matInput [appMask]="['non-negative', 'float-hundredths']" placeholder="3.5"
-                                [formControl]="element.get('scalar')">
-
-                        </mat-form-field>
-                    </ng-container>
-                </td>
-            </ng-container>
-
-            <!-- Unit Column -->
-            <ng-container matColumnDef="unit">
-                <th mat-header-cell *matHeaderCellDef> Unit </th>
-                <td mat-cell *matCellDef="let element">
-                    <ng-container *ngIf="!element.get('editMode').value">
-                        {{element.get('unit').value}}
-                    </ng-container>
-                    <ng-container *ngIf="element.get('editMode').value">
-                        <mat-form-field floatLabel="never" class="unit-form-field">
-                            <input matInput placeholder="g" [formControl]="element.get('unit')"
-                                [matAutocomplete]="nutrientUnit">
-                            <mat-autocomplete #nutrientUnit="matAutocomplete" class="ac-panel right">
-                                <mat-option *ngFor=" let option of nutrientUnitACOptions" [value]="option.value">
-                                    {{option.label}}
-                                </mat-option>
-                            </mat-autocomplete>
-                        </mat-form-field>
-                    </ng-container>
-                </td>
-            </ng-container>
-
-            <!-- Icons Column -->
-            <ng-container matColumnDef="icons">
-                <th mat-header-cell *matHeaderCellDef>
-                    <div class="icons">
-                        <!-- Add Nutrient -->
-                        <button *ngIf="!aNutrientIsBeingEdited" type="button" mat-icon-button color="primary"
-                            (click)="addNutrient()">
-                            <mat-icon>add_to_photos</mat-icon>
-                        </button>
-                    </div>
-                </th>
-                <td mat-cell *matCellDef="let element">
-                    <div class="icons">
-                        <!-- Delete Nutrient -->
-                        <button *ngIf="element.get('editMode').value === true" type="button" mat-icon-button
-                            color="primary" (click)="removeNutrient(element.get('nutrientIndex').value)">
-                            <mat-icon>delete</mat-icon>
-                        </button>
-
-                        <!-- Toggle Edit Mode -->
-                        <button *ngIf="!aNutrientIsBeingEdited || element.get('editMode').value === true" type="button"
-                            mat-icon-button color="primary" (click)="toggleNutrientEditMode(element)"
-                            [disabled]="element.invalid">
-                            <mat-icon *ngIf="element.get('editMode').value === false && !aNutrientIsBeingEdited">edit
-                            </mat-icon>
-                            <mat-icon *ngIf="element.get('editMode').value === true">done</mat-icon>
-                        </button>
-                    </div>
-                </td>
-            </ng-container>
-
-
-            <tr mat-header-row *matHeaderRowDef="nutrientsDisplayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: nutrientsDisplayedColumns;"></tr>
-        </table>
+        <app-nutrients-form [nutrients]="nutrients"></app-nutrients-form>
+        <div *ngIf="nutrients.controls.length < 1" class="nothing-to-see">
+            No nutrients have been added yet.
+        </div>
     </section>
+
     <section>
         <div class="form-buttons">
             <button mat-raised-button color="accent" (click)="cancel()">Cancel</button>

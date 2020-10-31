@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { IsMeaningfulValue } from 'src/app/constants/functions';
 import { ContradictionsResult } from 'src/app/constants/types/contradictions-result.type';
 import { RefUnit } from 'src/app/constants/types/reference-unit.type';
 import { FoodDTO } from 'src/app/contracts/food-dto';
@@ -53,7 +54,13 @@ export class FoodMapperService {
       description: [food.description, Validators.required],
       brandOwner: [food.brandOwner],
       ingredients: [food.ingredients],
-      nutrients: this.fb.array(food.nutrients.map(nutrient => this.nutrientMapperService.modelToFormGroup(nutrient))),
+      nutrients: this.fb.array(food.nutrients.map(nutrient => this.nutrientMapperService.modelToFormGroup(nutrient)),
+        {
+          validators: [
+            this.noDuplicateNutrients
+          ]
+        }
+      ),
       conversionRatios: this.fb.array(
         food.conversionRatios.map(conversionRatio => this.conversionRatioMapperService.modelToFormGroup(conversionRatio)),
         {
@@ -155,6 +162,25 @@ export class FoodMapperService {
 
     if (allUnits.length < 1) {
       return { constituentsSizeMustBeConvertableToAllOtherDefinedUnits: `Must specify at least 1 unit besides serving size and nutrient ref amt` };
+    }
+    return null;
+  }
+
+  private noDuplicateNutrients: ValidatorFn = (control: FormArray): ValidationErrors | null => {
+    const nutrients = this.nutrientMapperService.formArrayToModelArray(control).filter(nutrient => {
+      // nutrient must be filled out
+      return IsMeaningfulValue(nutrient.name)
+        && IsMeaningfulValue(nutrient.scalar)
+        && IsMeaningfulValue(nutrient.unit);
+    });
+
+    const duplicateNutrient = nutrients.find(nutrient => {
+      const name = nutrient.name;
+      return nutrients.filter(nutr => nutr.name === name).length > 1;
+    });
+
+    if (duplicateNutrient) {
+      return { noDuplicateNutrients: `Detected duplicate entries for nutrient: "${duplicateNutrient.name}"` };
     }
     return null;
   }

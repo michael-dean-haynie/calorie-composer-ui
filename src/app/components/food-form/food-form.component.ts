@@ -1,14 +1,12 @@
 import { DecimalPipe, Location } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { NutrientMetadataList } from 'src/app/constants/nutrient-metadata';
+import { Subscription } from 'rxjs';
 import { Path } from 'src/app/constants/types/path.type';
 import { RefUnit } from 'src/app/constants/types/reference-unit.type';
 import { Opt } from 'src/app/constants/types/select-options';
 import { Food } from 'src/app/models/food.model';
-import { Nutrient } from 'src/app/models/nutrient.model';
 import { UnitPipe } from 'src/app/pipes/unit.pipe';
 import { FdcApiService } from 'src/app/services/api/fdc-api.service';
 import { FoodApiService } from 'src/app/services/api/food-api.service';
@@ -16,8 +14,8 @@ import { ConversionRatioService } from 'src/app/services/conversion-ratio.servic
 import { ConversionRatioMapperService } from 'src/app/services/mappers/conversion-ratio-mapper.service';
 import { FoodMapperService } from 'src/app/services/mappers/food-mapper.service';
 import { NutrientMapperService } from 'src/app/services/mappers/nutrient-mapper.service';
-import { UnitService } from 'src/app/services/util/unit.service';
 import { ConversionRatiosFormComponent } from '../conversion-ratios-form/conversion-ratios-form.component';
+import { NutrientsFormComponent } from '../nutrients-form/nutrients-form.component';
 
 type FormMode = 'create' | 'update' | 'import';
 
@@ -29,6 +27,7 @@ type FormMode = 'create' | 'update' | 'import';
 export class FoodFormComponent implements OnInit, OnDestroy {
 
   @ViewChild(ConversionRatiosFormComponent) conversionRatiosFormComponent: ConversionRatiosFormComponent;
+  @ViewChild(NutrientsFormComponent) nutrientsFormComponent: NutrientsFormComponent;
 
   formMode: FormMode;
   loading = false;
@@ -41,12 +40,6 @@ export class FoodFormComponent implements OnInit, OnDestroy {
 
   nrPaths: Path[] = []
   nutrientRefAmt: string;
-
-  nutrientsDisplayedColumns = ['name', 'amount', 'unit', 'icons'];
-  nutrientsDataSource: BehaviorSubject<any> = new BehaviorSubject([]);
-
-  nutrientUnitACOptions = UnitService.NutrientUnits.map(desc => ({ label: `${desc.singular} (${desc.abbr})`, value: desc.abbr }));
-  nutrientNameACOptions = NutrientMetadataList.map(meta => meta.displayName);
 
   private foodId: string;
   private fdcId: string;
@@ -102,32 +95,13 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     return this.foodForm.get('nutrients') as FormArray;
   }
 
-  get aNutrientIsBeingEdited(): boolean {
-    const nutrients = this.foodForm.get('nutrients') as FormArray;
-    return nutrients.controls.some(ctrl => ctrl.get('editMode').value);
-  }
-
   get ssAmount(): number {
     const path = this.ssPaths.find(pth => this.conversionRatioService.getPathTarget(pth) === this.ssSelection);
     return this.conversionRatioService.getPathProduct(path);
   }
 
-  getServingSizeOptions(): any[] {
-    return [{ val: 1 }];
-  }
-
   addNutrient(): void {
-    const nutrientCtrl = this.nutrientMapperService.modelToFormGroup(new Nutrient());
-    nutrientCtrl.get('editMode').setValue(true);
-    this.nutrients.insert(0, nutrientCtrl);
-  }
-
-  toggleNutrientEditMode(nutrient: FormGroup): void {
-    nutrient.get('editMode').setValue(!nutrient.get('editMode').value);
-  }
-
-  removeNutrient(index: number): void {
-    this.nutrients.removeAt(index);
+    this.nutrientsFormComponent.addNutrient();
   }
 
   addConversionRatio(): void {
@@ -184,25 +158,6 @@ export class FoodFormComponent implements OnInit, OnDestroy {
 
   private prepareFoodForm(): void {
     this.foodForm = this.foodMapperService.modelToFormGroup(this.food);
-    this.subscriptions.push(
-      this.foodForm.valueChanges.subscribe(() => {
-
-        // inject nutrient index into nutrient form groups and push to data source
-        const nutrients = this.foodForm.get('nutrients') as FormArray;
-        this.nutrientsDataSource.next(nutrients.controls.map((nutrient: FormGroup, index: number) => {
-          const existingIndexControl = nutrient.get('nutrientIndex');
-          if (existingIndexControl) {
-            // avoid recursive change detection - nice.
-            if ((existingIndexControl.value + 0) !== index) {
-              nutrient.get('nutrientIndex').setValue(index);
-            }
-          } else {
-            nutrient.addControl('nutrientIndex', new FormControl(index));
-          }
-          return nutrient;
-        }));
-      })
-    );
 
     // setup listeners
     this.listenForChangesToConversionRatios();

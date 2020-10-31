@@ -1,0 +1,77 @@
+<mat-accordion multi hideToggle="true">
+    <ng-container *ngFor="let nutrient of nutrients.controls; let i = index">
+        <mat-expansion-panel #exp (expandedChange)="checkExpansion($event, nutrient, exp)"
+            [ngClass]="{'mat-expansion-panel-invalid': nutrient.invalid && nutrientTouched(nutrient)}">
+
+            <!-- Header -->
+            <mat-expansion-panel-header>
+                <mat-panel-title *ngIf="!exp.expanded">
+                    <span class="nutrient-title">
+                        <span>{{nutrient.get('name').value}}:</span>
+                        <span>{{nutrient.get('scalar').value}}&nbsp;{{nutrient.get('unit').value}}</span>
+                    </span>
+                    <button type="button" mat-icon-button color="primary">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                </mat-panel-title>
+                <mat-panel-title *ngIf="exp.expanded">
+                    <div>
+                        <button mat-stroked-button color="warn" (click)="removeNutrient(i)">
+                            <mat-icon>delete</mat-icon>&nbsp;Delete
+                        </button>
+                    </div>
+                    <div>
+                        <button mat-stroked-button color="primary" [disabled]="nutrient.invalid">
+                            <mat-icon>done</mat-icon>&nbsp;Done
+                        </button>
+                    </div>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <!-- Body -->
+            <div>
+                <div class="nutrient-form">
+
+                    <mat-form-field floatLabel="always" class="nutrient-form__name">
+                        <mat-label>Nutrient Name</mat-label>
+                        <input matInput placeholder="Ex. Protein" [formControl]="nutrient.get('name')"
+                            [matAutocomplete]="nutrientName">
+                        <mat-autocomplete #nutrientName="matAutocomplete" class="ac-panel left">
+                            <ng-container
+                                *ngFor="let group of nutrient.get('nameFilteredAutoCompleteOptions').value | async">
+                                <mat-option *ngFor="let option of group.groupOptions" [value]="option.value">
+                                    {{option.label}}
+                                </mat-option>
+                            </ng-container>
+                        </mat-autocomplete>
+                    </mat-form-field>
+
+                    <mat-form-field floatLabel="always" class="nutrient-form__scalar">
+                        <mat-label>Amount</mat-label>
+                        <input matInput [appMask]="['non-negative', 'float-hundredths']" placeholder="Ex. 3.5"
+                            [formControl]="nutrient.get('scalar')">
+                    </mat-form-field>
+
+                    <mat-form-field floatLabel="always" class="nutrient-form__unit">
+                        <mat-label>Unit</mat-label>
+                        <input matInput placeholder="Ex. g" [formControl]="nutrient.get('unit')"
+                            [matAutocomplete]="nutrientUnit">
+                        <mat-autocomplete #nutrientUnit="matAutocomplete" class="ac-panel right">
+                            <ng-container
+                                *ngFor="let group of nutrient.get('unitFilteredAutoCompleteOptions').value | async">
+                                <mat-option *ngFor="let option of group.groupOptions" [value]="option.value">
+                                    {{option.label}}
+                                </mat-option>
+                            </ng-container>
+                        </mat-autocomplete>
+                    </mat-form-field>
+
+                </div>
+                <div *ngIf="nutrient.invalid">
+                    <app-error-msg [ctrl]="nutrient"></app-error-msg>
+                </div>
+            </div>
+
+        </mat-expansion-panel>
+    </ng-container>
+</mat-accordion>

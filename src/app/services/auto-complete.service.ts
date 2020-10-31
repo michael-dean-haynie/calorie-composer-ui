@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { IsMeaningfulValue } from '../constants/functions';
+import { NutrientMetadataList } from '../constants/nutrient-metadata';
 import { ConstituentType } from '../constants/types/constituent-type.type';
 import { OptGroup } from '../constants/types/select-options';
 import { UnitDescription } from '../constants/types/unit-description';
@@ -33,6 +34,24 @@ export class AutoCompleteService {
         groupLabel: 'Reference',
         groupOptions: UnitService.ReferenceMeasureUnits
           .map(unit => this.mapUnitToAutoCompleteOptions(unit, constituentType))
+      }
+    ];
+  }
+
+  optionsForNutrientUnit(): OptGroup[] {
+    return [
+      {
+        groupLabel: 'All',
+        groupOptions: UnitService.NutrientUnits.map(desc => ({ label: `${desc.singular} (${desc.abbr})`, value: desc.abbr }))
+      }
+    ];
+  }
+
+  optionsForNutrientName(): OptGroup[] {
+    return [
+      {
+        groupLabel: 'All',
+        groupOptions: NutrientMetadataList.map(meta => ({ label: meta.displayName, value: meta.displayName }))
       }
     ];
   }
