@@ -32,7 +32,7 @@ export class NutrientsFormComponent implements OnInit, AfterViewChecked {
     this.expansionPanels.forEach((exp, index) => {
       const nutrient: FormGroup = this.nutrients.controls[index] as FormGroup;
       if (!IsMeaningfulValue(nutrient.get('name').value)
-        && !IsMeaningfulValue(nutrient.get('scalar').value)
+        && !IsMeaningfulValue(nutrient.get('amount').value)
         && !IsMeaningfulValue(nutrient.get('unit').value)) {
         exp.open();
       }
@@ -57,7 +57,7 @@ export class NutrientsFormComponent implements OnInit, AfterViewChecked {
    */
   nutrientTouched(nutrient: FormGroup): boolean {
     if (nutrient.get('name').touched && nutrient.get('unit').touched
-      && nutrient.get('scalar').touched) {
+      && nutrient.get('amount').touched) {
       return true;
     }
     return false;

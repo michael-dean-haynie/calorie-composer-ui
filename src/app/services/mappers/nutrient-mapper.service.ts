@@ -19,7 +19,7 @@ export class NutrientMapperService {
     nutrient.id = nutrientDTO.id;
     nutrient.name = this.nutriantMetadataService.aliasToType(nutrientDTO.name);
     nutrient.unit = nutrientDTO.unit;
-    nutrient.scalar = nutrientDTO.scalar;
+    nutrient.amount = nutrientDTO.amount;
     return nutrient;
   }
 
@@ -32,7 +32,7 @@ export class NutrientMapperService {
       id: [nutrient.id],
       name: [this.nutriantMetadataService.tryAliasToDisplayName(nutrient.name), Validators.required],
       unit: [nutrient.unit, Validators.required],
-      scalar: [nutrient.scalar, Validators.required]
+      amount: [nutrient.amount, Validators.required]
     });
   }
 
@@ -41,7 +41,7 @@ export class NutrientMapperService {
     nutrient.id = formGroup.get('id').value;
     nutrient.name = formGroup.get('name').value;
     nutrient.unit = formGroup.get('unit').value;
-    nutrient.scalar = formGroup.get('scalar').value;
+    nutrient.amount = formGroup.get('amount').value;
     return nutrient;
   }
 

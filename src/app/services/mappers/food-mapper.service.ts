@@ -170,7 +170,7 @@ export class FoodMapperService {
     const nutrients = this.nutrientMapperService.formArrayToModelArray(control).filter(nutrient => {
       // nutrient must be filled out
       return IsMeaningfulValue(nutrient.name)
-        && IsMeaningfulValue(nutrient.scalar)
+        && IsMeaningfulValue(nutrient.amount)
         && IsMeaningfulValue(nutrient.unit);
     });
 

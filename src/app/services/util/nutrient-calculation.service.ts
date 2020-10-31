@@ -27,7 +27,7 @@ export class NutrientCalculationService {
    */
   nutrientAmtInFood(food: Food, nutrientType: NutrientType): number {
     const nutrient = food.nutrients.find(nutr => nutr.name === nutrientType);
-    return nutrient ? nutrient.scalar : 0;
+    return nutrient ? nutrient.amount : 0;
   }
 
   /**

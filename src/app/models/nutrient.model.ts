@@ -4,5 +4,5 @@ export class Nutrient {
     id?: string;
     name: NutrientType;
     unit: string;
-    scalar: number;
+    amount: number;
 }

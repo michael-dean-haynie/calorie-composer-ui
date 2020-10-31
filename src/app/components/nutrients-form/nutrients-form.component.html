@@ -8,7 +8,7 @@
                 <mat-panel-title *ngIf="!exp.expanded">
                     <span class="nutrient-title">
                         <span>{{nutrient.get('name').value}}:</span>
-                        <span>{{nutrient.get('scalar').value}}&nbsp;{{nutrient.get('unit').value}}</span>
+                        <span>{{nutrient.get('amount').value}}&nbsp;{{nutrient.get('unit').value}}</span>
                     </span>
                     <button type="button" mat-icon-button color="primary">
                         <mat-icon>edit</mat-icon>
@@ -46,10 +46,10 @@
                         </mat-autocomplete>
                     </mat-form-field>
 
-                    <mat-form-field floatLabel="always" class="nutrient-form__scalar">
+                    <mat-form-field floatLabel="always" class="nutrient-form__amount">
                         <mat-label>Amount</mat-label>
                         <input matInput [appMask]="['non-negative', 'float-hundredths']" placeholder="Ex. 3.5"
-                            [formControl]="nutrient.get('scalar')">
+                            [formControl]="nutrient.get('amount')">
                     </mat-form-field>
 
                     <mat-form-field floatLabel="always" class="nutrient-form__unit">
