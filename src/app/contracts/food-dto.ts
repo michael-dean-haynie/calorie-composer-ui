@@ -7,6 +7,8 @@ export interface FoodDTO {
     description: string;
     brandOwner: string;
     ingredients: string;
+    ssrDisplayUnit: string;
+    csrDisplayUnit: string;
     nutrients: NutrientDTO[];
     conversionRatios: ConversionRatioDTO[];
 }

@@ -7,6 +7,8 @@ export class Food {
     description: string;
     brandOwner: string;
     ingredients: string;
+    ssrDisplayUnit: string;
+    csrDisplayUnit: string;
     nutrients: Nutrient[] = [];
     conversionRatios: ConversionRatio[] = [];
 }

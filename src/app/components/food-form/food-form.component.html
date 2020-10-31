@@ -23,34 +23,6 @@
 
         <div class="portions-and-units-subsections">
             <div>
-                <div class="split-subheader">
-                    <h4>Serving Size</h4>
-                </div>
-                <mat-card class="serving-size__card">
-                    <ng-container *ngIf="ssOpts.length">
-                        <div class="serving-size">
-                            <div class="serving-size__amount">{{ssAmount | number:'1.0-4'}}</div>
-                            <div class="serving-size__unit">
-                                <mat-form-field>
-                                    <!-- <mat-label>Favorite food</mat-label> -->
-                                    <mat-select [(value)]="ssSelection">
-                                        <mat-option *ngFor="let opt of ssOpts" [value]="opt.value">
-                                            {{opt.label}}
-                                        </mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                            </div>
-                        </div>
-                    </ng-container>
-                    <ng-container *ngIf="!ssOpts.length">
-                        <div class="ss-needs-defined">Serving size needs to be defined in Units.</div>
-                    </ng-container>
-
-                </mat-card>
-
-            </div>
-
-            <div>
                 <app-error-msg [ctrl]="conversionRatios"></app-error-msg>
                 <div class="split-subheader">
                     <h4 [ngClass]="{'mat-error': !conversionRatios.valid}">Units</h4>
@@ -66,6 +38,55 @@
                 </div>
 
             </div>
+
+            <div>
+                <div class="split-subheader">
+                    <h4>Serving Size Display Unit</h4>
+                </div>
+                <mat-card class="display-unit__card">
+                    <ng-container *ngIf="ssOpts.length">
+                        <div class="display-unit">
+                            <div class="display-unit__amount">{{ssrDisplayAmount | number:'1.0-4'}}</div>
+                            <div class="display-unit__unit">
+                                <mat-form-field floatLabel="never">
+                                    <mat-select formControlName="ssrDisplayUnit" placeholder="Unit">
+                                        <mat-option *ngFor="let opt of ssOpts" [value]="opt.value">
+                                            {{opt.label}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="!ssOpts.length">
+                        <div class="needs-defined">Serving size needs to be defined in Units.</div>
+                    </ng-container>
+                </mat-card>
+            </div>
+            <div>
+                <div class="split-subheader">
+                    <h4>Nutrients Display Unit</h4>
+                </div>
+                <mat-card class="display-unit__card">
+                    <ng-container *ngIf="nrOpts.length">
+                        <div class="display-unit">
+                            <div class="display-unit__amount">{{csrDisplayAmount | number:'1.0-4'}}</div>
+                            <div class="display-unit__unit">
+                                <mat-form-field floatLabel="never">
+                                    <mat-select formControlName="csrDisplayUnit" placeholder="Unit">
+                                        <mat-option *ngFor="let opt of nrOpts" [value]="opt.value">
+                                            {{opt.label}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="!nrOpts.length">
+                        <div class="needs-defined">Nutrient ref amt needs to be defined in Units.</div>
+                    </ng-container>
+                </mat-card>
+            </div>
         </div>
     </section>
 
@@ -75,7 +96,8 @@
             <div>
                 <h3 [ngClass]="{'mat-error': !nutrients.valid}">Nutrients</h3>
                 &nbsp;
-                <span *ngIf="nutrientRefAmt" class="nutrients-per">per {{nutrientRefAmt}}</span>
+                <span *ngIf="csrDisplayUnit" class="nutrients-per">
+                    per {{csrDisplayAmount | number:'1.0-4'}} {{csrDisplayUnit}}</span>
             </div>
             <button type="button" mat-icon-button color="primary" (click)="addNutrient()">
                 <mat-icon>add_to_photos</mat-icon>

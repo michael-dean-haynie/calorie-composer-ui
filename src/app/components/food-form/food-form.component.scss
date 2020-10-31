@@ -38,28 +38,28 @@ mat-form-field {
     }
 }
 
-.serving-size__card {
+.display-unit__card {
     padding: 0 var(--default-padding);
 }
 
-.serving-size {
+.display-unit {
     display: grid;
     grid-template-columns: min-content 1fr;
     column-gap: 2ch;
 
-    .serving-size__amount {
+    .display-unit__amount {
         align-self: end;
 
         // to align with .mat-form-field-wrapper and .mat-form-field-underline
         padding-bottom: calc(1.25em + 1px); 
     }
 
-    .serving-size__unit {
+    .display-unit__unit {
         justify-self: start;
     }
 }
 
-.ss-needs-defined {
+.needs-defined {
     padding: var(--default-padding) 0;
     font-style: italic;
 }

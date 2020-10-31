@@ -7,8 +7,6 @@ import { FoodDTO } from 'src/app/contracts/food-dto';
 import { Food } from 'src/app/models/food.model';
 import { UnitPipe } from 'src/app/pipes/unit.pipe';
 import { ConversionRatioService } from '../conversion-ratio.service';
-import { PortionService } from '../util/portion.service';
-import { UnitService } from '../util/unit.service';
 import { ConversionRatioMapperService } from './conversion-ratio-mapper.service';
 import { NutrientMapperService } from './nutrient-mapper.service';
 
@@ -20,8 +18,6 @@ export class FoodMapperService {
   constructor(
     private nutrientMapperService: NutrientMapperService,
     private conversionRatioMapperService: ConversionRatioMapperService,
-    private portionService: PortionService,
-    private unitService: UnitService,
     private unitPipe: UnitPipe,
     private conversionRatioService: ConversionRatioService,
     private fb: FormBuilder) { }
@@ -33,6 +29,8 @@ export class FoodMapperService {
     food.description = foodDTO.description;
     food.brandOwner = foodDTO.brandOwner;
     food.ingredients = foodDTO.ingredients;
+    food.ssrDisplayUnit = foodDTO.ssrDisplayUnit;
+    food.csrDisplayUnit = foodDTO.csrDisplayUnit;
     food.nutrients = foodDTO.nutrients
       .map(nutrientDTO => this.nutrientMapperService.dtoToModel(nutrientDTO));
     food.conversionRatios = foodDTO.conversionRatios
@@ -54,6 +52,8 @@ export class FoodMapperService {
       description: [food.description, Validators.required],
       brandOwner: [food.brandOwner],
       ingredients: [food.ingredients],
+      ssrDisplayUnit: [food.ssrDisplayUnit],
+      csrDisplayUnit: [food.csrDisplayUnit],
       nutrients: this.fb.array(food.nutrients.map(nutrient => this.nutrientMapperService.modelToFormGroup(nutrient)),
         {
           validators: [
@@ -83,6 +83,8 @@ export class FoodMapperService {
     food.description = formGroup.get('description').value;
     food.brandOwner = formGroup.get('brandOwner').value;
     food.ingredients = formGroup.get('ingredients').value;
+    food.ssrDisplayUnit = formGroup.get('ssrDisplayUnit').value;
+    food.csrDisplayUnit = formGroup.get('csrDisplayUnit').value;
     food.nutrients = this.nutrientMapperService.formArrayToModelArray(formGroup.get('nutrients') as FormArray);
     food.conversionRatios = this.conversionRatioMapperService.formArrayToModelArray(formGroup.get('conversionRatios') as FormArray);
 
