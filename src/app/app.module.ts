@@ -20,19 +20,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ChartsModule } from 'ng2-charts';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ComboFoodFormFoodAmountComponent } from './components/combo-food-form-food-amount/combo-food-form-food-amount.component';
-import { ComboFoodFormPortionComponent } from './components/combo-food-form-portion/combo-food-form-portion.component';
-import { ComboFoodFormComponent } from './components/combo-food-form/combo-food-form.component';
 import { ConversionRatiosFormComponent } from './components/conversion-ratios-form/conversion-ratios-form.component';
 import { ErrorMsgComponent } from './components/error-msg/error-msg.component';
-import { FilteredAutocompleteComponent } from './components/filtered-autocomplete/filtered-autocomplete.component';
-import { FoodFormConversionRatioComponent } from './components/food-form-conversion-ratio/food-form-conversion-ratio.component';
-import { FoodFormPortionComponent } from './components/food-form-portion/food-form-portion.component';
 import { FoodFormComponent } from './components/food-form/food-form.component';
 import { HomeComponent } from './components/home/home.component';
 import { MacroPieChartComponent } from './components/macro-pie-chart/macro-pie-chart.component';
 import { MacroTableComponent } from './components/macro-table/macro-table.component';
 import { NarrowSearchResultsComponent } from './components/narrow-search-results/narrow-search-results.component';
+import { NutrientsFormComponent } from './components/nutrients-form/nutrients-form.component';
 import { PlanningComponent } from './components/planning/planning.component';
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
 import { SearchSideBarComponent } from './components/search-side-bar/search-side-bar.component';
@@ -41,7 +36,6 @@ import { MaskDirective } from './directives/mask.directive';
 import { MacroAmtPipe } from './pipes/macro-amt.pipe';
 import { MacroPctgPipe } from './pipes/macro-pctg.pipe';
 import { UnitPipe } from './pipes/unit.pipe';
-import { NutrientsFormComponent } from './components/nutrients-form/nutrients-form.component';
 
 
 @NgModule({
@@ -57,15 +51,9 @@ import { NutrientsFormComponent } from './components/nutrients-form/nutrients-fo
     MacroTableComponent,
     HomeComponent,
     PlanningComponent,
-    ComboFoodFormComponent,
     FoodFormComponent,
     MaskDirective,
-    FoodFormPortionComponent,
     ErrorMsgComponent,
-    ComboFoodFormPortionComponent,
-    ComboFoodFormFoodAmountComponent,
-    FilteredAutocompleteComponent,
-    FoodFormConversionRatioComponent,
     UnitPipe,
     ConversionRatiosFormComponent,
     NutrientsFormComponent

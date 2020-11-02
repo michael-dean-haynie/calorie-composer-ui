@@ -43,7 +43,7 @@ export class ConversionRatioMapperService {
       unitB: [conversionRatio.unitB, Validators.required],
       freeFormValueB: [conversionRatio.freeFormValueB]
     },
-      { validators: [this.noConvertingApplesToApples, this.eitherUnitAndAmountOrFreeForm, this.noOverridingStandardizedUnitConversions] });
+      { validators: [this.noConvertingApplesToApples, this.noOverridingStandardizedUnitConversions] });
   }
 
   formGroupToModel(formGroup: FormGroup): ConversionRatio {
@@ -84,29 +84,6 @@ export class ConversionRatioMapperService {
     if (cvRat.unitA === cvRat.unitB) {
       return { noConvertingApplesToApples: 'Cannot convert one amt of a unit to another amt of the same unit. That\'s nonsense.' };
     }
-  }
-
-
-  // TODO: make this better once I decide how free-form editing will work
-  private eitherUnitAndAmountOrFreeForm: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
-    // const cvRat = this.formGroupToModel(control);
-    // const error = { eitherUnitAndAmountOrFreeForm: true };
-
-    // // side a
-    // if (!this.conversionRatioService.sideUsesFreeFormValue(cvRat, 'a')) {
-    //   if (!IsMeaningfulValue(cvRat.amountA) || !IsMeaningfulValue(cvRat.unitA)) {
-    //     return error;
-    //   }
-    // }
-
-    // // side b
-    // if (!this.conversionRatioService.sideUsesFreeFormValue(cvRat, 'b')) {
-    //   if (!IsMeaningfulValue(cvRat.amountB) || !IsMeaningfulValue(cvRat.unitB)) {
-    //     return error;
-    //   }
-    // }
-
-    return null;
   }
 
   // can't be making 1 mg = 5 g

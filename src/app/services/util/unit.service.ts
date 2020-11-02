@@ -4,7 +4,6 @@ import { ConstituentType } from 'src/app/constants/types/constituent-type.type';
 import { MeasureType } from 'src/app/constants/types/measure-type.type';
 import { RefUnit } from 'src/app/constants/types/reference-unit.type';
 import { UnitDescription } from 'src/app/constants/types/unit-description';
-import { Food } from 'src/app/models/food.model';
 // import Qty from 'js-quantities';
 
 @Injectable({
@@ -173,44 +172,5 @@ export class UnitService {
       [RefUnit.CONSTITUENTS, constituentType === 'nutrient' ? 'nutrient ref amt' : 'ingredient ref amt']
     ]);
     return map.get(refUnit);
-  }
-
-  // TODO: come up with flow to parse free form units
-  // TODO: maybe have some indicator that there are more units to use if user can parse it out
-
-  // Gets all the units that can be used to describe a concrete amount of a particular food
-  getUnitsForFood(food: Food) {
-    let result: UnitDescription[] = [];
-
-    // TODO: Refactor with conversion ratio implementation
-    // // mass
-    // const includeMass = food.conversionRatios.some(portion => this.getUnitType(portion.metricUnit) === 'mass');
-    // if (includeMass) {
-    //   result = result.concat(UnitService.FoodAmountMassUnits);
-    // }
-
-    // // volume
-    // const includeVolume = food.conversionRatios.some(portion => this.getUnitType(portion.metricUnit) === 'volume');
-    // if (includeVolume) {
-    //   result = result.concat(UnitService.FoodAmountVolumeUnits);
-    // }
-
-    // // other
-    // const otherUnits = food.conversionRatios
-    //   .filter(portion => portion.householdUnit)
-    //   .map(portion => portion.householdUnit);
-
-    // otherUnits.forEach(unit => {
-    //   const unitDescription: UnitDescription = {
-    //     abbr: null,
-    //     measure: null,
-    //     system: null,
-    //     singular: null,
-    //     plural: unit,
-    //   };
-    //   result.push(unitDescription);
-    // });
-
-    return result;
   }
 }

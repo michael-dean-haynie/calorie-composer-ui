@@ -6,8 +6,8 @@
     - use chips for search page
 
 
-* big scaries
-    - units being just string will make it so if user updates a conversion ratio it could break other things using that string for a unit
+* Testing
+    - once units and foods and combo foods are worked out, test updating a unit on a food and expected results with combo foods.
 
 
 pu@
