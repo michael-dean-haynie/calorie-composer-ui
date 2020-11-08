@@ -5,7 +5,20 @@
     <mat-toolbar color="primary">
         <h2 class="page-title">{{pageTitle}}</h2>
     </mat-toolbar>
-    <div class="sections-container-container">
-        <router-outlet></router-outlet>
-    </div>
+    <mat-sidenav-container>
+        <mat-sidenav [mode]="'side'" [opened]="true" [disableClose]="true">
+            <mat-selection-list [multiple]="false">
+                <mat-list-option *ngFor="let nav of navItems" [selected]="nav.id === activeNavId"
+                    (click)="navigateTo(nav.destination)">
+                    {{nav.label}}
+                </mat-list-option>
+            </mat-selection-list>
+        </mat-sidenav>
+        <mat-sidenav-content>
+            <div class="sections-container-container">
+                <router-outlet></router-outlet>
+            </div>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+
 </div>

@@ -4,6 +4,7 @@ import { ConstituentType } from 'src/app/constants/types/constituent-type.type';
 import { MeasureType } from 'src/app/constants/types/measure-type.type';
 import { RefUnit } from 'src/app/constants/types/reference-unit.type';
 import { UnitDescription } from 'src/app/constants/types/unit-description';
+import { Unit } from 'src/app/models/unit.model';
 // import Qty from 'js-quantities';
 
 @Injectable({
@@ -118,12 +119,12 @@ export class UnitService {
 
   constructor() { }
 
-  isStandardizedUnit(unit: string): boolean {
+  isStandardizedUnit(unit: Unit): boolean {
     try {
-      convert().describe(unit);
+      convert().describe(unit.abbreviation);
       return UnitService.FoodAmountMassUnits.concat(UnitService.FoodAmountVolumeUnits)
         .map(desc => desc.abbr)
-        .includes(unit);
+        .includes(unit.abbreviation);
     }
     catch (e) {
       return false;
@@ -140,15 +141,15 @@ export class UnitService {
     }
   }
 
-  getMeasureType(unit: string): MeasureType {
-    if (!unit) {
+  getMeasureType(unit: Unit): MeasureType {
+    if (!unit || !unit.abbreviation) {
       console.warn(`Could not determine known measure type for unit: ${unit}`);
       return null;
     }
     try {
-      return convert().describe(unit).measure;
+      return convert().describe(unit.abbreviation).measure;
     } catch (e) {
-      const supplementalUnit = UnitService.SupplementalUnits.find(desc => desc.abbr === unit);
+      const supplementalUnit = UnitService.SupplementalUnits.find(desc => desc.abbr === unit.abbreviation);
       if (supplementalUnit) {
         return supplementalUnit.measure;
       }
@@ -158,10 +159,16 @@ export class UnitService {
     }
   }
 
-  getStandardizedConversions(unit: string): string[] {
+  getStandardizedConversions(unit: Unit): Unit[] {
     if (this.isStandardizedUnit(unit)) {
       const measureType = this.getMeasureType(unit);
-      return UnitService.GetFoodAmountUnitsByMeasure(measureType).map(desc => desc.abbr);
+      return UnitService.GetFoodAmountUnitsByMeasure(measureType).map(desc => {
+        const convUnit = new Unit();
+        convUnit.abbreviation = desc.abbr;
+        convUnit.singular = desc.singular;
+        convUnit.plural = desc.plural;
+        return convUnit;
+      });
     }
     return [];
   }

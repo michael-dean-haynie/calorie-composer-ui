@@ -4,7 +4,6 @@ import { FormArray, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Path } from 'src/app/constants/types/path.type';
-import { RefUnit } from 'src/app/constants/types/reference-unit.type';
 import { Opt } from 'src/app/constants/types/select-options';
 import { Food } from 'src/app/models/food.model';
 import { UnitPipe } from 'src/app/pipes/unit.pipe';
@@ -97,10 +96,12 @@ export class FoodFormComponent implements OnInit, OnDestroy {
   }
 
   get ssrDisplayAmount(): number {
-    const path = this.ssPaths.find(pth => {
-      return this.conversionRatioService.getPathTarget(pth) === this.ssrDisplayUnit;
-    });
-    return this.conversionRatioService.getPathProduct(path);
+    return 0;
+    // TODO: fix
+    // const path = this.ssPaths.find(pth => {
+    //   return this.conversionRatioService.getPathTarget(pth) === this.ssrDisplayUnit;
+    // });
+    // return this.conversionRatioService.getPathProduct(path);
   }
 
   get csrDisplayUnit(): string {
@@ -108,10 +109,12 @@ export class FoodFormComponent implements OnInit, OnDestroy {
   }
 
   get csrDisplayAmount(): number {
-    const path = this.nrPaths.find(pth => {
-      return this.conversionRatioService.getPathTarget(pth) === this.csrDisplayUnit;
-    });
-    return this.conversionRatioService.getPathProduct(path);
+    return 0;
+    // TODO: fix
+    // const path = this.nrPaths.find(pth => {
+    //   return this.conversionRatioService.getPathTarget(pth) === this.csrDisplayUnit;
+    // });
+    // return this.conversionRatioService.getPathProduct(path);
   }
 
   addNutrient(): void {
@@ -186,44 +189,45 @@ export class FoodFormComponent implements OnInit, OnDestroy {
   }
 
   private listenForChangesToConversionRatios(): void {
-    this.subscriptions.push(this.conversionRatios.valueChanges.subscribe(() => {
+    // TODO: fix
+    // this.subscriptions.push(this.conversionRatios.valueChanges.subscribe(() => {
 
-      // update serving size paths
-      const cvRats = this.conversionRatioMapperService.formArrayToModelArray(this.conversionRatios);
-      this.ssPaths = this.conversionRatioService.getPathsForUnit(cvRats, RefUnit.SERVING)
-        .filter(ssp => this.conversionRatioService.getPathTarget(ssp) !== RefUnit.CONSTITUENTS);
+    //   // update serving size paths
+    //   const cvRats = this.conversionRatioMapperService.formArrayToModelArray(this.conversionRatios);
+    //   this.ssPaths = this.conversionRatioService.getPathsForUnit(cvRats, RefUnit.SERVING)
+    //     .filter(ssp => this.conversionRatioService.getPathTarget(ssp) !== RefUnit.CONSTITUENTS);
 
-      // update serving size display unit options
-      this.ssOpts = this.ssPaths.map(ssp => {
-        const unit = this.conversionRatioService.getPathTarget(ssp);
-        return {
-          value: unit,
-          label: this.unitPipe.transform(unit, 'nutrient')
-        };
-      });
+    //   // update serving size display unit options
+    //   this.ssOpts = this.ssPaths.map(ssp => {
+    //     const unit = this.conversionRatioService.getPathTarget(ssp);
+    //     return {
+    //       value: unit,
+    //       label: this.unitPipe.transform(unit, 'nutrient')
+    //     };
+    //   });
 
-      // update serving size display unit
-      if (!this.ssOpts.map(opt => opt.value).includes(this.ssrDisplayUnit)) {
-        this.foodForm.get('ssrDisplayUnit').setValue(null);
-      }
+    //   // update serving size display unit
+    //   if (!this.ssOpts.map(opt => opt.value).includes(this.ssrDisplayUnit)) {
+    //     this.foodForm.get('ssrDisplayUnit').setValue(null);
+    //   }
 
-      // update nutrient ref paths
-      this.nrPaths = this.conversionRatioService.getPathsForUnit(cvRats, RefUnit.CONSTITUENTS)
-        .filter(nrp => this.conversionRatioService.getPathTarget(nrp) !== RefUnit.SERVING);
+    //   // update nutrient ref paths
+    //   this.nrPaths = this.conversionRatioService.getPathsForUnit(cvRats, RefUnit.CONSTITUENTS)
+    //     .filter(nrp => this.conversionRatioService.getPathTarget(nrp) !== RefUnit.SERVING);
 
-      // update nurtient display unit options
-      this.nrOpts = this.nrPaths.map(nrp => {
-        const unit = this.conversionRatioService.getPathTarget(nrp);
-        return {
-          value: unit,
-          label: this.unitPipe.transform(unit, 'nutrient')
-        };
-      });
+    //   // update nurtient display unit options
+    //   this.nrOpts = this.nrPaths.map(nrp => {
+    //     const unit = this.conversionRatioService.getPathTarget(nrp);
+    //     return {
+    //       value: unit,
+    //       label: this.unitPipe.transform(unit, 'nutrient')
+    //     };
+    //   });
 
-      // update nutrient display unit
-      if (!this.nrOpts.map(opt => opt.value).includes(this.csrDisplayUnit)) {
-        this.foodForm.get('csrDisplayUnit').setValue(null);
-      }
-    }));
+    //   // update nutrient display unit
+    //   if (!this.nrOpts.map(opt => opt.value).includes(this.csrDisplayUnit)) {
+    //     this.foodForm.get('csrDisplayUnit').setValue(null);
+    //   }
+    // }));
   }
 }

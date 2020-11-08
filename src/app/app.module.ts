@@ -12,6 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -36,6 +37,7 @@ import { MaskDirective } from './directives/mask.directive';
 import { MacroAmtPipe } from './pipes/macro-amt.pipe';
 import { MacroPctgPipe } from './pipes/macro-pctg.pipe';
 import { UnitPipe } from './pipes/unit.pipe';
+import { UnitsFormComponent } from './components/units-form/units-form.component';
 
 
 @NgModule({
@@ -56,7 +58,8 @@ import { UnitPipe } from './pipes/unit.pipe';
     ErrorMsgComponent,
     UnitPipe,
     ConversionRatiosFormComponent,
-    NutrientsFormComponent
+    NutrientsFormComponent,
+    UnitsFormComponent
   ],
   imports: [
     BrowserModule,
@@ -80,6 +83,7 @@ import { UnitPipe } from './pipes/unit.pipe';
     MatAutocompleteModule,
     MatCardModule,
     MatSlideToggleModule,
+    MatSidenavModule,
 
 
 

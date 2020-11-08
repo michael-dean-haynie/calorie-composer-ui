@@ -1,5 +1,6 @@
 import { ConversionRatio } from './conversion-ratio.model';
 import { Nutrient } from './nutrient.model';
+import { Unit } from './unit.model';
 
 export class Food {
     id?: string;
@@ -7,8 +8,8 @@ export class Food {
     description: string;
     brandOwner: string;
     ingredients: string;
-    ssrDisplayUnit: string;
-    csrDisplayUnit: string;
+    ssrDisplayUnit: Unit;
+    csrDisplayUnit: Unit;
     nutrients: Nutrient[] = [];
     conversionRatios: ConversionRatio[] = [];
 }

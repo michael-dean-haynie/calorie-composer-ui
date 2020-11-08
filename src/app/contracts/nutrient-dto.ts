@@ -1,6 +1,8 @@
+import { UnitDTO } from './unit-dto';
+
 export interface NutrientDTO {
     id?: string;
     name: string;
-    unit: string;
+    unit: UnitDTO;
     amount: number;
 }

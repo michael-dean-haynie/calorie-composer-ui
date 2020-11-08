@@ -1,9 +1,11 @@
+import { UnitDTO } from './unit-dto';
+
 export interface ConversionRatioDTO {
     id?: string;
     amountA: number;
-    unitA: string;
+    unitA: UnitDTO;
     freeFormValueA: string;
     amountB: number;
-    unitB: string;
+    unitB: UnitDTO;
     freeFormValueB: string;
 }

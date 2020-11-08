@@ -25,7 +25,7 @@ pu@
             + get seeding working and endpoints working
             + get karate tests working
         - UI
-            - Might want to clean up cruft first
+            + Might want to clean up cruft first
             - Update dtos, models, mappers (everything will break)
             - rebuild business logic with tdd
             - food-form ui
