@@ -3,10 +3,13 @@
 </mat-toolbar>
 <div class="scrolling-content">
     <mat-toolbar color="primary">
+        <span *ngIf="sideNavResponsiveMode === 'narrow'" class="menu-toggle-icon" (click)="sideNav.toggle()">
+            <mat-icon [inline]="true">menu</mat-icon>
+        </span>
         <h2 class="page-title">{{pageTitle}}</h2>
     </mat-toolbar>
     <mat-sidenav-container>
-        <mat-sidenav [mode]="'side'" [opened]="true" [disableClose]="true">
+        <mat-sidenav #sideNav [mode]="sideNavMode" [opened]="sideNavOpened" [disableClose]="sideNavDisableClose">
             <mat-selection-list [multiple]="false">
                 <mat-list-option *ngFor="let nav of navItems" [selected]="nav.id === activeNavId"
                     (click)="navigateTo(nav.destination)">

@@ -33,7 +33,21 @@
 .page-title {
   font-weight: normal;
   font-size: 1.2rem;
+
+  .menu-toggle-icon+& {
+    padding-left: var(--default-padding);
+  }
 }
+
+.menu-toggle-icon {
+  font-size: 2rem;
+  // to align with page title
+  margin-top: 4px;
+
+}
+
+
+// Nested Styles
 
 // aligns the right side of the autocomplete panel with the right side of
 // the the input so it doesn't overflow off the right side of the page
@@ -61,5 +75,6 @@
     padding-left: var(--default-padding);
     padding-right: var(--default-padding);
   }
+
 }
 
