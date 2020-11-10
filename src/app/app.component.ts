@@ -46,7 +46,6 @@ export class AppComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log('init');
     this.stateService.pageTitle.subscribe(title => {
       this.pageTitle = title;
     });
@@ -75,7 +74,6 @@ export class AppComponent implements OnInit {
   }
 
   private updateSideNaveResponsiveProperties(windowWidth: number) {
-    console.log(windowWidth);
     if (windowWidth < 800) {
       this.sideNavResponsiveMode = 'narrow';
       this.sideNavMode = 'over';
