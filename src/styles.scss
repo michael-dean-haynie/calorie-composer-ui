@@ -24,7 +24,8 @@ html, body {
         background: var(--alternate-section-background);
     }
 
-    &:last-child {
+    // so last section is treated like footer
+    &:nth-last-child(2) {
         flex-grow: 1;
     }
 

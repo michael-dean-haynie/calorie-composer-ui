@@ -1,3 +1,79 @@
 <div *ngIf="!loading" class="sections-container">
-    <p>hi mom!</p>
+    <section>
+        <!-- <h3>Labeling</h3> -->
+
+        <mat-accordion multi hideToggle="true">
+            <ng-container *ngFor="let unit of units.controls; let i = index">
+                <mat-expansion-panel #exp (expandedChange)="checkExpansion($event, unit, exp)">
+                    <!-- Header -->
+                    <mat-expansion-panel-header>
+                        <mat-panel-title *ngIf="!exp.expanded">
+                            <span class="nutrient-title">
+                                {{titleForUnit(unit)}}
+                            </span>
+                            <button type="button" mat-icon-button color="primary">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                        </mat-panel-title>
+                        <mat-panel-title *ngIf="exp.expanded">
+
+                            <div>
+                                <button mat-stroked-button color="accent" [disabled]="!canCancel(unit)"
+                                    (click)="discardDraft(unit)">
+                                    <!-- maybe close instead -->
+                                    <mat-icon>close</mat-icon>&nbsp;Cancel
+                                </button>
+                            </div>
+                            <div>
+                                <button mat-stroked-button color="warn" (click)="deleteUnit(i)">
+                                    <mat-icon>delete</mat-icon>&nbsp;Delete
+                                </button>
+                            </div>
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <!-- Do not load form until draft has been created -->
+                    <div *ngIf="unitHasDraft(unit) || unitIsDraft(unit)"
+                        [formGroup]="unitIsDraft(unit) ? unit : unit.get('draft')">
+                        <div>
+                            <mat-form-field appearance="fill">
+                                <mat-label>Singular</mat-label>
+                                <input matInput placeholder="Ex. cracker" formControlName="singular">
+                            </mat-form-field>
+                        </div>
+                        <div>
+                            <mat-form-field appearance="fill">
+                                <mat-label>Plural</mat-label>
+                                <input matInput placeholder="Ex. crackers" formControlName="plural">
+                            </mat-form-field>
+                        </div>
+                        <div>
+                            <mat-form-field appearance="fill">
+                                <mat-label>Abbreviation</mat-label>
+                                <input matInput placeholder="Ex. ckr" formControlName="abbreviation">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div>
+                        <button mat-stroked-button color="primary" [disabled]="false" (click)="save(unit, exp)">
+                            <mat-icon>done</mat-icon>&nbsp;Save
+                        </button>
+                    </div>
+                </mat-expansion-panel>
+            </ng-container>
+        </mat-accordion>
+
+    </section>
+
+    <section>
+        <!-- Empty footer -->
+        <button mat-raised-button color="primary" [disabled]="false" (click)="create()">
+            <mat-icon>add_to_photos</mat-icon>&nbsp;Add New Unit
+        </button>
+        <!-- <div class="form-buttons">
+            <button mat-raised-button color="accent" (click)="cancel()">Cancel</button>
+            <button mat-raised-button color="primary" [disabled]="units.invalid" (click)="saveChanges()">Save
+                Changes</button>
+        </div> -->
+    </section>
 </div>

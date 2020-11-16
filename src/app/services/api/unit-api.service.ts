@@ -19,12 +19,30 @@ export class UnitApiService {
     private unitMapperService: UnitMapperService
   ) { }
 
+  create(unit: Unit): Observable<UnitDTO> {
+    const dto = this.unitMapperService.modelToDTO(unit);
+    return this.http.post<UnitDTO>(`${this.baseUrl}`, dto).pipe(
+      map(unitDTO => this.unitMapperService.dtoToModel(unitDTO))
+    );
+  }
+
   getAll(): Observable<Unit[]> {
     return this.http.get<UnitDTO[]>(`${this.baseUrl}/all`).pipe(
       map(unitDTOs => {
         return unitDTOs.map(dto => this.unitMapperService.dtoToModel(dto));
       })
     );
+  }
+
+  update(unit: Unit): Observable<Unit> {
+    const dto = this.unitMapperService.modelToDTO(unit);
+    return this.http.put<UnitDTO>(`${this.baseUrl}`, dto).pipe(
+      map(unitDTO => this.unitMapperService.dtoToModel(unitDTO))
+    );
+  }
+
+  delete(id: string): Observable<any> {
+    return this.http.delete<any>(`${this.baseUrl}/${id}`);
   }
 
 }

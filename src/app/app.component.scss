@@ -71,7 +71,7 @@
 ::ng-deep :root {
   
   // Expansion Panel
-  .mat-expansion-panel-header {
+  .mat-expansion-panel-header, .mat-expansion-panel-body {
     padding-left: var(--default-padding);
     padding-right: var(--default-padding);
   }
