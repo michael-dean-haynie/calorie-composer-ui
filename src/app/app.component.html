@@ -9,11 +9,18 @@
         <h2 class="page-title">{{pageTitle}}</h2>
     </mat-toolbar>
     <mat-sidenav-container>
-        <mat-sidenav #sideNav [mode]="sideNavMode" [opened]="sideNavOpened" [disableClose]="sideNavDisableClose">
+        <mat-sidenav #sideNav [mode]="sideNavMode" [opened]="sideNavOpened" [disableClose]="sideNavDisableClose"
+            id="menu">
             <mat-selection-list [multiple]="false">
                 <mat-list-option *ngFor="let nav of navItems" [selected]="nav.id === activeNavId"
                     (click)="navigateTo(nav.destination)">
-                    {{nav.label}}
+                    <div class="menu-item">
+                        <div [matBadge]="nav.badgeText" matBadgeSize="small" matBadgeOverlap="false"
+                            matBadgePosition="after above" matBadgeColor="accent">{{nav.label}}</div>
+                        <mat-icon *ngIf="nav.iconName" class="menu-item__icon">
+                            {{nav.iconName}}
+                        </mat-icon>
+                    </div>
                 </mat-list-option>
             </mat-selection-list>
         </mat-sidenav>

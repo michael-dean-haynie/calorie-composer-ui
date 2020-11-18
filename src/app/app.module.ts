@@ -3,6 +3,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -33,11 +34,11 @@ import { PlanningComponent } from './components/planning/planning.component';
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
 import { SearchSideBarComponent } from './components/search-side-bar/search-side-bar.component';
 import { SearchComponent } from './components/search/search.component';
+import { UnitsFormComponent } from './components/units-form/units-form.component';
 import { MaskDirective } from './directives/mask.directive';
 import { MacroAmtPipe } from './pipes/macro-amt.pipe';
 import { MacroPctgPipe } from './pipes/macro-pctg.pipe';
 import { UnitPipe } from './pipes/unit.pipe';
-import { UnitsFormComponent } from './components/units-form/units-form.component';
 
 
 @NgModule({
@@ -84,6 +85,7 @@ import { UnitsFormComponent } from './components/units-form/units-form.component
     MatCardModule,
     MatSlideToggleModule,
     MatSidenavModule,
+    MatBadgeModule,
 
 
 

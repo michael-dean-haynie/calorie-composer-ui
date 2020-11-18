@@ -34,6 +34,10 @@ export class UnitApiService {
     );
   }
 
+  getDraftCount(): Observable<number> {
+    return this.http.get<number>(`${this.baseUrl}/draft/count`);
+  }
+
   update(unit: Unit): Observable<Unit> {
     const dto = this.unitMapperService.modelToDTO(unit);
     return this.http.put<UnitDTO>(`${this.baseUrl}`, dto).pipe(

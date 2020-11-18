@@ -6,6 +6,7 @@ import { debounceTime, filter } from 'rxjs/operators';
 import { Unit } from 'src/app/models/unit.model';
 import { UnitApiService } from 'src/app/services/api/unit-api.service';
 import { UnitMapperService } from 'src/app/services/api/unit-mapper.service';
+import { MenuService } from 'src/app/services/menu.service';
 import { UnitFacadeService } from 'src/app/services/util/unit-facade.service';
 
 /**
@@ -53,7 +54,8 @@ export class UnitsFormComponent implements OnInit, OnDestroy, AfterViewChecked {
   constructor(
     private unitApiService: UnitApiService,
     private unitMapperService: UnitMapperService,
-    private unitFacade: UnitFacadeService
+    private unitFacade: UnitFacadeService,
+    private menuService: MenuService
   ) { }
 
   ngOnInit(): void {
@@ -61,6 +63,7 @@ export class UnitsFormComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   ngOnDestroy(): void {
+    this.menuService.updateUnitDraftCount();
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
@@ -118,14 +121,18 @@ export class UnitsFormComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.units.push(unit);
 
     this.ignoreChangesFlags.set(unit, true);
-    this.unitApiService.create(unitModel).subscribe(createdUnit => {
-      // TODO: handle errors?
+    this.subscriptions.push(
+      this.unitApiService.create(unitModel).subscribe(createdUnit => {
+        // TODO: handle errors?
 
-      // update id so further updates work
-      unit.get('id').setValue(createdUnit.id);
+        // update id so further updates work
+        unit.get('id').setValue(createdUnit.id);
 
-      this.ignoreChangesFlags.set(unit, false);
-    });
+        this.ignoreChangesFlags.set(unit, false);
+
+        // Update menu
+        this.menuService.updateUnitDraftCount();
+      }));
 
     this.saveDraftOnEveryChange(unit);
   }
@@ -138,10 +145,15 @@ export class UnitsFormComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.ignoreChangesFlags.set(unit, true);
     unit.get('draft.isDraftPlaceholder').setValue(true);
     const unitModel = this.unitMapperService.formGroupToModel(unit);
-    this.unitApiService.update(unitModel).subscribe((updatedUnit) => {
-      this.ignoreChangesFlags.set(unit, false);
-      // TODO: handle errors?
-    });
+    this.subscriptions.push(
+      this.unitApiService.update(unitModel).subscribe((updatedUnit) => {
+        this.ignoreChangesFlags.set(unit, false);
+
+        // Update menu
+        this.menuService.updateUnitDraftCount();
+
+        // TODO: handle errors?
+      }));
   }
 
   /**
@@ -164,10 +176,16 @@ export class UnitsFormComponent implements OnInit, OnDestroy, AfterViewChecked {
       exp.close();
 
       const unitModel = this.unitMapperService.formGroupToModel(unit);
-      this.unitApiService.update(unitModel).subscribe(() => {
-        this.ignoreChangesFlags.set(unit, false);
-        // TODO: handle errors?
-      });
+      this.subscriptions.push(
+        this.unitApiService.update(unitModel).subscribe(() => {
+          this.ignoreChangesFlags.set(unit, false);
+
+          // Update menu
+          this.menuService.updateUnitDraftCount();
+
+
+          // TODO: handle errors?
+        }));
     }
 
     // if it's an existing unit but it is a draft itself, update it to not be a draft
@@ -176,10 +194,15 @@ export class UnitsFormComponent implements OnInit, OnDestroy, AfterViewChecked {
       exp.close();
 
       const unitModel = this.unitMapperService.formGroupToModel(unit);
-      this.unitApiService.update(unitModel).subscribe(() => {
-        this.ignoreChangesFlags.set(unit, false);
-        // TODO: handle errors?
-      });
+      this.subscriptions.push(
+        this.unitApiService.update(unitModel).subscribe(() => {
+          this.ignoreChangesFlags.set(unit, false);
+
+          // Update menu
+          this.menuService.updateUnitDraftCount();
+
+          // TODO: handle errors?
+        }));
 
     }
 
@@ -193,11 +216,15 @@ export class UnitsFormComponent implements OnInit, OnDestroy, AfterViewChecked {
   deleteUnit(index: number) {
     const unit: FormGroup = this.units.get([index]) as FormGroup;
     this.ignoreChangesFlags.set(unit, true);
-    this.unitApiService.delete(unit.get('id').value).subscribe(() => {
-      // TODO: handle errors?
-      this.units.removeAt(index);
-      this.ignoreChangesFlags.set(unit, false);
-    });
+    this.subscriptions.push(
+      this.unitApiService.delete(unit.get('id').value).subscribe(() => {
+        // TODO: handle errors?
+        this.units.removeAt(index);
+        this.ignoreChangesFlags.set(unit, false);
+
+        // Update menu
+        this.menuService.updateUnitDraftCount();
+      }));
 
   }
 
@@ -241,17 +268,21 @@ export class UnitsFormComponent implements OnInit, OnDestroy, AfterViewChecked {
 
         this.ignoreChangesFlags.set(unit, true);
         const unitModel = this.unitMapperService.formGroupToModel(unit);
-        this.unitApiService.update(unitModel).subscribe((updatedUnit) => {
-          // TODO: handle errors?
+        this.subscriptions.push(
+          this.unitApiService.update(unitModel).subscribe((updatedUnit) => {
+            // TODO: handle errors?
 
-          // update ids in case they were new db records so further updates work
-          unit.get('id').setValue(updatedUnit.id);
-          if (this.unitHasDraft(unit)) {
-            unit.get('draft.id').setValue(updatedUnit.draft.id);
-          }
+            // update ids in case they were new db records so further updates work
+            unit.get('id').setValue(updatedUnit.id);
+            if (this.unitHasDraft(unit)) {
+              unit.get('draft.id').setValue(updatedUnit.draft.id);
+            }
 
-          this.ignoreChangesFlags.set(unit, false);
-        });
+            this.ignoreChangesFlags.set(unit, false);
+
+            // Update menu
+            this.menuService.updateUnitDraftCount();
+          }));
       })
     );
   }

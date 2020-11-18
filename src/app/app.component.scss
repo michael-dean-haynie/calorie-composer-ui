@@ -46,6 +46,17 @@
 
 }
 
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: 2ch;
+
+  .menu-item__icon {
+    color: var(--disabled);
+  }
+}
+
 
 // Nested Styles
 
@@ -76,5 +87,12 @@
     padding-right: var(--default-padding);
   }
 
+  // List Options in menu
+  #menu div.mat-list-text {
+    // so badge can not get cut off
+    overflow: visible;
+  }
+
 }
+
 

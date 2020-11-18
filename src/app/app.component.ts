@@ -1,8 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDrawerMode, MatSidenavContainer } from '@angular/material/sidenav';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { NavData } from './constants/types/nav-data.type';
 import { NavId } from './constants/types/nav-id';
+import { MenuService } from './services/menu.service';
 import { ResponsiveService } from './services/responsive.service';
 import { StateService } from './services/state.service';
 
@@ -13,9 +15,11 @@ type SideNavResponsiveMode = 'wide' | 'narrow';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
 
   @ViewChild(MatSidenavContainer) sideNavContainer: MatSidenavContainer;
+
+  subscriptions: Subscription[] = [];
 
   pageTitle: string;
   activeNavId: string;
@@ -29,7 +33,7 @@ export class AppComponent implements OnInit {
     {
       id: NavId.UNIT_MANAGEMENT,
       label: 'Unit Management',
-      destination: 'unit-management'
+      destination: 'unit-management',
     }
   ];
 
@@ -41,24 +45,45 @@ export class AppComponent implements OnInit {
 
   constructor(
     private stateService: StateService,
+    private menuService: MenuService,
     private responsiveService: ResponsiveService,
     private router: Router
   ) { }
 
   ngOnInit(): void {
-    this.stateService.pageTitle.subscribe(title => {
-      this.pageTitle = title;
-    });
+    this.subscriptions.push(
+      this.stateService.pageTitle.subscribe(title => {
+        this.pageTitle = title;
+      })
+    );
 
-    this.stateService.activeNavId.subscribe(id => {
-      this.activeNavId = id;
-      // close sidenav if navigation triggered by url modification
-      this.closeSideNavIfNarrow();
-    });
+    this.subscriptions.push(
+      this.stateService.activeNavId.subscribe(id => {
+        this.activeNavId = id;
+        // close sidenav if navigation triggered by url modification
+        this.closeSideNavIfNarrow();
+      })
+    );
 
     // manage sidenave responsive properties
-    this.responsiveService.windowWidth.subscribe(windowWidth => {
-      this.updateSideNaveResponsiveProperties(windowWidth);
+    this.subscriptions.push(
+      this.responsiveService.windowWidth.subscribe(windowWidth => {
+        this.updateSideNaveResponsiveProperties(windowWidth);
+      })
+    );
+
+    // make initial request and listen for updates to unitDraftCount
+    this.menuService.updateUnitDraftCount();
+    this.subscriptions.push(
+      this.menuService.unitDraftCount.subscribe(count => {
+        this.updateUnitDraftCount(count);
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => {
+      sub.unsubscribe();
     });
   }
 
@@ -84,6 +109,21 @@ export class AppComponent implements OnInit {
       this.sideNavMode = 'side';
       this.sideNavOpened = true;
       this.sideNavDisableClose = true;
+    }
+  }
+
+  private updateUnitDraftCount(count: number): void {
+    const navItem = this.navItems.find(item => item.id === NavId.UNIT_MANAGEMENT);
+    if (!navItem) {
+      console.warn('Attempting to update unit draft count but there is no unit management nav item to update');
+      return;
+    }
+
+    // if zero or otherwise falsey just clear value to make badge disappear
+    if (!count) {
+      navItem.badgeText = null;
+    } else {
+      navItem.badgeText = count.toString();
     }
   }
 
