@@ -5,7 +5,9 @@ import { IsMeaningfulValue } from 'src/app/constants/functions';
 import { ConstituentType } from 'src/app/constants/types/constituent-type.type';
 import { ConversionRatioSide } from 'src/app/constants/types/conversion-ratio-side.type';
 import { ConversionRatio } from 'src/app/models/conversion-ratio.model';
+import { Unit } from 'src/app/models/unit.model';
 import { UnitPipe } from 'src/app/pipes/unit.pipe';
+import { UnitMapperService } from 'src/app/services/api/unit-mapper.service';
 import { AutoCompleteService } from 'src/app/services/auto-complete.service';
 import { ConversionRatioService } from 'src/app/services/conversion-ratio.service';
 import { ConversionRatioMapperService } from 'src/app/services/mappers/conversion-ratio-mapper.service';
@@ -26,10 +28,13 @@ export class ConversionRatiosFormComponent implements OnInit, AfterViewChecked {
     private conversionRatioMapperService: ConversionRatioMapperService,
     private conversionRatioService: ConversionRatioService,
     private autoCompleteService: AutoCompleteService,
-    private unitPipe: UnitPipe
+    private unitPipe: UnitPipe,
+    private unitMapperService: UnitMapperService
   ) { }
 
   ngOnInit(): void {
+    this.replaceNullUnitsWithBlankUnits();
+    this.scrubUnits();
     // wire up auto complete options
     this.conversionRatios.controls.forEach((cvRat: FormGroup) => this.addFilteredAutoCompleteOptions(cvRat));
   }
@@ -110,8 +115,11 @@ export class ConversionRatiosFormComponent implements OnInit, AfterViewChecked {
 
   addConversionRatio(): void {
     const conversionRatioCtrl = this.conversionRatioMapperService.modelToFormGroup(new ConversionRatio());
-    this.addFilteredAutoCompleteOptions(conversionRatioCtrl);
     this.conversionRatios.insert(0, conversionRatioCtrl);
+    this.replaceNullUnitsWithBlankUnits();
+    this.scrubUnits();
+    this.addFilteredAutoCompleteOptions(conversionRatioCtrl);
+
   }
 
   removeConversionRatio(index: number): void {
@@ -154,9 +162,46 @@ export class ConversionRatiosFormComponent implements OnInit, AfterViewChecked {
     const optionsForConversionRatioUnit = this.autoCompleteService.optionsForConversionRatioUnit(this.constituentType);
     cvRat.addControl(
       'unitAFilteredAutoCompleteOptions',
-      new FormControl(this.autoCompleteService.filteredOptions(optionsForConversionRatioUnit, cvRat.get('unitA') as FormControl)));
+      new FormControl(
+        this.autoCompleteService.filteredOptions(optionsForConversionRatioUnit, cvRat.get('unitA.abbreviation') as FormControl)));
     cvRat.addControl(
       'unitBFilteredAutoCompleteOptions',
-      new FormControl(this.autoCompleteService.filteredOptions(optionsForConversionRatioUnit, cvRat.get('unitB') as FormControl)));
+      new FormControl(
+        this.autoCompleteService.filteredOptions(optionsForConversionRatioUnit, cvRat.get('unitB.abbreviation') as FormControl)));
+  }
+
+  /**
+   * Backend api only needs abbreviation to resolve or create unit.
+   * Scrub all other information so it's not confusing when we just update abbreviation.
+   */
+  private scrubUnits(): void {
+    this.conversionRatios.controls.forEach(cvRatFG => {
+      [cvRatFG.get('unitA'), cvRatFG.get('unitB')].forEach(unitFG => {
+        unitFG.get('id')?.reset();
+        unitFG.get('plural')?.reset();
+        unitFG.get('singular')?.reset();
+      });
+    });
+  }
+
+  /**
+   * In some cases we might get conversion ratios that have null for a unit.
+   * Particularly in the case where there's a free form value conversion ratio.
+   * Iterate through conversion ratios and replace null values with a blank unit form group so
+   * we can edit it in the form.
+   */
+  private replaceNullUnitsWithBlankUnits(): void {
+    this.conversionRatios.controls.forEach((cvRatFG: FormGroup) => {
+      ['unitA', 'unitB'].forEach((ctrlName: string) => {
+        if (cvRatFG.get(ctrlName).value === null) {
+          const unit = new Unit();
+          unit.isDraft = false;
+          const unitFG = this.unitMapperService.modelToFormGroup(unit);
+
+          cvRatFG.removeControl(ctrlName);
+          cvRatFG.addControl(ctrlName, unitFG);
+        }
+      });
+    });
   }
 }

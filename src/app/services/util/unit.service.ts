@@ -3,7 +3,7 @@ import convert from 'convert-units';
 import { ConstituentType } from 'src/app/constants/types/constituent-type.type';
 import { MeasureType } from 'src/app/constants/types/measure-type.type';
 import { RefUnit } from 'src/app/constants/types/reference-unit.type';
-import { UnitDescription } from 'src/app/constants/types/unit-description';
+import { StdUnitInfo } from 'src/app/constants/types/std-unit-info';
 import { Unit } from 'src/app/models/unit.model';
 // import Qty from 'js-quantities';
 
@@ -17,7 +17,7 @@ export class UnitService {
   /**
    * Supplemental Units
    */
-  public static SupplementalUnits: UnitDescription[] = [
+  public static SupplementalUnits: StdUnitInfo[] = [
     {
       abbr: 'kcal',
       measure: 'energy',
@@ -60,10 +60,10 @@ export class UnitService {
    */
 
   public static MetricMassUnits = convert()
-    .list('mass').filter(desc => ['mg', 'g'].includes(desc.abbr)) as UnitDescription[];
+    .list('mass').filter(desc => ['mg', 'g'].includes(desc.abbr)) as StdUnitInfo[];
 
   public static MetricVolumeUnits = convert()
-    .list('volume').filter(desc => ['ml', 'l'].includes(desc.abbr)) as UnitDescription[];
+    .list('volume').filter(desc => ['ml', 'l'].includes(desc.abbr)) as StdUnitInfo[];
 
   public static MetricUnits = UnitService.MetricMassUnits
     .concat(UnitService.MetricVolumeUnits);
@@ -73,10 +73,10 @@ export class UnitService {
    */
 
   public static ImperialMassUnits = convert()
-    .list('mass').filter(desc => ['oz', 'lb'].includes(desc.abbr)) as UnitDescription[];
+    .list('mass').filter(desc => ['oz', 'lb'].includes(desc.abbr)) as StdUnitInfo[];
 
   public static ImperialVolumeUnits = convert()
-    .list('volume').filter(desc => ['tsp', 'Tbs', 'fl-oz', 'cup', 'pnt', 'qt', 'gal'].includes(desc.abbr)) as UnitDescription[];
+    .list('volume').filter(desc => ['tsp', 'Tbs', 'fl-oz', 'cup', 'pnt', 'qt', 'gal'].includes(desc.abbr)) as StdUnitInfo[];
 
   /**
    * Reference Measure Units
@@ -94,7 +94,7 @@ export class UnitService {
     .list('mass').filter(desc => ['mg', 'g'].includes(desc.abbr))
     .concat(UnitService.SupplementalUnits
       .filter(desc => ['kcal', 'µg', 'IU'].includes(desc.abbr))
-    ) as UnitDescription[];
+    ) as StdUnitInfo[];
 
   /**
    * Food Amount Units
@@ -102,10 +102,10 @@ export class UnitService {
    */
 
   public static FoodAmountMassUnits = convert()
-    .list('mass').filter(desc => ['mg', 'g', 'kg', 'oz', 'lb'].includes(desc.abbr)) as UnitDescription[];
+    .list('mass').filter(desc => ['mg', 'g', 'kg', 'oz', 'lb'].includes(desc.abbr)) as StdUnitInfo[];
 
   public static FoodAmountVolumeUnits = convert()
-    .list('volume').filter(desc => ['ml', 'l', 'tsp', 'Tbs', 'fl-oz', 'cup', 'pnt', 'qt', 'gal'].includes(desc.abbr)) as UnitDescription[];
+    .list('volume').filter(desc => ['ml', 'l', 'tsp', 'Tbs', 'fl-oz', 'cup', 'pnt', 'qt', 'gal'].includes(desc.abbr)) as StdUnitInfo[];
 
   public static GetFoodAmountUnitsByMeasure = (measure: MeasureType) => {
     if (measure === 'mass') {

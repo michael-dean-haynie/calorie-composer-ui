@@ -6,7 +6,7 @@ export class Unit {
     singular?: string;
     plural?: string;
     abbreviation?: string;
-    draft: Unit;
+    draft?: Unit;
 
     equals(unit: Unit): boolean {
         return deepEqual(this, unit, { strict: true });

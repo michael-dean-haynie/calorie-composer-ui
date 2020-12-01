@@ -35,7 +35,7 @@
     display: grid;
 
     .amount-form-field {
-        min-width: 7ch;
+        min-width: 8ch;
     }
 
     .unit-form-field {
@@ -45,7 +45,9 @@
     .conversion-ratio-form__side-a, .conversion-ratio-form__side-b {
         display: grid;
         column-gap: 2ch;
-        grid-template-columns: auto auto;
+        // must be definitely sized to prevent grid blowout
+        // https://css-tricks.com/preventing-a-grid-blowout/
+        grid-template-columns: 9ch minmax(0, 1fr);
 
     }
 
@@ -53,6 +55,8 @@
         display: flex;
         justify-content: center;
         font-size: 2em;
+        // to center inbetween side a and side b
+        margin-bottom: 18px;
     }
 
     
@@ -61,10 +65,12 @@
 .freeform-form {
     display: grid;
     column-gap: 2ch;
-    grid-template-columns: auto auto;
+    // must be definitely sized to prevent grid blowout
+    // https://css-tricks.com/preventing-a-grid-blowout/
+    grid-template-columns: 9ch minmax(0, 1fr);
 
     .amount-form-field {
-        min-width: 7ch;
+        min-width: 8ch;
     }
 
     .unit-form-field {

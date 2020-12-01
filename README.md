@@ -25,3 +25,16 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+## HOW TO
+
+### Run ui on local network for mobile testing
+1. ng serve --host 0.0.0.
+2. on device that's connected to local wifi, navigate to laptop's IPv4 Address (can be found in ipconfig).
+    - ex: 192.168.0.4:4200
+
+### Run api on local network for mobile testing
+1. In api application.yml enable the following lines
+    - `server.address: 0.0.0.0`
+    - `server.port: 8080`
+2. In ui environment.ts enable the apiBaseUrl for api served on local network

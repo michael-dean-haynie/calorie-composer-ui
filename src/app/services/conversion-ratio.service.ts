@@ -103,13 +103,11 @@ export class ConversionRatioService {
     return map.get(side);
   }
 
-  // TODO: fix
   private getStructuredDisplayValue(cvRat: ConversionRatio, side: ConversionRatioSide, constituentType: ConstituentType): string {
-    return null;
-    // const amount = side === 'a' ? cvRat.amountA : cvRat.amountB;
-    // const unit = side === 'a' ? cvRat.unitA : cvRat.unitB;
+    const amount = side === 'a' ? cvRat.amountA : cvRat.amountB;
+    const unit = side === 'a' ? cvRat.unitA.abbreviation : cvRat.unitB.abbreviation;
 
-    // return `${amount} ${this.unitPipe.transform(unit, constituentType)}`;
+    return `${amount} ${this.unitPipe.transform(unit, constituentType)}`;
   }
 
   private getAllPathsRecursive(

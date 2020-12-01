@@ -32,6 +32,10 @@ export class UnitMapperService {
   }
 
   modelToFormGroup(unit: Unit): FormGroup {
+    if (!unit) {
+      return null;
+    }
+
     return this.fb.group({
       id: [unit.id],
       isDraft: [unit.isDraft],
@@ -48,6 +52,10 @@ export class UnitMapperService {
   }
 
   formGroupToModel(formGroup: FormGroup): Unit {
+    if (!formGroup || !formGroup.value) {
+      return null;
+    }
+
     const unit = new Unit();
     unit.id = formGroup.get('id').value;
     unit.isDraft = formGroup.get('isDraft').value;

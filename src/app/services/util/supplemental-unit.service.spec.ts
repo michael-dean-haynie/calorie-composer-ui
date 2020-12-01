@@ -1,21 +1,21 @@
 import { TestBed } from '@angular/core/testing';
 import { RefUnit } from 'src/app/constants/types/reference-unit.type';
-import { UnitFacadeService } from './unit-facade.service';
+import { SupplementalUnitService } from './supplemental-unit.service';
 
 
-fdescribe('UnitFacadeService', () => {
-  let service: UnitFacadeService;
+fdescribe('SupplementalUnitService', () => {
+  let service: SupplementalUnitService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(UnitFacadeService);
+    service = TestBed.inject(SupplementalUnitService);
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  describe('isUserManagedUnit(unitAbbr: string)', () => {
+  describe('matchesSupplementalUnit(unitAbbr: string)', () => {
     interface TestCase {
       input: string;
       expected: boolean;
@@ -24,22 +24,21 @@ fdescribe('UnitFacadeService', () => {
     const testCases: TestCase[] = [
       { input: 'g', expected: false },
       { input: 'ml', expected: false },
-      { input: 'box', expected: true },
-      { input: 'cracker', expected: true },
+      { input: 'box', expected: false },
+      { input: 'cracker', expected: false },
       { input: RefUnit.SERVING, expected: false },
       { input: RefUnit.CONSTITUENTS, expected: false },
-      { input: 'kcal', expected: false },
-      { input: 'µg', expected: false },
-      { input: 'IU', expected: false }
-      // undecided for now
-      // { input: null, expected: false },
-      // { input: undefined, expected: false },
-      // { input: '', expected: false },
+      { input: 'kcal', expected: true },
+      { input: 'µg', expected: true },
+      { input: 'IU', expected: true },
+      { input: null, expected: false },
+      { input: undefined, expected: false },
+      { input: '', expected: false },
     ];
 
     testCases.forEach(tc => {
       it(`should return ${tc.expected} for ${tc.input}`, () => {
-        expect(service.isUserManagedUnit(tc.input)).toBe(tc.expected);
+        expect(service.matchesSupplementalUnit(tc.input)).toBe(tc.expected);
       });
     });
   });

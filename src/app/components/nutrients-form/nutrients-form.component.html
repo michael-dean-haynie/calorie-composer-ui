@@ -7,8 +7,8 @@
             <mat-expansion-panel-header>
                 <mat-panel-title *ngIf="!exp.expanded">
                     <span class="nutrient-title">
-                        <span>{{nutrient.get('name').value}}:</span>
-                        <span>{{nutrient.get('amount').value}}&nbsp;{{nutrient.get('unit').value}}</span>
+                        <span>{{nutrient.get('name').value}}</span>
+                        <span>{{nutrient.get('amount').value}}&nbsp;{{nutrient.get('unit.abbreviation').value}}</span>
                     </span>
                     <button type="button" mat-icon-button color="primary">
                         <mat-icon>edit</mat-icon>
@@ -32,7 +32,7 @@
             <div>
                 <div class="nutrient-form">
 
-                    <mat-form-field floatLabel="always" class="nutrient-form__name">
+                    <mat-form-field appearance="fill" floatLabel="always" class="nutrient-form__name">
                         <mat-label>Nutrient Name</mat-label>
                         <input matInput placeholder="Ex. Protein" [formControl]="nutrient.get('name')"
                             [matAutocomplete]="nutrientName">
@@ -46,25 +46,27 @@
                         </mat-autocomplete>
                     </mat-form-field>
 
-                    <mat-form-field floatLabel="always" class="nutrient-form__amount">
+                    <mat-form-field appearance="fill" floatLabel="always" class="nutrient-form__amount">
                         <mat-label>Amount</mat-label>
                         <input matInput [appMask]="['non-negative', 'float-hundredths']" placeholder="Ex. 3.5"
                             [formControl]="nutrient.get('amount')">
                     </mat-form-field>
 
-                    <mat-form-field floatLabel="always" class="nutrient-form__unit">
-                        <mat-label>Unit</mat-label>
-                        <input matInput placeholder="Ex. g" [formControl]="nutrient.get('unit')"
-                            [matAutocomplete]="nutrientUnit">
-                        <mat-autocomplete #nutrientUnit="matAutocomplete" class="ac-panel right">
-                            <ng-container
-                                *ngFor="let group of nutrient.get('unitFilteredAutoCompleteOptions').value | async">
-                                <mat-option *ngFor="let option of group.groupOptions" [value]="option.value">
-                                    {{option.label}}
-                                </mat-option>
-                            </ng-container>
-                        </mat-autocomplete>
-                    </mat-form-field>
+                    <ng-container>
+                        <mat-form-field appearance="fill" floatLabel="always" class="nutrient-form__unit">
+                            <mat-label>Unit</mat-label>
+                            <input matInput placeholder="Ex. g" [formControl]="nutrient.get('unit.abbreviation')"
+                                [matAutocomplete]="nutrientUnit">
+                            <mat-autocomplete #nutrientUnit="matAutocomplete" class="ac-panel right">
+                                <ng-container
+                                    *ngFor="let group of nutrient.get('unitFilteredAutoCompleteOptions').value | async">
+                                    <mat-option *ngFor="let option of group.groupOptions" [value]="option.value">
+                                        {{option.label}}
+                                    </mat-option>
+                                </ng-container>
+                            </mat-autocomplete>
+                        </mat-form-field>
+                    </ng-container>
 
                 </div>
                 <div *ngIf="nutrient.invalid">

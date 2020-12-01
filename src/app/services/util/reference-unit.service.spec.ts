@@ -28,6 +28,9 @@ fdescribe('ReferenceUnitService', () => {
       { input: 'cracker', expected: false },
       { input: RefUnit.SERVING, expected: true },
       { input: RefUnit.CONSTITUENTS, expected: true },
+      { input: 'kcal', expected: false },
+      { input: 'µg', expected: false },
+      { input: 'IU', expected: false },
       { input: null, expected: false },
       { input: undefined, expected: false },
       { input: '', expected: false },
@@ -38,7 +41,5 @@ fdescribe('ReferenceUnitService', () => {
         expect(service.matchesReferenceUnit(tc.input)).toBe(tc.expected);
       });
     });
-
-
   });
 });

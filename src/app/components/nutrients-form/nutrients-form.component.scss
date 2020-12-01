@@ -44,7 +44,9 @@
 
 .nutrient-form {
     display: grid;
-    grid-template-columns: 7ch 1fr;
+    // must be definitely sized to prevent grid blowout
+    // https://css-tricks.com/preventing-a-grid-blowout/
+    grid-template-columns: 8ch minmax(0, 1fr);
     column-gap: 2ch;
 
     .nutrient-form__name {

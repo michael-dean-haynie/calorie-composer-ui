@@ -4,7 +4,9 @@
 
 export const environment = {
   production: false,
-  apiBaseUrl: 'http://localhost:8080'
+  // apiBaseUrl: 'http://localhost:8080'
+  // use instead for api served on local network for mobile testing
+  apiBaseUrl: 'http://192.168.0.4:8080'
 };
 
 /*

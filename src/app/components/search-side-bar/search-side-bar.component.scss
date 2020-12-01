@@ -13,7 +13,7 @@
 
 mat-selection-list {
     overflow-y: auto;
-    height: calc( 100vh - var(--header-height)*2 - var(--default-padding)*3);
+    height: calc( var(--wih) - var(--header-height)*2 - var(--default-padding)*3); // --wih: see responsive.service.ts
 
 }
 

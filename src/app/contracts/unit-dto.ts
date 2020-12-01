@@ -5,5 +5,5 @@ export interface UnitDTO {
     singular?: string;
     plural?: string;
     abbreviation?: string;
-    draft: UnitDTO;
+    draft?: UnitDTO;
 }

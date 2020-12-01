@@ -1,19 +1,19 @@
 <div *ngIf="!loading" [formGroup]="foodForm" class="sections-container">
     <section>
         <h3>Labeling</h3>
-        <mat-form-field>
+        <mat-form-field appearance="fill">
             <mat-label>Description</mat-label>
             <input matInput placeholder="Ex. Pizza" formControlName="description">
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field appearance="fill">
             <mat-label>Brand</mat-label>
             <input matInput placeholder="Ex. Pizza Hut" formControlName="brandOwner">
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field appearance="fill">
             <mat-label>Ingredients</mat-label>
-            <textarea matInput placeholder="Ex. MILK CHOCOLATE, DEXTRIN, CORN SYRUP, ..."
+            <textarea matInput cdkTextareaAutosize placeholder="Ex. MILK CHOCOLATE, DEXTRIN, CORN SYRUP, ..."
                 formControlName="ingredients"></textarea>
         </mat-form-field>
     </section>
@@ -39,7 +39,8 @@
 
             </div>
 
-            <div>
+            <!-- TODO: FIX -->
+            <!-- <div>
                 <div class="split-subheader">
                     <h4>Serving Size Display Unit</h4>
                 </div>
@@ -86,7 +87,7 @@
                         <div class="needs-defined">Nutrient ref amt needs to be defined in Units.</div>
                     </ng-container>
                 </mat-card>
-            </div>
+            </div> -->
         </div>
     </section>
 

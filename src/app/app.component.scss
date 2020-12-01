@@ -21,13 +21,13 @@
     // to match the toolbar heading
     position: relative;
     top: var(--header-height);
-    height: calc(100vh - var(--header-height));
+    height: calc(var(--wih) - var(--header-height)); // --wih: see responsive.service.ts
     overflow: auto;
 }
 
 .full-height-content-container {
   position: relative;
-  height: calc(100vh - var(--header-height)*2)
+  height: calc(var(--wih) - var(--header-height)*2) // --wih: see responsive.service.ts
 }
 
 .page-title {

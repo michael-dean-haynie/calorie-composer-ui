@@ -151,7 +151,6 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.foodApiService.get(this.foodId).subscribe(food => {
         this.food = food;
-        this.loading = false;
         this.prepareFoodForm();
       })
     );
@@ -162,7 +161,6 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.fdcApiService.get(this.fdcId).subscribe(food => {
         this.food = food;
-        this.loading = false;
         this.prepareFoodForm();
       })
     );
@@ -186,6 +184,7 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     if (this.formMode !== 'create') {
       this.foodForm.markAllAsTouched();
     }
+    this.loading = false;
   }
 
   private listenForChangesToConversionRatios(): void {

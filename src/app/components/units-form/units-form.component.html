@@ -18,15 +18,14 @@
                         <mat-panel-title *ngIf="exp.expanded">
 
                             <div>
-                                <button mat-stroked-button color="accent" [disabled]="!canCancel(unit)"
-                                    (click)="discardDraft(unit)">
-                                    <!-- maybe close instead -->
-                                    <mat-icon>close</mat-icon>&nbsp;Cancel
+                                <button mat-stroked-button color="warn" (click)="deleteUnit(i)">
+                                    <mat-icon>delete</mat-icon>&nbsp;Delete
                                 </button>
                             </div>
                             <div>
-                                <button mat-stroked-button color="warn" (click)="deleteUnit(i)">
-                                    <mat-icon>delete</mat-icon>&nbsp;Delete
+                                <button mat-stroked-button color="accent" [disabled]="!canCancel(unit)"
+                                    (click)="discardDraft(unit)">
+                                    <mat-icon>close</mat-icon>&nbsp;Cancel
                                 </button>
                             </div>
                         </mat-panel-title>
@@ -54,8 +53,8 @@
                             </mat-form-field>
                         </div>
                     </div>
-                    <div>
-                        <button mat-stroked-button color="primary" [disabled]="false" (click)="save(unit, exp)">
+                    <div class="save-button-row">
+                        <button mat-flat-button color="primary" [disabled]="false" (click)="save(unit, exp)">
                             <mat-icon>done</mat-icon>&nbsp;Save
                         </button>
                     </div>
@@ -67,13 +66,8 @@
 
     <section>
         <!-- Empty footer -->
-        <button mat-raised-button color="primary" [disabled]="false" (click)="create()">
+        <button mat-raised-button color="primary" [disabled]="false" (click)="create()" class="add-button">
             <mat-icon>add_to_photos</mat-icon>&nbsp;Add New Unit
         </button>
-        <!-- <div class="form-buttons">
-            <button mat-raised-button color="accent" (click)="cancel()">Cancel</button>
-            <button mat-raised-button color="primary" [disabled]="units.invalid" (click)="saveChanges()">Save
-                Changes</button>
-        </div> -->
     </section>
 </div>

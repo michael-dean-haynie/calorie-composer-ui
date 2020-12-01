@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import convert from 'convert-units';
+import { StdUnitInfo } from 'src/app/constants/types/std-unit-info';
+import { Unit } from 'src/app/models/unit.model';
 
 /**
  * Service providing business logic methods concerning standardized units.
@@ -27,4 +29,40 @@ export class StandardizedUnitService {
     }
     return true;
   }
+
+  /**
+   * Return StdUnitInfo matching for a unit abbreviation.
+   */
+  stdUnitInfoFor(unitAbbr: string): StdUnitInfo {
+    try {
+      return convert().describe(unitAbbr) as StdUnitInfo;
+    } catch (e) {
+      throw new Error(`Could not find standardized unit info for '${unitAbbr}'`);
+    }
+  }
+
+  /**
+   * Convert a StdUnitInfo into a Unit model
+   */
+  stdUnitInfoToModel(info: StdUnitInfo): Unit {
+    if (!info) {
+      return null;
+    }
+
+    const result: Unit = new Unit();
+    result.abbreviation = info.abbr;
+    result.singular = info.singular;
+    result.plural = info.plural;
+    return result;
+  }
+
+  /**
+   * Convert a unit abbreviation into a Model, or throw error;
+   */
+  abbrToModel(unitAbbr: string): Unit {
+    return this.stdUnitInfoToModel(this.stdUnitInfoFor(unitAbbr));
+  }
+
+
+
 }

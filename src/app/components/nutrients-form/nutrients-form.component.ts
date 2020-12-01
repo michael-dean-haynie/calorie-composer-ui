@@ -25,6 +25,7 @@ export class NutrientsFormComponent implements OnInit, AfterViewChecked {
   ngOnInit(): void {
     // wire up auto complete options
     this.nutrients.controls.forEach((nutrient: FormGroup) => this.addFilteredAutoCompleteOptions(nutrient));
+    this.scrubNutrientUnits();
   }
 
   ngAfterViewChecked(): void {
@@ -67,6 +68,7 @@ export class NutrientsFormComponent implements OnInit, AfterViewChecked {
     const nutrientCtrl = this.nutrientMapperService.modelToFormGroup(new Nutrient());
     this.addFilteredAutoCompleteOptions(nutrientCtrl);
     this.nutrients.insert(0, nutrientCtrl);
+    this.scrubNutrientUnits();
   }
 
   removeNutrient(index: number): void {
@@ -84,10 +86,23 @@ export class NutrientsFormComponent implements OnInit, AfterViewChecked {
     const optionsForNutrientName = this.autoCompleteService.optionsForNutrientName();
     nutrient.addControl(
       'unitFilteredAutoCompleteOptions',
-      new FormControl(this.autoCompleteService.filteredOptions(optionsForNutrientUnit, nutrient.get('unit') as FormControl)));
+      new FormControl(this.autoCompleteService.filteredOptions(optionsForNutrientUnit, nutrient.get('unit.abbreviation') as FormControl)));
     nutrient.addControl(
       'nameFilteredAutoCompleteOptions',
       new FormControl(this.autoCompleteService.filteredOptions(optionsForNutrientName, nutrient.get('name') as FormControl)));
+  }
+
+  /**
+   * Backend api only needs abbreviation to resolve or create unit.
+   * Scrub all other information so it's not confusing when we just update abbreviation.
+   */
+  private scrubNutrientUnits(): void {
+    this.nutrients.controls.forEach(nutrientFG => {
+      const unitFG = nutrientFG.get('unit') as FormGroup;
+      unitFG.get('id').reset();
+      unitFG.get('plural').reset();
+      unitFG.get('singular').reset();
+    });
   }
 
 }

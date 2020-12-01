@@ -33,7 +33,7 @@ export class NutrientMapperService {
     return this.fb.group({
       id: [nutrient.id],
       name: [this.nutriantMetadataService.tryAliasToDisplayName(nutrient.name), Validators.required],
-      unit: [this.unitMapperService.modelToFormGroup(nutrient.unit), Validators.required],
+      unit: this.unitMapperService.modelToFormGroup(nutrient.unit), // TODO: make required
       amount: [nutrient.amount, Validators.required]
     });
   }

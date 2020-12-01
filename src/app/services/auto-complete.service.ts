@@ -6,7 +6,8 @@ import { IsMeaningfulValue } from '../constants/functions';
 import { NutrientMetadataList } from '../constants/nutrient-metadata';
 import { ConstituentType } from '../constants/types/constituent-type.type';
 import { OptGroup } from '../constants/types/select-options';
-import { UnitDescription } from '../constants/types/unit-description';
+import { StdUnitInfo } from '../constants/types/std-unit-info';
+import { UnitFacadeService } from './util/unit-facade.service';
 import { UnitService } from './util/unit.service';
 
 @Injectable({
@@ -15,7 +16,8 @@ import { UnitService } from './util/unit.service';
 export class AutoCompleteService {
 
   constructor(
-    private unitService: UnitService
+    private unitService: UnitService,
+    private unitFacadeService: UnitFacadeService
   ) { }
 
   optionsForConversionRatioUnit(constituentType: ConstituentType): OptGroup[] {
@@ -42,7 +44,9 @@ export class AutoCompleteService {
     return [
       {
         groupLabel: 'All',
-        groupOptions: UnitService.NutrientUnits.map(desc => ({ label: `${desc.singular} (${desc.abbr})`, value: desc.abbr }))
+        groupOptions: this.unitFacadeService.nutrientUnits.map(desc =>
+          ({ label: `${desc.singular} (${desc.abbreviation})`, value: desc.abbreviation })
+        )
       }
     ];
   }
@@ -80,7 +84,7 @@ export class AutoCompleteService {
     );
   }
 
-  private mapUnitToAutoCompleteOptions(unit: UnitDescription, constituentType: ConstituentType): any {
+  private mapUnitToAutoCompleteOptions(unit: StdUnitInfo, constituentType: ConstituentType): any {
     const isReferenceUnit = UnitService.ReferenceMeasureUnits.some(desc => desc.abbr === unit.abbr);
     if (isReferenceUnit) {
       return {
