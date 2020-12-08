@@ -40,15 +40,9 @@ export class ConversionRatiosFormComponent implements OnInit, AfterViewChecked {
   }
 
   ngAfterViewChecked(): void {
-    // Expand empty (newly added) cvRat expansionPanels
-    this.expansionPanels.forEach((exp, index) => {
-      const cvRat: FormGroup = this.conversionRatios.controls[index] as FormGroup;
-      if (!IsMeaningfulValue(cvRat.get('amountA').value)
-        && !IsMeaningfulValue(cvRat.get('unitA').value)
-        && !IsMeaningfulValue(cvRat.get('amountB').value)
-        && !IsMeaningfulValue(cvRat.get('unitB').value)) {
-        exp.open();
-      }
+    // expand panels that need to be expanded
+    this.panelsThatNeedToBeOpened().forEach(exp => {
+      this.openPanelAsMacroTask(exp);
     });
   }
 
@@ -114,7 +108,10 @@ export class ConversionRatiosFormComponent implements OnInit, AfterViewChecked {
   }
 
   addConversionRatio(): void {
-    const conversionRatioCtrl = this.conversionRatioMapperService.modelToFormGroup(new ConversionRatio());
+    const cvRat = new ConversionRatio();
+    cvRat.unitA = new Unit();
+    cvRat.unitB = new Unit();
+    const conversionRatioCtrl = this.conversionRatioMapperService.modelToFormGroup(cvRat);
     this.conversionRatios.insert(0, conversionRatioCtrl);
     this.replaceNullUnitsWithBlankUnits();
     this.scrubUnits();
@@ -157,6 +154,30 @@ export class ConversionRatiosFormComponent implements OnInit, AfterViewChecked {
    * Private
    * ----------------------------------------
    */
+
+  private openPanelAsMacroTask(exp: MatExpansionPanel): void {
+    // wrap in async macrotask to avoid exception.
+    // https://indepth.dev/everything-you-need-to-know-about-the-expressionchangedafterithasbeencheckederror-error
+    setTimeout(() => {
+      exp.open();
+    });
+  }
+
+  private panelsThatNeedToBeOpened(): MatExpansionPanel[] {
+    const results: MatExpansionPanel[] = [];
+    if (this.expansionPanels.length) {
+      this.expansionPanels.forEach((exp, index) => {
+        const cvRat: FormGroup = this.conversionRatios.controls[index] as FormGroup;
+        if (!IsMeaningfulValue(cvRat.get('amountA').value)
+          && !IsMeaningfulValue(cvRat.get('unitA.abbreviation').value)
+          && !IsMeaningfulValue(cvRat.get('amountB').value)
+          && !IsMeaningfulValue(cvRat.get('unitB.abbreviation').value)) {
+          results.push(exp);
+        }
+      });
+    }
+    return results;
+  }
 
   private addFilteredAutoCompleteOptions(cvRat: FormGroup): void {
     const optionsForConversionRatioUnit = this.autoCompleteService.optionsForConversionRatioUnit(this.constituentType);

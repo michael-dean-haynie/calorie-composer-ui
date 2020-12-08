@@ -9,28 +9,6 @@ import { UnitMapperService } from 'src/app/services/api/unit-mapper.service';
 import { MenuService } from 'src/app/services/menu.service';
 import { UnitFacadeService } from 'src/app/services/util/unit-facade.service';
 
-/**
- * Things I want to be able to do from this form
- * - View existing user-manageable units
- * - Edit existing user-manageable units
- * - Add a new unit
- * - See validation across all units while adding / editing / deleting
- * - Navigate real quick the unit management page from other places like a food or combo food form and then go right back
- * - See in the nav that there are unsaved changes (use badges here?)
- * 
- * pu@
- * + update API to have drafts for units
- *  + pu@ add to unit DTO, karate tests, fix other unit methods accordingly
- * - start on units accordian
- * 
- * 
- * Basic layout
- * - accordion of expandsion pannels
- * - expand to edit
- * - save changes to close
- * - cancel changes (draft) to close
- * - on destroy or navigation leave, nav to indicate "unsaved changes" if needed
- */
 @Component({
   selector: 'app-units-form',
   templateUrl: './units-form.component.html',

@@ -30,12 +30,15 @@ export class NutrientMapperService {
   }
 
   modelToFormGroup(nutrient: Nutrient): FormGroup {
-    return this.fb.group({
+    const result: FormGroup = this.fb.group({
       id: [nutrient.id],
       name: [this.nutriantMetadataService.tryAliasToDisplayName(nutrient.name), Validators.required],
       unit: this.unitMapperService.modelToFormGroup(nutrient.unit), // TODO: make required
       amount: [nutrient.amount, Validators.required]
     });
+
+    result.get('unit.abbreviation').setValidators([Validators.required]);
+    return result;
   }
 
   formGroupToModel(formGroup: FormGroup): Nutrient {

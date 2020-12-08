@@ -46,9 +46,9 @@ export class ConversionRatioService {
   }
 
   isFilledOut(cvRat: ConversionRatio): boolean {
-    return IsMeaningfulValue(cvRat.unitA)
+    return IsMeaningfulValue(cvRat.unitA.abbreviation)
       && IsMeaningfulValue(cvRat.amountA)
-      && IsMeaningfulValue(cvRat.unitB)
+      && IsMeaningfulValue(cvRat.unitB.abbreviation)
       && IsMeaningfulValue(cvRat.amountB);
   }
 

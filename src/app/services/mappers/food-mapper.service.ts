@@ -5,6 +5,7 @@ import { Food } from 'src/app/models/food.model';
 import { UnitPipe } from 'src/app/pipes/unit.pipe';
 import { UnitMapperService } from '../api/unit-mapper.service';
 import { ConversionRatioService } from '../conversion-ratio.service';
+import { ConversionRatioValidatorService } from '../validators/conversion-ratio-validator.service';
 import { ConversionRatioMapperService } from './conversion-ratio-mapper.service';
 import { NutrientMapperService } from './nutrient-mapper.service';
 
@@ -17,6 +18,7 @@ export class FoodMapperService {
     private nutrientMapperService: NutrientMapperService,
     private conversionRatioMapperService: ConversionRatioMapperService,
     private unitMapperService: UnitMapperService,
+    private conversionRatioValidatorService: ConversionRatioValidatorService,
     private unitPipe: UnitPipe,
     private conversionRatioService: ConversionRatioService,
     private fb: FormBuilder) { }
@@ -64,7 +66,7 @@ export class FoodMapperService {
         food.conversionRatios.map(conversionRatio => this.conversionRatioMapperService.modelToFormGroup(conversionRatio)),
         {
           validators: [
-            this.noContradictingOtherConversionRatios,
+            this.conversionRatioValidatorService.noContradictingOtherConversionRatios,
             this.noConversionRatiosWithFreeFormValues,
             this.servingSizeAndConstituentsSizeMustExist,
             this.constituentsSizeMustBeConvertableToAllOtherDefinedUnits,
@@ -88,26 +90,6 @@ export class FoodMapperService {
     food.conversionRatios = this.conversionRatioMapperService.formArrayToModelArray(formGroup.get('conversionRatios') as FormArray);
 
     return food;
-  }
-
-  //  can not have more than one conversion ratio going from mass to volume
-  //     or the like for any 2 measures
-  //     take into account "built up" or "indirect" conversion ratios: i.e. 32 g = 1 serving size = 1 serving size = 2 Tbsp
-  //                                                                        32 g = 2 Tbsp
-  //                                                                        mass -> volume
-  private noContradictingOtherConversionRatios: ValidatorFn = (control: FormArray): ValidationErrors | null => {
-    // TODO: fix
-    // const conversionRatios = this.conversionRatioMapperService.formArrayToModelArray(control)
-    //   .filter(cvRat => !this.conversionRatioService.usesFreeFormValue(cvRat))
-    //   .filter(cvRat => this.conversionRatioService.isFilledOut(cvRat));
-    // const error = { noContradictingOtherConversionRatios: null };
-
-    // const result: ContradictionsResult = this.conversionRatioService.checkForContradictions(conversionRatios, 'nutrient');
-    // if (result.contradictionsExist) {
-    //   error.noContradictingOtherConversionRatios = result;
-    //   return error;
-    // }
-    return null;
   }
 
   private noConversionRatiosWithFreeFormValues: ValidatorFn = (control: FormArray): ValidationErrors | null => {
