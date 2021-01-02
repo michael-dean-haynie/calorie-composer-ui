@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { PathResults } from 'src/app/constants/types/path-results.type';
+import { RefUnit } from 'src/app/constants/types/reference-unit.type';
 import { FoodDTO } from 'src/app/contracts/food-dto';
 import { Food } from 'src/app/models/food.model';
+import { Unit } from 'src/app/models/unit.model';
 import { UnitPipe } from 'src/app/pipes/unit.pipe';
 import { UnitMapperService } from '../api/unit-mapper.service';
-import { ConversionRatioService } from '../conversion-ratio.service';
-import { ConversionRatioValidatorService } from '../validators/conversion-ratio-validator.service';
+import { NewConversionRatioService } from '../new-conversion-ratio.service';
+import { NutrientValidatorService } from '../validators/nutrient-validator.service';
 import { ConversionRatioMapperService } from './conversion-ratio-mapper.service';
 import { NutrientMapperService } from './nutrient-mapper.service';
 
@@ -18,9 +21,9 @@ export class FoodMapperService {
     private nutrientMapperService: NutrientMapperService,
     private conversionRatioMapperService: ConversionRatioMapperService,
     private unitMapperService: UnitMapperService,
-    private conversionRatioValidatorService: ConversionRatioValidatorService,
+    private nutrientValidatorService: NutrientValidatorService,
     private unitPipe: UnitPipe,
-    private conversionRatioService: ConversionRatioService,
+    private newConversionRatioService: NewConversionRatioService,
     private fb: FormBuilder) { }
 
   dtoToModel(foodDTO: FoodDTO): Food {
@@ -45,20 +48,26 @@ export class FoodMapperService {
   }
 
   modelToFormGroup(food: Food): FormGroup {
+    // TODO: not needed maybe?
+    if (!food.ssrDisplayUnit) {
+      food.ssrDisplayUnit = new Unit();
+    }
+    if (!food.csrDisplayUnit) {
+      food.csrDisplayUnit = new Unit();
+    }
 
-
-    return this.fb.group({
+    const result = this.fb.group({
       id: [food.id],
       fdcId: [food.fdcId],
       description: [food.description, Validators.required],
       brandOwner: [food.brandOwner],
       ingredients: [food.ingredients],
-      ssrDisplayUnit: [this.unitMapperService.modelToFormGroup(food.ssrDisplayUnit)],
-      csrDisplayUnit: [this.unitMapperService.modelToFormGroup(food.csrDisplayUnit)],
+      ssrDisplayUnit: this.unitMapperService.modelToFormGroup(food.ssrDisplayUnit),
+      csrDisplayUnit: this.unitMapperService.modelToFormGroup(food.csrDisplayUnit),
       nutrients: this.fb.array(food.nutrients.map(nutrient => this.nutrientMapperService.modelToFormGroup(nutrient)),
         {
           validators: [
-            this.noDuplicateNutrients
+            this.nutrientValidatorService.noDuplicateNutrients
           ]
         }
       ),
@@ -66,7 +75,7 @@ export class FoodMapperService {
         food.conversionRatios.map(conversionRatio => this.conversionRatioMapperService.modelToFormGroup(conversionRatio)),
         {
           validators: [
-            this.conversionRatioValidatorService.noContradictingOtherConversionRatios,
+            this.noContradictingOtherConversionRatios,
             this.noConversionRatiosWithFreeFormValues,
             this.servingSizeAndConstituentsSizeMustExist,
             this.constituentsSizeMustBeConvertableToAllOtherDefinedUnits,
@@ -75,6 +84,8 @@ export class FoodMapperService {
         }
       )
     });
+
+    return result;
   }
 
   formGroupToModel(formGroup: FormGroup): Food {
@@ -92,85 +103,91 @@ export class FoodMapperService {
     return food;
   }
 
-  private noConversionRatiosWithFreeFormValues: ValidatorFn = (control: FormArray): ValidationErrors | null => {
-    // TODO: fix
-    // const freeFormValuesExist = this.conversionRatioMapperService.formArrayToModelArray(control)
-    //   .some(cvRat => this.conversionRatioService.usesFreeFormValue(cvRat));
+  /**
+   * ---------------------------------------------------------
+   * Validation
+   * ---------------------------------------------------------
+   */
 
-    // if (freeFormValuesExist) {
-    //   return { noConversionRatiosWithFreeFormValues: 'Unit conversions need to be entered properly.' };
-    // }
+  private noConversionRatiosWithFreeFormValues: ValidatorFn = (control: FormArray): ValidationErrors | null => {
+    const freeFormValuesExist = this.conversionRatioMapperService.formArrayToModelArray(control)
+      .some(cvRat => this.newConversionRatioService.usesFreeFormValue(cvRat));
+
+    if (freeFormValuesExist) {
+      return { noConversionRatiosWithFreeFormValues: 'Unit conversions need to be entered properly.' };
+    }
+    return null;
+  }
+
+  //  can not have more than one conversion ratio going from mass to volume
+  //     or the like for any 2 measures
+  //     take into account "built up" or "indirect" conversion ratios: i.e. 32 g = 1 serving size = 1 serving size = 2 Tbsp
+  //                                                                        32 g = 2 Tbsp
+  //                                                                        mass -> volume
+  private noContradictingOtherConversionRatios: ValidatorFn = (control: FormArray): ValidationErrors | null => {
+    const conversionRatios = this.conversionRatioMapperService.formArrayToModelArray(control)
+      .filter(cvRat => !this.newConversionRatioService.usesFreeFormValue(cvRat))
+      .filter(cvRat => this.newConversionRatioService.isFilledOut(cvRat));
+
+    const results: PathResults = this.newConversionRatioService.getAllPathsRecursive(conversionRatios, null, null, null);
+    if (results.contradictions.length) {
+      return { noContradictingOtherConversionRatios: results.contradictions };
+    }
+
     return null;
   }
 
   private servingSizeAndConstituentsSizeMustExist: ValidatorFn = (control: FormArray): ValidationErrors | null => {
-    // TODO: fix
-    // const cvRats = this.conversionRatioMapperService.formArrayToModelArray(control)
-    //   .filter(cvRat => !this.conversionRatioService.usesFreeFormValue(cvRat))
-    //   .filter(cvRat => this.conversionRatioService.isFilledOut(cvRat));
+    const cvRats = this.conversionRatioMapperService.formArrayToModelArray(control)
+      .filter(cvRat => !this.newConversionRatioService.usesFreeFormValue(cvRat))
+      .filter(cvRat => this.newConversionRatioService.isFilledOut(cvRat));
 
-    // const allUnits = this.conversionRatioService.getAllUnits(cvRats);
+    const allUnits = this.newConversionRatioService.getAllUnits(cvRats);
 
-    // if (!allUnits.includes(RefUnit.SERVING)) {
-    //   return { servingSizeAndConstituentsSizeMustExist: 'Serving size must be defined.' };
-    // }
-    // if (!allUnits.includes(RefUnit.CONSTITUENTS)) {
-    //   return { servingSizeAndConstituentsSizeMustExist: 'Nutrient ref amt must be defined.' };
-    // }
+    if (!allUnits.find(unit => unit.abbreviation === RefUnit.SERVING)) {
+      return { servingSizeAndConstituentsSizeMustExist: 'Serving size must be defined.' };
+    }
+    if (!allUnits.find(unit => unit.abbreviation === RefUnit.CONSTITUENTS)) {
+      return { servingSizeAndConstituentsSizeMustExist: 'Nutrient ref amt must be defined.' };
+    }
     return null;
   }
 
   private constituentsSizeMustBeConvertableToAllOtherDefinedUnits: ValidatorFn = (control: FormArray): ValidationErrors | null => {
-    // TODO: fix
-    // const cvRats = this.conversionRatioMapperService.formArrayToModelArray(control)
-    //   .filter(cvRat => !this.conversionRatioService.usesFreeFormValue(cvRat))
-    //   .filter(cvRat => this.conversionRatioService.isFilledOut(cvRat));
+    const cvRats = this.conversionRatioMapperService.formArrayToModelArray(control)
+      .filter(cvRat => !this.newConversionRatioService.usesFreeFormValue(cvRat))
+      .filter(cvRat => this.newConversionRatioService.isFilledOut(cvRat));
 
-    // const allUnits = this.conversionRatioService.getAllUnits(cvRats).filter(unit => unit !== RefUnit.CONSTITUENTS);
-    // const constituentPaths = this.conversionRatioService.getPathsForUnit(cvRats, RefUnit.CONSTITUENTS);
-    // const unitsWithoutConstituentPath = allUnits.filter(unit => {
-    //   return !constituentPaths.find(cp => this.conversionRatioService.getPathTarget(cp) === unit);
-    // });
+    const constituentsUnit = new Unit();
+    constituentsUnit.abbreviation = RefUnit.CONSTITUENTS;
 
-    // if (unitsWithoutConstituentPath.length) {
-    //   const ppUnit = this.unitPipe.transform(unitsWithoutConstituentPath[0], 'nutrient');
-    //   return { constituentsSizeMustBeConvertableToAllOtherDefinedUnits: `${ppUnit} must be convertable to the nutrient ref amt` };
-    // }
+    const allUnits = this.newConversionRatioService.getAllUnits(cvRats).filter(unit => !unit.matches(constituentsUnit));
+    const constituentPaths = this.newConversionRatioService.getPathsForUnit(cvRats, constituentsUnit);
+    const unitsWithoutConstituentPath = allUnits.filter(unit => {
+      return !constituentPaths.find(cp => this.newConversionRatioService.getPathTarget(cp).matches(unit));
+    });
+
+    if (unitsWithoutConstituentPath.length) {
+      // TODO: add back in
+      // const ppUnit = this.unitPipe.transform(unitsWithoutConstituentPath[0], 'nutrient');
+      // return { constituentsSizeMustBeConvertableToAllOtherDefinedUnits: `${ppUnit} must be convertable to the nutrient ref amt` };
+      const unit = unitsWithoutConstituentPath[0].abbreviation;
+      return { constituentsSizeMustBeConvertableToAllOtherDefinedUnits: `${unit} must be convertable to the nutrient ref amt` };
+    }
     return null;
   }
 
   private mustHaveANonRefUnit: ValidatorFn = (control: FormArray): ValidationErrors | null => {
-    // TODO: fix
-    // const cvRats = this.conversionRatioMapperService.formArrayToModelArray(control)
-    //   .filter(cvRat => !this.conversionRatioService.usesFreeFormValue(cvRat))
-    //   .filter(cvRat => this.conversionRatioService.isFilledOut(cvRat));
+    const cvRats = this.conversionRatioMapperService.formArrayToModelArray(control)
+      .filter(cvRat => !this.newConversionRatioService.usesFreeFormValue(cvRat))
+      .filter(cvRat => this.newConversionRatioService.isFilledOut(cvRat));
 
-    // const allUnits = this.conversionRatioService.getAllUnits(cvRats)
-    //   .filter(unit => unit !== RefUnit.CONSTITUENTS && unit !== RefUnit.SERVING);
+    const allUnits = this.newConversionRatioService.getAllUnits(cvRats)
+      .filter(unit => unit.abbreviation !== RefUnit.CONSTITUENTS && unit.abbreviation !== RefUnit.SERVING);
 
-    // if (allUnits.length < 1) {
-    //   return { constituentsSizeMustBeConvertableToAllOtherDefinedUnits: `Must specify at least 1 unit besides serving size and nutrient ref amt` };
-    // }
-    return null;
-  }
-
-  private noDuplicateNutrients: ValidatorFn = (control: FormArray): ValidationErrors | null => {
-    // TODO: fix
-    // const nutrients = this.nutrientMapperService.formArrayToModelArray(control).filter(nutrient => {
-    //   // nutrient must be filled out
-    //   return IsMeaningfulValue(nutrient.name)
-    //     && IsMeaningfulValue(nutrient.amount)
-    //     && IsMeaningfulValue(nutrient.unit);
-    // });
-
-    // const duplicateNutrient = nutrients.find(nutrient => {
-    //   const name = nutrient.name;
-    //   return nutrients.filter(nutr => nutr.name === name).length > 1;
-    // });
-
-    // if (duplicateNutrient) {
-    //   return { noDuplicateNutrients: `Detected duplicate entries for nutrient: "${duplicateNutrient.name}"` };
-    // }
+    if (allUnits.length < 1) {
+      return { constituentsSizeMustBeConvertableToAllOtherDefinedUnits: `Must specify at least 1 unit besides serving size and nutrient ref amt` };
+    }
     return null;
   }
 }

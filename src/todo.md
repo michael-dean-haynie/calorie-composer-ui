@@ -4,6 +4,8 @@
 * Wish List
     - Delete confirmation popup modal
     - use chips for search page
+    - auto focus forms in expansion panels when they open.
+    - be able to hit enter on last form control in expansion panel and "complete the form"
 
 
 * Testing
@@ -46,5 +48,10 @@ pu@
         - Update combofood schemas
         - get create part of feature working.
 
+
+DONT FORGET TO
+- make sure conversion ratios can't have amounts of zero. That makes no sense and would probably bork the calculations.
+- make error messages for contradictions use correct constituent type translations
+    - same for constituentsSizeMustBeConvertableToAllOtherDefinedUnits
 
         

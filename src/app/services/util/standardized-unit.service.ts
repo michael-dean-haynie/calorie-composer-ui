@@ -14,7 +14,31 @@ import { Unit } from 'src/app/models/unit.model';
 })
 export class StandardizedUnitService {
 
-  constructor() { }
+  CONVERT = convert;
+
+  // List of all standardized units that may be in a conversion ratio on a food
+  standardizedFoodAmountUnits: StdUnitInfo[];
+
+  constructor() {
+    this.standardizedFoodAmountUnits = [
+      // Mass
+      this.stdUnitInfoFor('mg'),
+      this.stdUnitInfoFor('g'),
+      this.stdUnitInfoFor('kg'),
+      this.stdUnitInfoFor('oz'),
+      this.stdUnitInfoFor('lb'),
+      // Volume
+      this.stdUnitInfoFor('ml'),
+      this.stdUnitInfoFor('l'),
+      this.stdUnitInfoFor('tsp'),
+      this.stdUnitInfoFor('Tbs'),
+      this.stdUnitInfoFor('fl-oz'),
+      this.stdUnitInfoFor('cup'),
+      this.stdUnitInfoFor('pnt'),
+      this.stdUnitInfoFor('qt'),
+      this.stdUnitInfoFor('gal')
+    ];
+  }
 
   /**
    * Determines if a unit abbreviation matches a standardized unit
@@ -28,6 +52,19 @@ export class StandardizedUnitService {
       return false;
     }
     return true;
+  }
+
+  /**
+   * Determines if 2 units (by abbreviation) have a standardized conversion.
+   */
+  unitsHaveStandardizedConversion(unitA: string, unitB: string): boolean {
+    try {
+      convert(1).from(unitA).to(unitB);
+      return true;
+    }
+    catch (e) {
+      return false;
+    }
   }
 
   /**

@@ -3,6 +3,7 @@ import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatExpansionPanel } from '@angular/material/expansion';
 import { IsMeaningfulValue } from 'src/app/constants/functions';
 import { Nutrient } from 'src/app/models/nutrient.model';
+import { Unit } from 'src/app/models/unit.model';
 import { AutoCompleteService } from 'src/app/services/auto-complete.service';
 import { NutrientMapperService } from 'src/app/services/mappers/nutrient-mapper.service';
 
@@ -29,14 +30,9 @@ export class NutrientsFormComponent implements OnInit, AfterViewChecked {
   }
 
   ngAfterViewChecked(): void {
-    // Expand empty (newly added) nutrient expansionPanels
-    this.expansionPanels.forEach((exp, index) => {
-      const nutrient: FormGroup = this.nutrients.controls[index] as FormGroup;
-      if (!IsMeaningfulValue(nutrient.get('name').value)
-        && !IsMeaningfulValue(nutrient.get('amount').value)
-        && !IsMeaningfulValue(nutrient.get('unit').value)) {
-        exp.open();
-      }
+    // expand panels that need to be expanded
+    this.panelsThatNeedToBeOpened().forEach(exp => {
+      this.openPanelAsMacroTask(exp);
     });
   }
 
@@ -65,7 +61,10 @@ export class NutrientsFormComponent implements OnInit, AfterViewChecked {
   }
 
   addNutrient(): void {
-    const nutrientCtrl = this.nutrientMapperService.modelToFormGroup(new Nutrient());
+    const nutrient = new Nutrient();
+    nutrient.unit = new Unit();
+    const nutrientCtrl = this.nutrientMapperService.modelToFormGroup(nutrient);
+
     this.addFilteredAutoCompleteOptions(nutrientCtrl);
     this.nutrients.insert(0, nutrientCtrl);
     this.scrubNutrientUnits();
@@ -80,6 +79,30 @@ export class NutrientsFormComponent implements OnInit, AfterViewChecked {
    * Private
    * ----------------------------------------
    */
+
+  private openPanelAsMacroTask(exp: MatExpansionPanel): void {
+    // wrap in async macrotask to avoid exception.
+    // https://indepth.dev/everything-you-need-to-know-about-the-expressionchangedafterithasbeencheckederror-error
+    setTimeout(() => {
+      exp.open();
+    });
+  }
+
+  private panelsThatNeedToBeOpened(): MatExpansionPanel[] {
+    // Expand empty (newly added) nutrient expansionPanels
+    const results: MatExpansionPanel[] = [];
+    if (this.expansionPanels.length) {
+      this.expansionPanels.forEach((exp, index) => {
+        const nutrient: FormGroup = this.nutrients.controls[index] as FormGroup;
+        if (!IsMeaningfulValue(nutrient.get('name').value)
+          && !IsMeaningfulValue(nutrient.get('amount').value)
+          && !IsMeaningfulValue(nutrient.get('unit.abbreviation').value)) {
+          results.push(exp);
+        }
+      });
+    }
+    return results;
+  }
 
   private addFilteredAutoCompleteOptions(nutrient: FormGroup): void {
     const optionsForNutrientUnit = this.autoCompleteService.optionsForNutrientUnit();

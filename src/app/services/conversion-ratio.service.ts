@@ -126,7 +126,7 @@ export class ConversionRatioService {
     // for first level call
     if (!currentPath.length) {
       cvRats.forEach(cvRat => {
-        // add root path
+        // 1. add root path
         let newPath = [new PathLink(cvRat.unitA, cvRat.amountA, cvRat.unitB, cvRat.amountB)];
         if (checkForContradictions) {
           // if there's already a path that has the same source/target, throw contradiction exception
@@ -146,7 +146,7 @@ export class ConversionRatioService {
         // fillout from root path
         this.getAllPathsRecursive(cvRats, allPaths, pathStart, checkForContradictions, constituentType);
 
-        // add inverse root path
+        // 2. add inverse root path
         newPath = [new PathLink(cvRat.unitB, cvRat.amountB, cvRat.unitA, cvRat.amountA)];
         if (checkForContradictions) {
           // if there's already a path that has the same source/target, throw contradiction exception

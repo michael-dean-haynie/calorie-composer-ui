@@ -29,7 +29,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 ## HOW TO
 
 ### Run ui on local network for mobile testing
-1. ng serve --host 0.0.0.
+1. ng serve --host 0.0.0.0
 2. on device that's connected to local wifi, navigate to laptop's IPv4 Address (can be found in ipconfig).
     - ex: 192.168.0.4:4200
 

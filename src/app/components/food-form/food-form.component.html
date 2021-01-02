@@ -39,8 +39,8 @@
 
             </div>
 
-            <!-- TODO: FIX -->
-            <!-- <div>
+
+            <div>
                 <div class="split-subheader">
                     <h4>Serving Size Display Unit</h4>
                 </div>
@@ -50,7 +50,8 @@
                             <div class="display-unit__amount">{{ssrDisplayAmount | number:'1.0-4'}}</div>
                             <div class="display-unit__unit">
                                 <mat-form-field floatLabel="never">
-                                    <mat-select formControlName="ssrDisplayUnit" placeholder="Unit">
+                                    <mat-select [formControl]="foodForm.get('ssrDisplayUnit.abbreviation')"
+                                        placeholder="Unit">
                                         <mat-option *ngFor="let opt of ssOpts" [value]="opt.value">
                                             {{opt.label}}
                                         </mat-option>
@@ -74,7 +75,8 @@
                             <div class="display-unit__amount">{{csrDisplayAmount | number:'1.0-4'}}</div>
                             <div class="display-unit__unit">
                                 <mat-form-field floatLabel="never">
-                                    <mat-select formControlName="csrDisplayUnit" placeholder="Unit">
+                                    <mat-select [formControl]="foodForm.get('csrDisplayUnit.abbreviation')"
+                                        placeholder="Unit">
                                         <mat-option *ngFor="let opt of nrOpts" [value]="opt.value">
                                             {{opt.label}}
                                         </mat-option>
@@ -87,7 +89,7 @@
                         <div class="needs-defined">Nutrient ref amt needs to be defined in Units.</div>
                     </ng-container>
                 </mat-card>
-            </div> -->
+            </div>
         </div>
     </section>
 
@@ -97,8 +99,8 @@
             <div>
                 <h3 [ngClass]="{'mat-error': !nutrients.valid}">Nutrients</h3>
                 &nbsp;
-                <span *ngIf="csrDisplayUnit" class="nutrients-per">
-                    per {{csrDisplayAmount | number:'1.0-4'}} {{csrDisplayUnit}}</span>
+                <span *ngIf="csrDisplayUnit.abbreviation" class="nutrients-per">
+                    per {{csrDisplayAmount | number:'1.0-4'}} {{csrDisplayUnit.abbreviation}}</span>
             </div>
             <button type="button" mat-icon-button color="primary" (click)="addNutrient()">
                 <mat-icon>add_to_photos</mat-icon>

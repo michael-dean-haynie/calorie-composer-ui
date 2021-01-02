@@ -13,7 +13,9 @@ import { SupplementalUnitService } from './supplemental-unit.service';
 })
 export class UnitFacadeService {
 
+  // List of all units that may be used in a nutrient
   nutrientUnits: Unit[];
+
 
   constructor(
     private standardizedUnitService: StandardizedUnitService,

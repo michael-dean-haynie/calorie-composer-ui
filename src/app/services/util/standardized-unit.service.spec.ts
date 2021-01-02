@@ -4,7 +4,7 @@ import { Unit } from 'src/app/models/unit.model';
 import { StandardizedUnitService } from './standardized-unit.service';
 
 
-fdescribe('StandardizedUnitService', () => {
+describe('StandardizedUnitService', () => {
   let service: StandardizedUnitService;
 
   beforeEach(() => {
@@ -41,6 +41,14 @@ fdescribe('StandardizedUnitService', () => {
       it(`should return ${tc.expected} for ${tc.input}`, () => {
         expect(service.matchesStandardizedUnit(tc.input)).toBe(tc.expected);
       });
+    });
+  });
+
+  describe('unitsHaveStandardizedConversion()', () => {
+    it('should return true if the 2 units already have a standardized conversion', () => {
+      expect(service.unitsHaveStandardizedConversion('g', 'lb')).toBe(true);
+      expect(service.unitsHaveStandardizedConversion('g', 'ml')).toBe(false);
+      expect(service.unitsHaveStandardizedConversion('a', 'b')).toBe(false);
     });
   });
 

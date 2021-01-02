@@ -3,7 +3,7 @@ import { RefUnit } from 'src/app/constants/types/reference-unit.type';
 import { SupplementalUnitService } from './supplemental-unit.service';
 
 
-fdescribe('SupplementalUnitService', () => {
+describe('SupplementalUnitService', () => {
   let service: SupplementalUnitService;
 
   beforeEach(() => {

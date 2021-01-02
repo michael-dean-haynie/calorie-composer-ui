@@ -1,6 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup, ValidationErrors } from '@angular/forms';
-import { ContradictionsResult } from 'src/app/constants/types/contradictions-result.type';
+import { ContradictionSet } from 'src/app/constants/types/contradiction-set.type';
+import { PathLink } from 'src/app/constants/types/path-link.type';
+import { NewConversionRatioService } from 'src/app/services/new-conversion-ratio.service';
 
 @Component({
   selector: 'app-error-msg',
@@ -17,7 +19,9 @@ export class ErrorMsgComponent {
   @Input() errors: string[];
   @Input() recursive = false;
 
-  constructor() { }
+  constructor(
+    private newConversionRatioService: NewConversionRatioService
+  ) { }
 
   get doShowErrors(): boolean {
     return !!this.findErrors();
@@ -39,11 +43,11 @@ export class ErrorMsgComponent {
     if (Object.keys(errorsToDisplay).length) {
 
       // error is custom object
-      if (errorsToDisplay[errorKeys[0]] instanceof ContradictionsResult) {
+      if (this.isContradictionError(errorsToDisplay[errorKeys[0]])) {
         return errorsToDisplay[errorKeys[0]];
       }
 
-      // error has it's own string
+      // error has its own string
       if (typeof errorsToDisplay[errorKeys[0]] === 'string') {
         return errorsToDisplay[errorKeys[0]];
       }
@@ -54,8 +58,18 @@ export class ErrorMsgComponent {
     }
   }
 
-  instanceOfContradictionsResult(obj: any): boolean {
-    return obj && obj instanceof ContradictionsResult;
+  isContradictionError(obj: any): boolean {
+    return obj
+      && Array.isArray(obj) // obj is ContradictionSet[]
+      && Array.isArray(obj[0]) // obj[0] is ContradictionSet (also Path[])
+      && Array.isArray(obj[0][0]) // obj[0][0] is Path (also PathLink[])
+      && obj[0][0][0] instanceof PathLink;
+  }
+
+  prepareContradictingPathsForDisplay(contradictionSet: ContradictionSet[]): string[] {
+    // just use contradictions in first set
+    const paths = contradictionSet[0];
+    return paths.map(path => this.newConversionRatioService.condencedPath(path));
   }
 
   private findErrors(): ValidationErrors | null {
