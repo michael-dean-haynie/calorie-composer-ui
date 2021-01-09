@@ -4,6 +4,7 @@ import { Unit } from './unit.model';
 
 export class Food {
     id?: string;
+    isDraft?: boolean;
     fdcId: string;
     description: string;
     brandOwner: string;
@@ -12,4 +13,5 @@ export class Food {
     csrDisplayUnit: Unit;
     nutrients: Nutrient[] = [];
     conversionRatios: ConversionRatio[] = [];
+    draft?: Food;
 }

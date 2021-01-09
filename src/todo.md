@@ -6,6 +6,7 @@
     - use chips for search page
     - auto focus forms in expansion panels when they open.
     - be able to hit enter on last form control in expansion panel and "complete the form"
+    - add ability to go back to nothing selected for unit dropdowns
 
 
 * Testing
@@ -53,5 +54,7 @@ DONT FORGET TO
 - make sure conversion ratios can't have amounts of zero. That makes no sense and would probably bork the calculations.
 - make error messages for contradictions use correct constituent type translations
     - same for constituentsSizeMustBeConvertableToAllOtherDefinedUnits
+- double check that null/empty fields on updates actually go through
+- make sure users can't create units with same abbreviation as units that they can't manage (maybe also make column unique
 
         

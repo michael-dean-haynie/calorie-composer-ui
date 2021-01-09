@@ -27,8 +27,12 @@ export class FoodMapperService {
     private fb: FormBuilder) { }
 
   dtoToModel(foodDTO: FoodDTO): Food {
+    if (!foodDTO) {
+      return;
+    }
     const food = new Food();
     food.id = foodDTO.id;
+    food.isDraft = foodDTO.isDraft;
     food.fdcId = foodDTO.fdcId;
     food.description = foodDTO.description;
     food.brandOwner = foodDTO.brandOwner;
@@ -39,6 +43,7 @@ export class FoodMapperService {
       .map(nutrientDTO => this.nutrientMapperService.dtoToModel(nutrientDTO));
     food.conversionRatios = foodDTO.conversionRatios
       .map(conversionRatioDTO => this.conversionRatioMapperService.dtoToModel(conversionRatioDTO));
+    food.draft = this.dtoToModel(foodDTO.draft);
 
     return food;
   }
@@ -48,6 +53,10 @@ export class FoodMapperService {
   }
 
   modelToFormGroup(food: Food): FormGroup {
+    if (!food) {
+      return;
+    }
+
     // TODO: not needed maybe?
     if (!food.ssrDisplayUnit) {
       food.ssrDisplayUnit = new Unit();
@@ -58,6 +67,7 @@ export class FoodMapperService {
 
     const result = this.fb.group({
       id: [food.id],
+      isDraft: [food.isDraft],
       fdcId: [food.fdcId],
       description: [food.description, Validators.required],
       brandOwner: [food.brandOwner],
@@ -82,15 +92,21 @@ export class FoodMapperService {
             this.mustHaveANonRefUnit
           ]
         }
-      )
+      ),
+      draft: this.modelToFormGroup(food.draft)
     });
 
     return result;
   }
 
   formGroupToModel(formGroup: FormGroup): Food {
+    if (!formGroup || !formGroup.value) {
+      return;
+    }
+
     const food = new Food();
     food.id = formGroup.get('id').value;
+    food.isDraft = formGroup.get('isDraft').value;
     food.fdcId = formGroup.get('fdcId').value;
     food.description = formGroup.get('description').value;
     food.brandOwner = formGroup.get('brandOwner').value;
@@ -99,7 +115,7 @@ export class FoodMapperService {
     food.csrDisplayUnit = this.unitMapperService.formGroupToModel(formGroup.get('csrDisplayUnit') as FormGroup);
     food.nutrients = this.nutrientMapperService.formArrayToModelArray(formGroup.get('nutrients') as FormArray);
     food.conversionRatios = this.conversionRatioMapperService.formArrayToModelArray(formGroup.get('conversionRatios') as FormArray);
-
+    food.draft = this.formGroupToModel(formGroup.get('draft') as FormGroup);
     return food;
   }
 

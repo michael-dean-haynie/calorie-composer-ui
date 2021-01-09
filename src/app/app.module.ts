@@ -9,6 +9,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
@@ -20,6 +21,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ChartsModule } from 'ng2-charts';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ConversionRatiosFormComponent } from './components/conversion-ratios-form/conversion-ratios-form.component';
@@ -32,6 +34,7 @@ import { NarrowSearchResultsComponent } from './components/narrow-search-results
 import { NutrientsFormComponent } from './components/nutrients-form/nutrients-form.component';
 import { PlanningComponent } from './components/planning/planning.component';
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
+import { SearchSelectComponent } from './components/search-select/search-select.component';
 import { SearchSideBarComponent } from './components/search-side-bar/search-side-bar.component';
 import { SearchComponent } from './components/search/search.component';
 import { UnitsFormComponent } from './components/units-form/units-form.component';
@@ -60,7 +63,8 @@ import { UnitPipe } from './pipes/unit.pipe';
     UnitPipe,
     ConversionRatiosFormComponent,
     NutrientsFormComponent,
-    UnitsFormComponent
+    UnitsFormComponent,
+    SearchSelectComponent
   ],
   imports: [
     BrowserModule,
@@ -78,6 +82,7 @@ import { UnitPipe } from './pipes/unit.pipe';
     MatTableModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatFormFieldModule,
     MatSelectModule,
     MatIconModule,
     MatButtonModule,
@@ -86,6 +91,9 @@ import { UnitPipe } from './pipes/unit.pipe';
     MatSlideToggleModule,
     MatSidenavModule,
     MatBadgeModule,
+
+    // NGX
+    NgxMatSelectSearchModule,
 
 
 

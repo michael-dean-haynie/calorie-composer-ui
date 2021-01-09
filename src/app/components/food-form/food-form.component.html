@@ -49,14 +49,9 @@
                         <div class="display-unit">
                             <div class="display-unit__amount">{{ssrDisplayAmount | number:'1.0-4'}}</div>
                             <div class="display-unit__unit">
-                                <mat-form-field floatLabel="never">
-                                    <mat-select [formControl]="foodForm.get('ssrDisplayUnit.abbreviation')"
-                                        placeholder="Unit">
-                                        <mat-option *ngFor="let opt of ssOpts" [value]="opt.value">
-                                            {{opt.label}}
-                                        </mat-option>
-                                    </mat-select>
-                                </mat-form-field>
+                                <app-search-select [ctrl]="foodForm.get('ssrDisplayUnit.abbreviation')"
+                                    [options]="ssOpts" placeholder="Unit">
+                                </app-search-select>
                             </div>
                         </div>
                     </ng-container>
@@ -74,14 +69,9 @@
                         <div class="display-unit">
                             <div class="display-unit__amount">{{csrDisplayAmount | number:'1.0-4'}}</div>
                             <div class="display-unit__unit">
-                                <mat-form-field floatLabel="never">
-                                    <mat-select [formControl]="foodForm.get('csrDisplayUnit.abbreviation')"
-                                        placeholder="Unit">
-                                        <mat-option *ngFor="let opt of nrOpts" [value]="opt.value">
-                                            {{opt.label}}
-                                        </mat-option>
-                                    </mat-select>
-                                </mat-form-field>
+                                <app-search-select [ctrl]="foodForm.get('csrDisplayUnit.abbreviation')"
+                                    [options]="ssOpts" placeholder="Unit">
+                                </app-search-select>
                             </div>
                         </div>
                     </ng-container>

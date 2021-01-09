@@ -5,8 +5,11 @@ import { map, startWith } from 'rxjs/operators';
 import { IsMeaningfulValue } from '../constants/functions';
 import { NutrientMetadataList } from '../constants/nutrient-metadata';
 import { ConstituentType } from '../constants/types/constituent-type.type';
-import { OptGroup } from '../constants/types/select-options';
+import { Opt, OptGroup } from '../constants/types/select-options';
 import { StdUnitInfo } from '../constants/types/std-unit-info';
+import { Unit } from '../models/unit.model';
+import { StandardizedUnitService } from './util/standardized-unit.service';
+import { SupplementalUnitService } from './util/supplemental-unit.service';
 import { UnitFacadeService } from './util/unit-facade.service';
 import { UnitService } from './util/unit.service';
 
@@ -17,7 +20,9 @@ export class AutoCompleteService {
 
   constructor(
     private unitService: UnitService,
-    private unitFacadeService: UnitFacadeService
+    private unitFacadeService: UnitFacadeService,
+    private standardizedUnitService: StandardizedUnitService,
+    private supplementalUnitService: SupplementalUnitService
   ) { }
 
   optionsForConversionRatioUnit(constituentType: ConstituentType): OptGroup[] {
@@ -25,17 +30,17 @@ export class AutoCompleteService {
       {
         groupLabel: 'Mass',
         groupOptions: UnitService.MetricMassUnits.concat(UnitService.ImperialMassUnits)
-          .map(unit => this.mapUnitToAutoCompleteOptions(unit, constituentType))
+          .map(unit => this.mapStdUnitInfoToAutoCompleteOption(unit, constituentType))
       },
       {
         groupLabel: 'Volume',
         groupOptions: UnitService.MetricVolumeUnits.concat(UnitService.ImperialVolumeUnits)
-          .map(unit => this.mapUnitToAutoCompleteOptions(unit, constituentType))
+          .map(unit => this.mapStdUnitInfoToAutoCompleteOption(unit, constituentType))
       },
       {
         groupLabel: 'Reference',
         groupOptions: UnitService.ReferenceMeasureUnits
-          .map(unit => this.mapUnitToAutoCompleteOptions(unit, constituentType))
+          .map(unit => this.mapStdUnitInfoToAutoCompleteOption(unit, constituentType))
       }
     ];
   }
@@ -84,7 +89,7 @@ export class AutoCompleteService {
     );
   }
 
-  private mapUnitToAutoCompleteOptions(unit: StdUnitInfo, constituentType: ConstituentType): any {
+  private mapStdUnitInfoToAutoCompleteOption(unit: StdUnitInfo, constituentType: ConstituentType): Opt {
     const isReferenceUnit = UnitService.ReferenceMeasureUnits.some(desc => desc.abbr === unit.abbr);
     if (isReferenceUnit) {
       return {
@@ -96,6 +101,43 @@ export class AutoCompleteService {
     return {
       label: `${unit.plural} (${unit.abbr})`,
       value: unit.abbr
+    };
+  }
+
+  mapUnitToAutoCompleteOption(unit: Unit, constituentType: ConstituentType): Opt {
+    // first check if we can swap out unit for standardized or supplemental one that has more meta data
+    if (this.standardizedUnitService.matchesStandardizedUnit(unit.abbreviation)) {
+      unit = this.standardizedUnitService.abbrToModel(unit.abbreviation);
+    } else if (this.supplementalUnitService.matchesSupplementalUnit(unit.abbreviation)) {
+      unit = this.supplementalUnitService.abbrToModel(unit.abbreviation);
+    }
+
+    // handle if it's a refernce unit
+    const isReferenceUnit = UnitService.ReferenceMeasureUnits.some(desc => desc.abbr === unit.abbreviation);
+    if (isReferenceUnit) {
+      return {
+        label: this.unitService.ppReferenceUnit(unit.abbreviation, constituentType),
+        value: unit.abbreviation
+      };
+    }
+
+    // otherwise ...
+    const usePlural = IsMeaningfulValue(unit.plural);
+    const useSingular = !usePlural && IsMeaningfulValue(unit.singular);
+    const justAbbr = !usePlural && !useSingular;
+
+    let label = '';
+    if (usePlural) {
+      label = `${unit.plural} (${unit.abbreviation})`;
+    } else if (useSingular) {
+      label = `${unit.singular} (${unit.abbreviation})`;
+    } else if (justAbbr) {
+      label = unit.abbreviation
+    }
+
+    return {
+      label: label,
+      value: unit.abbreviation
     };
   }
 }

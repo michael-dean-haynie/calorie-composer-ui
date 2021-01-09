@@ -1,0 +1,15 @@
+<mat-form-field floatLabel="never">
+    <mat-select [formControl]="ctrl" [placeholder]="placeholder" #singleSelect>
+        <mat-option>
+            <ngx-mat-select-search [formControl]="filterCtrl" placeholderLabel="Search"
+                noEntriesFoundLabel="No entries found" disableInitialFocus="true">
+            </ngx-mat-select-search>
+        </mat-option>
+
+        <mat-option *ngFor="let option of filteredOptions | async" [value]="option.value">
+            {{option.label}}
+        </mat-option>
+
+        <!-- content project add new unit option here -->
+    </mat-select>
+</mat-form-field>

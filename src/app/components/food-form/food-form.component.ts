@@ -3,6 +3,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { debounceTime, filter } from 'rxjs/operators';
 import { Path } from 'src/app/constants/types/path.type';
 import { RefUnit } from 'src/app/constants/types/reference-unit.type';
 import { Opt } from 'src/app/constants/types/select-options';
@@ -11,6 +12,7 @@ import { Unit } from 'src/app/models/unit.model';
 import { UnitPipe } from 'src/app/pipes/unit.pipe';
 import { FdcApiService } from 'src/app/services/api/fdc-api.service';
 import { FoodApiService } from 'src/app/services/api/food-api.service';
+import { AutoCompleteService } from 'src/app/services/auto-complete.service';
 import { ConversionRatioMapperService } from 'src/app/services/mappers/conversion-ratio-mapper.service';
 import { FoodMapperService } from 'src/app/services/mappers/food-mapper.service';
 import { NewConversionRatioService } from 'src/app/services/new-conversion-ratio.service';
@@ -44,6 +46,9 @@ export class FoodFormComponent implements OnInit, OnDestroy {
   private fdcId: string;
   private food: Food;
 
+  // flag to ignore changes while current request is out, or to avoid cyclic requests
+  private ignoreChangesFlag = false;
+
   private subscriptions: Subscription[] = [];
 
   constructor(
@@ -53,6 +58,7 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     private foodMapperService: FoodMapperService,
     private conversionRatioMapperService: ConversionRatioMapperService,
     private newConversionRatioService: NewConversionRatioService,
+    private autoCompleteService: AutoCompleteService,
     private unitPipe: UnitPipe,
     private decimalPipe: DecimalPipe,
     private location: Location,
@@ -115,6 +121,11 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     return this.newConversionRatioService.getPathProduct(path);
   }
 
+  get canDiscardChanges(): boolean {
+    // pu@
+    return false;
+  }
+
   addNutrient(): void {
     this.nutrientsFormComponent.addNutrient();
   }
@@ -123,19 +134,52 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     this.conversionRatiosFormComponent.addConversionRatio();
   }
 
+  discardChanges(): void {
+    // TODO
+  }
+
+  // TODO: being used??
   cancel(): void {
     this.location.back();
   }
 
-  saveChanges(): void {
-    const newFood = this.foodMapperService.formGroupToModel(this.foodForm);
+  saveDraft(): void {
+    this.ignoreChangesFlag = true;
+    const draft = this.foodMapperService.formGroupToModel(this.foodForm);
+    this.food.draft = draft;
+
 
     if (this.formMode === 'create' || this.formMode === 'import') {
-      this.foodApiService.post(newFood).subscribe(() => console.log('all done posting!'));
+      this.foodApiService.post(this.food).subscribe(savedFood => {
+        console.log('all done posting!');
+        this.food.id = savedFood.id;
+        this.foodForm.get('id').setValue(savedFood.draft.id);
+        this.ignoreChangesFlag = false;
+      });
     }
     else if (this.formMode === 'update') {
-      this.foodApiService.put(newFood).subscribe(() => console.log('all done updating!'));
+      this.foodApiService.put(this.food).subscribe(savedFood => {
+        console.log('all done updating!')
+        this.foodForm.get('id').setValue(savedFood.draft.id);
+        this.ignoreChangesFlag = false;
+      });
     }
+  }
+
+  // save draft as actual and discard draft
+  saveChanges(): void {
+    const food = this.foodMapperService.formGroupToModel(this.foodForm);
+    food.isDraft = false;
+    food.id = this.food.id
+
+    if (this.formMode === 'create' || this.formMode === 'import') {
+      this.foodApiService.post(food).subscribe(() => console.log('all done posting!'));
+    }
+    else if (this.formMode === 'update') {
+      this.foodApiService.put(food).subscribe(() => console.log('all done updating!'));
+    }
+
+    // TODO need to navigate away or update component to handle stuff being out of sync now (like this.food)
   }
 
   /**
@@ -170,7 +214,10 @@ export class FoodFormComponent implements OnInit, OnDestroy {
   }
 
   private prepareFoodForm(): void {
-    this.foodForm = this.foodMapperService.modelToFormGroup(this.food);
+    if (!this.food.draft) {
+      this.food.draft = this.createDraft();
+    }
+    this.foodForm = this.foodMapperService.modelToFormGroup(this.food.draft);
 
     // setup listeners
     this.listenForChangesToConversionRatios();
@@ -182,7 +229,25 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     if (this.formMode !== 'create') {
       this.foodForm.markAllAsTouched();
     }
+
+    // auto save draft
+    this.saveDraftOnEveryChange(this.foodForm);
+
     this.loading = false;
+  }
+
+  private createDraft(): Food {
+    // get seperate copy by mapping to formgroup and back
+    const draftFG: FormGroup = this.foodMapperService.modelToFormGroup(this.food);
+    const draft: Food = this.foodMapperService.formGroupToModel(draftFG);
+
+    // remove db ids (except for units. those stay)
+    delete draft.id;
+    draft.isDraft = true;
+    draft.conversionRatios.forEach(cvRat => delete cvRat.id);
+    draft.nutrients.forEach(nutrient => delete nutrient.id);
+
+    return draft;
   }
 
   private listenForChangesToConversionRatios(): void {
@@ -202,10 +267,7 @@ export class FoodFormComponent implements OnInit, OnDestroy {
       // update serving size display unit options
       this.ssOpts = this.ssPaths.map(ssp => {
         const unit: Unit = this.newConversionRatioService.getPathTarget(ssp);
-        return {
-          value: unit.abbreviation,
-          label: this.unitPipe.transform(unit.abbreviation, 'nutrient')
-        };
+        return this.autoCompleteService.mapUnitToAutoCompleteOption(unit, 'nutrient');
       });
 
 
@@ -221,10 +283,7 @@ export class FoodFormComponent implements OnInit, OnDestroy {
       // update nurtient display unit options
       this.nrOpts = this.nrPaths.map(nrp => {
         const unit = this.newConversionRatioService.getPathTarget(nrp);
-        return {
-          value: unit.abbreviation,
-          label: this.unitPipe.transform(unit.abbreviation, 'nutrient')
-        };
+        return this.autoCompleteService.mapUnitToAutoCompleteOption(unit, 'nutrient');
       });
 
       // update nutrient display unit
@@ -232,5 +291,16 @@ export class FoodFormComponent implements OnInit, OnDestroy {
         this.foodForm.get('csrDisplayUnit.abbreviation').setValue(null);
       }
     }));
+  }
+
+  private saveDraftOnEveryChange(form: FormGroup): void {
+    this.subscriptions.push(
+      form.valueChanges.pipe(
+        filter(() => !this.ignoreChangesFlag),
+        debounceTime(500)
+      ).subscribe(() => {
+        this.saveDraft();
+      })
+    );
   }
 }

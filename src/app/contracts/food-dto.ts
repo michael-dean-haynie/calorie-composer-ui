@@ -4,6 +4,7 @@ import { UnitDTO } from './unit-dto';
 
 export interface FoodDTO {
     id?: string;
+    isDraft?: boolean;
     fdcId: string;
     description: string;
     brandOwner: string;
@@ -12,4 +13,5 @@ export interface FoodDTO {
     csrDisplayUnit: UnitDTO;
     nutrients: NutrientDTO[];
     conversionRatios: ConversionRatioDTO[];
+    draft?: FoodDTO;
 }
