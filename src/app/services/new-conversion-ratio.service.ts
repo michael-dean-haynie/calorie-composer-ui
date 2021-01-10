@@ -79,6 +79,17 @@ export class NewConversionRatioService {
     });
   }
 
+  getPathForSourceAndTarget(cvRats: ConversionRatio[], source: Unit, target: Unit): Path {
+    return this.getAllPaths(cvRats).paths.find(path => {
+      return this.getPathSource(path).matches(source) && this.getPathTarget(path).matches(target);
+    });
+  }
+
+  convertUnitAmount(cvRats: ConversionRatio[], fromAmt: number, fromUnit: Unit, toUnit: Unit): number {
+    const path = this.getPathForSourceAndTarget(cvRats, fromUnit, toUnit);
+    return this.getPathProduct(path) * fromAmt;
+  }
+
   getAllPaths(conversionRatios: ConversionRatio[]): PathResults {
     return this.getAllPathsRecursive(conversionRatios, null, null, null);
   }
