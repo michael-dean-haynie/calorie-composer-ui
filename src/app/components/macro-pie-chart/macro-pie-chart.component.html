@@ -1,3 +1,4 @@
-<canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType" [options]="pieChartOptions"
-    [colors]="pieChartColors" [legend]="false">
+<canvas *ngIf="!loading" baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"
+    [options]="pieChartOptions" [plugins]="pieChartPlugins" [legend]="pieChartLegend" [colors]="pieChartColors"
+    [width]="canvasWidth">
 </canvas>

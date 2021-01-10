@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { FoodDetailsComponent } from './components/food-details/food-details.component';
 import { FoodFormComponent } from './components/food-form/food-form.component';
 import { HomeComponent } from './components/home/home.component';
 import { PlanningComponent } from './components/planning/planning.component';
@@ -27,6 +28,8 @@ const routes: Routes = [
   { path: 'create-food', component: FoodFormComponent, pathMatch: 'full', data: { pageTitle: 'Create New Food' } },
   { path: 'edit-food/:id', component: FoodFormComponent, data: { pageTitle: 'Edit Food' } },
   { path: 'import-food/:fdcId', component: FoodFormComponent, data: { pageTitle: 'Import Food' } },
+  // Food Details
+  { path: 'food-details/:id', component: FoodDetailsComponent, pathMatch: 'full', data: { pageTitle: 'Food Details' } },
   // ComboFood Form
   // { path: 'create-combo-food', component: ComboFoodFormComponent, pathMatch: 'full', data: { pageTitle: 'Create New Combo-Food' } },
   // { path: 'edit-combo-food/:id', component: ComboFoodFormComponent, data: { pageTitle: 'Edit Combo-Food' } },

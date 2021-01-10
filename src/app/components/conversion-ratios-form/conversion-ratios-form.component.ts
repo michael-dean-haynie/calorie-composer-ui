@@ -1,6 +1,7 @@
-import { AfterViewChecked, Component, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewChecked, Component, Input, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { MatExpansionPanel } from '@angular/material/expansion';
+import { Subscription } from 'rxjs';
 import { IsMeaningfulValue } from 'src/app/constants/functions';
 import { ConstituentType } from 'src/app/constants/types/constituent-type.type';
 import { ConversionRatioSide } from 'src/app/constants/types/conversion-ratio-side.type';
@@ -8,17 +9,19 @@ import { Opt } from 'src/app/constants/types/select-options';
 import { ConversionRatio } from 'src/app/models/conversion-ratio.model';
 import { Unit } from 'src/app/models/unit.model';
 import { UnitPipe } from 'src/app/pipes/unit.pipe';
+import { UnitApiService } from 'src/app/services/api/unit-api.service';
 import { UnitMapperService } from 'src/app/services/api/unit-mapper.service';
 import { AutoCompleteService } from 'src/app/services/auto-complete.service';
 import { ConversionRatioService } from 'src/app/services/conversion-ratio.service';
 import { ConversionRatioMapperService } from 'src/app/services/mappers/conversion-ratio-mapper.service';
+import { UnitFacadeService } from 'src/app/services/util/unit-facade.service';
 
 @Component({
   selector: 'app-conversion-ratios-form',
   templateUrl: './conversion-ratios-form.component.html',
   styleUrls: ['./conversion-ratios-form.component.scss']
 })
-export class ConversionRatiosFormComponent implements OnInit, AfterViewChecked {
+export class ConversionRatiosFormComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   @Input() conversionRatios: FormArray;
   @Input() constituentType: ConstituentType;
@@ -27,20 +30,26 @@ export class ConversionRatiosFormComponent implements OnInit, AfterViewChecked {
 
   conversionRatioUnitOptions: Opt[];
 
+  private subscriptions: Subscription[] = [];
+
   constructor(
     private conversionRatioMapperService: ConversionRatioMapperService,
     private conversionRatioService: ConversionRatioService,
     private autoCompleteService: AutoCompleteService,
     private unitPipe: UnitPipe,
-    private unitMapperService: UnitMapperService
+    private unitMapperService: UnitMapperService,
+    private unitApiService: UnitApiService,
+    private unitFacadeService: UnitFacadeService
   ) { }
 
   ngOnInit(): void {
     this.replaceNullUnitsWithBlankUnits();
     this.scrubUnits();
-    // Array.flatMap not polyfilled in this version of angular/ts?
-    this.conversionRatioUnitOptions = this.autoCompleteService.optionsForConversionRatioUnit('nutrient')
-      .reduce((acc, optGroup) => acc.concat(optGroup.groupOptions), []);
+    this.prepareConversionRatioUnitOptions();
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   ngAfterViewChecked(): void {
@@ -157,6 +166,23 @@ export class ConversionRatiosFormComponent implements OnInit, AfterViewChecked {
    * Private
    * ----------------------------------------
    */
+
+  private prepareConversionRatioUnitOptions(): void {
+    // Array.flatMap not polyfilled in this version of angular/ts?
+    this.conversionRatioUnitOptions = this.autoCompleteService.optionsForConversionRatioUnit('nutrient')
+      .reduce((acc, optGroup) => acc.concat(optGroup.groupOptions), []);
+
+    this.subscriptions.push(
+      this.unitApiService.getAll().subscribe(units => {
+        // filter for just user-managed units
+        units = units.filter(unit => this.unitFacadeService.isUserManagedUnit(unit.abbreviation));
+        // append to options
+        units.forEach(unit => {
+          this.conversionRatioUnitOptions.push(this.autoCompleteService.mapUnitToAutoCompleteOption(unit, 'nutrient'));
+        })
+      })
+    );
+  }
 
   private openPanelAsMacroTask(exp: MatExpansionPanel): void {
     // wrap in async macrotask to avoid exception.

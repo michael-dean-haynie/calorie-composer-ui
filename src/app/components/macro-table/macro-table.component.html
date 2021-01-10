@@ -1,29 +1,40 @@
-<table class="macro-table" mat-table [dataSource]="dataSource">
+<table *ngIf="!loading" class="macro-table" mat-table [dataSource]="dataSource">
 
     <!-- Macro Name Column -->
     <ng-container matColumnDef="macro">
         <th mat-header-cell *matHeaderCellDef>
             <!-- Empty -->
         </th>
-        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+        <td mat-cell *matCellDef="let element" [ngClass]="{bold: element.name === 'Total'}">
+            <div>{{element.name}}</div>
+        </td>
     </ng-container>
 
     <!-- Macro Percentage Column -->
     <ng-container matColumnDef="pctg">
         <th mat-header-cell *matHeaderCellDef>%</th>
-        <td mat-cell *matCellDef="let element"> {{element.pctg}} </td>
+        <td mat-cell *matCellDef="let element">
+            <div>{{element.pctg | number:numFmt}}</div>
+            <div class="vis-pctg-indicator {{element.vpiClass}}" [style.height]="element.pctg+'%'"></div>
+        </td>
     </ng-container>
 
     <!-- Macro Weight Column -->
     <ng-container matColumnDef="weight">
-        <th mat-header-cell *matHeaderCellDef>g</th>
-        <td mat-cell *matCellDef="let element"> {{element.weight}} </td>
+        <th mat-header-cell *matHeaderCellDef>grams</th>
+        <td mat-cell *matCellDef="let element">
+            <div>{{element.weight | number:numFmt}}</div>
+            <div class="vis-pctg-indicator {{element.vpiClass}}" [style.height]="element.pctg+'%'"></div>
+        </td>
     </ng-container>
 
     <!-- Macro kcal Column -->
     <ng-container matColumnDef="kcal">
-        <th mat-header-cell *matHeaderCellDef>kcal</th>
-        <td mat-cell *matCellDef="let element"> {{element.kcal}} </td>
+        <th mat-header-cell *matHeaderCellDef>kcals</th>
+        <td mat-cell *matCellDef="let element" [ngClass]="{bold: element.name === 'Total'}">
+            <div>{{element.kcal | number:numFmt}}</div>
+            <div class="vis-pctg-indicator {{element.vpiClass}}" [style.height]="element.pctg+'%'"></div>
+        </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

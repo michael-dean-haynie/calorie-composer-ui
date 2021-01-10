@@ -1,7 +1,7 @@
 import { DecimalPipe, Location } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { debounceTime, filter } from 'rxjs/operators';
 import { Path } from 'src/app/constants/types/path.type';
@@ -53,6 +53,7 @@ export class FoodFormComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private foodApiService: FoodApiService,
     private fdcApiService: FdcApiService,
     private foodMapperService: FoodMapperService,
@@ -134,15 +135,21 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     this.conversionRatiosFormComponent.addConversionRatio();
   }
 
+  // TODO: can only do this in edit mode? what about other modes. Cancel? Go back higher level Food dashboard
   discardChanges(): void {
-    // TODO
+    this.ignoreChangesFlag = true;
+    delete this.food.draft;
+
+    this.foodApiService.put(this.food).subscribe(savedFood => {
+      console.log('all done updating!')
+      this.ignoreChangesFlag = false;
+      this.router.navigate(['food-details', this.foodId]);
+    });
+
   }
 
-  // TODO: being used??
-  cancel(): void {
-    this.location.back();
-  }
-
+  // TODO: update to handle if creating new and there is no actual version yet
+  // TODO: point food-details to form if the foodId is for one that is a draft
   saveDraft(): void {
     this.ignoreChangesFlag = true;
     const draft = this.foodMapperService.formGroupToModel(this.foodForm);
@@ -176,10 +183,11 @@ export class FoodFormComponent implements OnInit, OnDestroy {
       this.foodApiService.post(food).subscribe(() => console.log('all done posting!'));
     }
     else if (this.formMode === 'update') {
-      this.foodApiService.put(food).subscribe(() => console.log('all done updating!'));
+      this.foodApiService.put(food).subscribe(() => {
+        console.log('all done updating!');
+        this.router.navigate(['food-details', this.foodId]);
+      });
     }
-
-    // TODO need to navigate away or update component to handle stuff being out of sync now (like this.food)
   }
 
   /**

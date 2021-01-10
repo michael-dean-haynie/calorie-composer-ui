@@ -13,6 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -26,6 +27,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ConversionRatiosFormComponent } from './components/conversion-ratios-form/conversion-ratios-form.component';
 import { ErrorMsgComponent } from './components/error-msg/error-msg.component';
+import { FoodDetailsComponent } from './components/food-details/food-details.component';
 import { FoodFormComponent } from './components/food-form/food-form.component';
 import { HomeComponent } from './components/home/home.component';
 import { MacroPieChartComponent } from './components/macro-pie-chart/macro-pie-chart.component';
@@ -64,7 +66,8 @@ import { UnitPipe } from './pipes/unit.pipe';
     ConversionRatiosFormComponent,
     NutrientsFormComponent,
     UnitsFormComponent,
-    SearchSelectComponent
+    SearchSelectComponent,
+    FoodDetailsComponent
   ],
   imports: [
     BrowserModule,
@@ -91,11 +94,11 @@ import { UnitPipe } from './pipes/unit.pipe';
     MatSlideToggleModule,
     MatSidenavModule,
     MatBadgeModule,
+    MatMenuModule,
+
 
     // NGX
     NgxMatSelectSearchModule,
-
-
 
     // chart.js / ng2-charts
     ChartsModule

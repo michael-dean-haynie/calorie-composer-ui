@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ChartOptions, ChartType } from 'chart.js';
-import { Label } from 'ng2-charts';
+import { Color, Label, monkeyPatchChartJsLegend, monkeyPatchChartJsTooltip, SingleDataSet } from 'ng2-charts';
+import { Colors } from 'src/app/constants/types/colors';
 import { Food } from 'src/app/models/food.model';
 import { NutrientCalculationService } from 'src/app/services/util/nutrient-calculation.service';
 
@@ -12,36 +13,48 @@ import { NutrientCalculationService } from 'src/app/services/util/nutrient-calcu
 export class MacroPieChartComponent implements OnInit {
 
   @Input() food: Food;
+  @Input() canvasWidth = 288;
 
-  public pieChartType: ChartType = 'pie';
-  public pieChartOptions: ChartOptions = {
-    responsive: true,
-    aspectRatio: 1,
-    cutoutPercentage: 50,
+  loading = true;
+
+  pieChartOptions: ChartOptions = {
+    responsive: false,
     tooltips: {
-      callbacks: {
-        label: (tooltipItems, data) => {
-          return `${data.labels[tooltipItems.index]}: ${data.datasets[tooltipItems.datasetIndex].data[tooltipItems.index]}%`;
-        }
-      }
+      enabled: false
+      // intersect: false,
+      // callbacks: {
+      //   label: (tooltipItems, data) => {
+      //     return `${data.labels[tooltipItems.index]}: ${data.datasets[tooltipItems.datasetIndex].data[tooltipItems.index]}%`;
+      //   }
+      // }
     }
   };
-  public pieChartLabels: Label[] = ['Fat', 'Carbohydrate', 'Protein'];
-  public pieChartData: number[] = [];
-  public pieChartColors = [
+  pieChartLabels: Label[] = [['Fat'], ['Carbohydrate'], 'Protein'];
+  pieChartColors: Color[] = [
     {
-      backgroundColor: ['rgb(253, 216, 53)', 'rgb(67, 160, 71)', 'rgb(216, 67, 21)'],
-    },
-  ];
+      backgroundColor: [Colors.Fat, Colors.Carbohydrate, Colors.Protein]
+    }
+  ]
+  pieChartData: SingleDataSet = [];
+  pieChartType: ChartType = 'pie';
+  pieChartLegend = false;
+  pieChartPlugins = [];
 
-  constructor(private nutrientCalculationService: NutrientCalculationService) { }
+  constructor(
+    private nutrientCalculationService: NutrientCalculationService
+  ) {
+    // not sure what these do tbh
+    monkeyPatchChartJsTooltip();
+    monkeyPatchChartJsLegend();
+  }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.pieChartData = [
       this.nutrientCalculationService.pctgCalsInFoodForMacro(this.food, 'Fat'),
       this.nutrientCalculationService.pctgCalsInFoodForMacro(this.food, 'Carbohydrate'),
-      this.nutrientCalculationService.pctgCalsInFoodForMacro(this.food, 'Protein'),
-    ].map(pct => Math.floor(pct));
+      this.nutrientCalculationService.pctgCalsInFoodForMacro(this.food, 'Protein')
+    ];
+    this.loading = false;
   }
 
 }
