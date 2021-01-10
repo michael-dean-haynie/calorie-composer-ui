@@ -15,10 +15,10 @@ export class SearchSelectComponent implements OnInit, OnChanges {
   @Input() ctrl: FormControl;
   @Input() options: Opt[];
   @Input() placeholder: string;
+  @Input() label: string
 
   filterCtrl: FormControl = new FormControl();
 
-  // filteredOptions: ReplaySubject<any> = new ReplaySubject<any>(1);
   filteredOptions: Observable<Opt[]> = new Observable<Opt[]>();
 
   constructor(

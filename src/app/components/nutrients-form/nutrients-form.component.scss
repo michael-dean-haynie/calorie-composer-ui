@@ -53,4 +53,11 @@
         grid-column: 1 / -1;
     }
 
+    .nutrient-form__unit {
+        width: auto;
+        ::ng-deep .mat-form-field {
+            width: 100%;
+        }
+    }
+
 }

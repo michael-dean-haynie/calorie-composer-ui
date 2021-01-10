@@ -50,12 +50,14 @@ mat-form-field {
     .display-unit__amount {
         align-self: end;
 
-        // to align with .mat-form-field-wrapper and .mat-form-field-underline
-        padding-bottom: calc(1.25em + 1px); 
+        // to align with .mat-form-field-wrapper and .mat-form-field-infix
+        padding-bottom: calc(1.25em + 0.7em); 
     }
 
     .display-unit__unit {
         justify-self: start;
+        // to mirror the spacebelow the underline in .display_unit__amount
+        padding-top: calc(1.25em + 1px); 
     }
 }
 

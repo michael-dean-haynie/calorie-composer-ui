@@ -53,19 +53,10 @@
                     </mat-form-field>
 
                     <ng-container>
-                        <mat-form-field appearance="fill" floatLabel="always" class="nutrient-form__unit">
-                            <mat-label>Unit</mat-label>
-                            <input matInput placeholder="Ex. g" [formControl]="nutrient.get('unit.abbreviation')"
-                                [matAutocomplete]="nutrientUnit">
-                            <mat-autocomplete #nutrientUnit="matAutocomplete" class="ac-panel right">
-                                <ng-container
-                                    *ngFor="let group of nutrient.get('unitFilteredAutoCompleteOptions').value | async">
-                                    <mat-option *ngFor="let option of group.groupOptions" [value]="option.value">
-                                        {{option.label}}
-                                    </mat-option>
-                                </ng-container>
-                            </mat-autocomplete>
-                        </mat-form-field>
+                        <app-search-select [ctrl]="nutrient.get('unit.abbreviation')" [options]="nutrientUnitOptions"
+                            label="Unit" placeholder="Ex. Grams (g)" class="unit-form-field"
+                            class="nutrient-form__unit">
+                        </app-search-select>
                     </ng-container>
 
                 </div>

@@ -1,9 +1,10 @@
 import { AfterViewChecked, Component, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormGroup } from '@angular/forms';
 import { MatExpansionPanel } from '@angular/material/expansion';
 import { IsMeaningfulValue } from 'src/app/constants/functions';
 import { ConstituentType } from 'src/app/constants/types/constituent-type.type';
 import { ConversionRatioSide } from 'src/app/constants/types/conversion-ratio-side.type';
+import { Opt } from 'src/app/constants/types/select-options';
 import { ConversionRatio } from 'src/app/models/conversion-ratio.model';
 import { Unit } from 'src/app/models/unit.model';
 import { UnitPipe } from 'src/app/pipes/unit.pipe';
@@ -24,6 +25,8 @@ export class ConversionRatiosFormComponent implements OnInit, AfterViewChecked {
 
   @ViewChildren(MatExpansionPanel) expansionPanels: QueryList<MatExpansionPanel>;
 
+  conversionRatioUnitOptions: Opt[];
+
   constructor(
     private conversionRatioMapperService: ConversionRatioMapperService,
     private conversionRatioService: ConversionRatioService,
@@ -35,8 +38,9 @@ export class ConversionRatiosFormComponent implements OnInit, AfterViewChecked {
   ngOnInit(): void {
     this.replaceNullUnitsWithBlankUnits();
     this.scrubUnits();
-    // wire up auto complete options
-    this.conversionRatios.controls.forEach((cvRat: FormGroup) => this.addFilteredAutoCompleteOptions(cvRat));
+    // Array.flatMap not polyfilled in this version of angular/ts?
+    this.conversionRatioUnitOptions = this.autoCompleteService.optionsForConversionRatioUnit('nutrient')
+      .reduce((acc, optGroup) => acc.concat(optGroup.groupOptions), []);
   }
 
   ngAfterViewChecked(): void {
@@ -115,7 +119,6 @@ export class ConversionRatiosFormComponent implements OnInit, AfterViewChecked {
     this.conversionRatios.insert(0, conversionRatioCtrl);
     this.replaceNullUnitsWithBlankUnits();
     this.scrubUnits();
-    this.addFilteredAutoCompleteOptions(conversionRatioCtrl);
 
   }
 
@@ -177,18 +180,6 @@ export class ConversionRatiosFormComponent implements OnInit, AfterViewChecked {
       });
     }
     return results;
-  }
-
-  private addFilteredAutoCompleteOptions(cvRat: FormGroup): void {
-    const optionsForConversionRatioUnit = this.autoCompleteService.optionsForConversionRatioUnit(this.constituentType);
-    cvRat.addControl(
-      'unitAFilteredAutoCompleteOptions',
-      new FormControl(
-        this.autoCompleteService.filteredOptions(optionsForConversionRatioUnit, cvRat.get('unitA.abbreviation') as FormControl)));
-    cvRat.addControl(
-      'unitBFilteredAutoCompleteOptions',
-      new FormControl(
-        this.autoCompleteService.filteredOptions(optionsForConversionRatioUnit, cvRat.get('unitB.abbreviation') as FormControl)));
   }
 
   /**

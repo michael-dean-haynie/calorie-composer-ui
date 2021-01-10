@@ -2,6 +2,7 @@ import { AfterViewChecked, Component, Input, OnInit, QueryList, ViewChildren } f
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatExpansionPanel } from '@angular/material/expansion';
 import { IsMeaningfulValue } from 'src/app/constants/functions';
+import { Opt } from 'src/app/constants/types/select-options';
 import { Nutrient } from 'src/app/models/nutrient.model';
 import { Unit } from 'src/app/models/unit.model';
 import { AutoCompleteService } from 'src/app/services/auto-complete.service';
@@ -18,12 +19,17 @@ export class NutrientsFormComponent implements OnInit, AfterViewChecked {
 
   @ViewChildren(MatExpansionPanel) expansionPanels: QueryList<MatExpansionPanel>;
 
+  nutrientUnitOptions: Opt[];
+
   constructor(
     private autoCompleteService: AutoCompleteService,
     private nutrientMapperService: NutrientMapperService
   ) { }
 
   ngOnInit(): void {
+    // Array.flatMap not polyfilled in this version of angular/ts?
+    this.nutrientUnitOptions = this.autoCompleteService.optionsForNutrientUnit()
+      .reduce((acc, optGroup) => acc.concat(optGroup.groupOptions), []);
     // wire up auto complete options
     this.nutrients.controls.forEach((nutrient: FormGroup) => this.addFilteredAutoCompleteOptions(nutrient));
     this.scrubNutrientUnits();
@@ -105,11 +111,7 @@ export class NutrientsFormComponent implements OnInit, AfterViewChecked {
   }
 
   private addFilteredAutoCompleteOptions(nutrient: FormGroup): void {
-    const optionsForNutrientUnit = this.autoCompleteService.optionsForNutrientUnit();
     const optionsForNutrientName = this.autoCompleteService.optionsForNutrientName();
-    nutrient.addControl(
-      'unitFilteredAutoCompleteOptions',
-      new FormControl(this.autoCompleteService.filteredOptions(optionsForNutrientUnit, nutrient.get('unit.abbreviation') as FormControl)));
     nutrient.addControl(
       'nameFilteredAutoCompleteOptions',
       new FormControl(this.autoCompleteService.filteredOptions(optionsForNutrientName, nutrient.get('name') as FormControl)));

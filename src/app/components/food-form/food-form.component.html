@@ -50,7 +50,7 @@
                             <div class="display-unit__amount">{{ssrDisplayAmount | number:'1.0-4'}}</div>
                             <div class="display-unit__unit">
                                 <app-search-select [ctrl]="foodForm.get('ssrDisplayUnit.abbreviation')"
-                                    [options]="ssOpts" placeholder="Unit">
+                                    [options]="ssOpts" label="Unit" placeholder="Ex. Grams (g)">
                                 </app-search-select>
                             </div>
                         </div>
@@ -70,7 +70,7 @@
                             <div class="display-unit__amount">{{csrDisplayAmount | number:'1.0-4'}}</div>
                             <div class="display-unit__unit">
                                 <app-search-select [ctrl]="foodForm.get('csrDisplayUnit.abbreviation')"
-                                    [options]="ssOpts" placeholder="Unit">
+                                    [options]="ssOpts" label="Unit" placeholder="Ex. Grams (g)">
                                 </app-search-select>
                             </div>
                         </div>

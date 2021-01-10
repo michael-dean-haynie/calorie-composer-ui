@@ -1,4 +1,5 @@
-<mat-form-field floatLabel="never">
+<mat-form-field floatLabel="always" appearance="fill">
+    <mat-label>{{label}}</mat-label>
     <mat-select [formControl]="ctrl" [placeholder]="placeholder" #singleSelect>
         <mat-option>
             <ngx-mat-select-search [formControl]="filterCtrl" placeholderLabel="Search"

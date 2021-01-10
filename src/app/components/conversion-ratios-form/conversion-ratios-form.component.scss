@@ -40,6 +40,9 @@
 
     .unit-form-field {
         width: auto;
+        ::ng-deep .mat-form-field {
+            width: 100%;
+        }
     }
 
     .conversion-ratio-form__side-a, .conversion-ratio-form__side-b {
@@ -75,6 +78,9 @@
 
     .unit-form-field {
         width: auto;
+        ::ng-deep .mat-form-field {
+            width: 100%;
+        }
     }
 }
 
