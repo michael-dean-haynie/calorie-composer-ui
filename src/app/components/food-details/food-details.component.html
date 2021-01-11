@@ -1,38 +1,43 @@
 <div *ngIf="!loading" class="sections-container">
     <section>
-        <h3>
-            <div>{{food.description}}</div>
-            <div>{{food.brandOwner}}</div>
-        </h3>
-        <div>
-            <button mat-icon-button [matMenuTriggerFor]="menu">
-                <mat-icon>more_vert</mat-icon>
-            </button>
-            <mat-menu #menu="matMenu">
-                <button mat-menu-item routerLink="/edit-food/{{foodId}}">
-                    <mat-icon>edit</mat-icon>
-                    <span>Edit Food</span>
+        <div class="header">
+            <h3>
+                {{food.description}}
+            </h3>
+            <div>
+                <button mat-icon-button [matMenuTriggerFor]="menu">
+                    <mat-icon>more_vert</mat-icon>
                 </button>
-                <button mat-menu-item disabled>
-                    <mat-icon>compare_arrows</mat-icon>
-                    <span>Compare Food (not working yet)</span>
-                </button>
-            </mat-menu>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item routerLink="/edit-food/{{foodId}}">
+                        <mat-icon>edit</mat-icon>
+                        <span>Edit Food</span>
+                    </button>
+                    <button mat-menu-item disabled>
+                        <mat-icon>compare_arrows</mat-icon>
+                        <span>Compare Food (not working yet)</span>
+                    </button>
+                </mat-menu>
+            </div>
         </div>
+        <h3 class="brand">{{food.brandOwner}}</h3>
     </section>
-    <!-- <section></section> -->
     <section>
-        <h4>Caloric Breakdown</h4>
-        <mat-form-field floatLabel="always" appearance="fill">
-            <mat-label>per</mat-label>
-            <mat-select #singleSelect [value]="RefUnit.CONSTITUENTS" (selectionChange)="onDisplayUnitChange($event)">
-                <mat-option *ngFor="let option of displayUnitOpts" [value]="option.value">
-                    {{option.label}}
-                </mat-option>
+        <div class="caloric-breakdown-header">
+            <h4>Caloric Breakdown</h4>
+            <mat-form-field floatLabel="always" appearance="fill">
+                <mat-label>per</mat-label>
+                <mat-select #singleSelect [value]="RefUnit.CONSTITUENTS"
+                    (selectionChange)="onDisplayUnitChange($event)">
+                    <mat-option *ngFor="let option of displayUnitOpts" [value]="option.value">
+                        {{option.label}}
+                    </mat-option>
 
-                <!-- content project add new unit option here -->
-            </mat-select>
-        </mat-form-field>
+                    <!-- content project add new unit option here -->
+                </mat-select>
+            </mat-form-field>
+        </div>
+
         <div class="macros">
             <app-macro-pie-chart [food]="food"></app-macro-pie-chart>
             <div>

@@ -1,3 +1,32 @@
+.header {
+    display: grid;
+    grid-template-columns: 1fr min-content;
+
+    h3 {
+        margin: 0
+    }
+}
+
+.brand {
+    color: rgba(0,0,0,.54);
+    font-size: 1.15em;
+    margin: 0;
+}
+
+h4{
+    font-size: 1.1rem;
+}
+
+.caloric-breakdown-header {
+    display: grid;
+    grid-template-columns: 1;
+
+
+    @media (min-width: 380px) {
+        grid-template-columns: 1fr min-content;
+    }
+}
+
 .macros {
     display: grid;
     grid-template-columns: 1fr;

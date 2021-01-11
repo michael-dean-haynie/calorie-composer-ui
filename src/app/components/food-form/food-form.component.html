@@ -1,6 +1,11 @@
 <div *ngIf="!loading" [formGroup]="foodForm" class="sections-container">
     <section>
-        <h3>Labeling</h3>
+        <div class="split-header view-details-header">
+            <div>
+                <h3>Labeling</h3>
+            </div>
+            <a class="view-details-btn" mat-raised-button routerLink="/food-details/{{foodId}}">View Details</a>
+        </div>
         <mat-form-field appearance="fill">
             <mat-label>Description</mat-label>
             <input matInput placeholder="Ex. Pizza" formControlName="description">

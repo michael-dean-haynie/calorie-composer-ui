@@ -43,7 +43,7 @@ export class FoodFormComponent implements OnInit, OnDestroy {
   nrPaths: Path[] = [];
   nrOpts: Opt[] = [];
 
-  private foodId: string;
+  foodId: string;
   private fdcId: string;
   private food: Food;
 
