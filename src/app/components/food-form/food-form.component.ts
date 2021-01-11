@@ -15,6 +15,7 @@ import { FoodApiService } from 'src/app/services/api/food-api.service';
 import { AutoCompleteService } from 'src/app/services/auto-complete.service';
 import { ConversionRatioMapperService } from 'src/app/services/mappers/conversion-ratio-mapper.service';
 import { FoodMapperService } from 'src/app/services/mappers/food-mapper.service';
+import { MenuService } from 'src/app/services/menu.service';
 import { NewConversionRatioService } from 'src/app/services/new-conversion-ratio.service';
 import { ConversionRatiosFormComponent } from '../conversion-ratios-form/conversion-ratios-form.component';
 import { NutrientsFormComponent } from '../nutrients-form/nutrients-form.component';
@@ -63,6 +64,7 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     private unitPipe: UnitPipe,
     private decimalPipe: DecimalPipe,
     private location: Location,
+    private menuService: MenuService
   ) { }
 
   ngOnInit(): void {
@@ -143,6 +145,7 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     this.foodApiService.put(this.food).subscribe(savedFood => {
       console.log('all done updating!')
       this.ignoreChangesFlag = false;
+      this.menuService.updateFoodManagementNavs();
       this.router.navigate(['food-details', this.foodId]);
     });
 
@@ -162,6 +165,7 @@ export class FoodFormComponent implements OnInit, OnDestroy {
         this.food.id = savedFood.id;
         this.foodForm.get('id').setValue(savedFood.draft.id);
         this.ignoreChangesFlag = false;
+        this.menuService.updateFoodManagementNavs();
       });
     }
     else if (this.formMode === 'update') {
@@ -169,6 +173,7 @@ export class FoodFormComponent implements OnInit, OnDestroy {
         console.log('all done updating!')
         this.foodForm.get('id').setValue(savedFood.draft.id);
         this.ignoreChangesFlag = false;
+        this.menuService.updateFoodManagementNavs();
       });
     }
   }
@@ -180,11 +185,15 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     food.id = this.food.id
 
     if (this.formMode === 'create' || this.formMode === 'import') {
-      this.foodApiService.post(food).subscribe(() => console.log('all done posting!'));
+      this.foodApiService.post(food).subscribe(() => {
+        console.log('all done posting!');
+        this.menuService.updateFoodManagementNavs();
+      });
     }
     else if (this.formMode === 'update') {
       this.foodApiService.put(food).subscribe(() => {
         console.log('all done updating!');
+        this.menuService.updateFoodManagementNavs();
         this.router.navigate(['food-details', this.foodId]);
       });
     }
@@ -277,7 +286,6 @@ export class FoodFormComponent implements OnInit, OnDestroy {
         const unit: Unit = this.newConversionRatioService.getPathTarget(ssp);
         return this.autoCompleteService.mapUnitToAutoCompleteOption(unit, 'nutrient');
       });
-
 
       // update serving size display unit
       if (!this.ssOpts.map(opt => opt.value).some(unitAbbr => this.ssrDisplayUnit && this.ssrDisplayUnit.abbreviation === unitAbbr)) {

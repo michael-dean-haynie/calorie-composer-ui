@@ -29,6 +29,7 @@ import { ConversionRatiosFormComponent } from './components/conversion-ratios-fo
 import { ErrorMsgComponent } from './components/error-msg/error-msg.component';
 import { FoodDetailsComponent } from './components/food-details/food-details.component';
 import { FoodFormComponent } from './components/food-form/food-form.component';
+import { FoodManagementComponent } from './components/food-management/food-management.component';
 import { HomeComponent } from './components/home/home.component';
 import { MacroPieChartComponent } from './components/macro-pie-chart/macro-pie-chart.component';
 import { MacroTableComponent } from './components/macro-table/macro-table.component';
@@ -41,6 +42,7 @@ import { SearchSideBarComponent } from './components/search-side-bar/search-side
 import { SearchComponent } from './components/search/search.component';
 import { UnitsFormComponent } from './components/units-form/units-form.component';
 import { MaskDirective } from './directives/mask.directive';
+import { EllipsisPipe } from './pipes/ellipsis.pipe';
 import { MacroAmtPipe } from './pipes/macro-amt.pipe';
 import { MacroPctgPipe } from './pipes/macro-pctg.pipe';
 import { UnitPipe } from './pipes/unit.pipe';
@@ -67,7 +69,9 @@ import { UnitPipe } from './pipes/unit.pipe';
     NutrientsFormComponent,
     UnitsFormComponent,
     SearchSelectComponent,
-    FoodDetailsComponent
+    FoodDetailsComponent,
+    FoodManagementComponent,
+    EllipsisPipe
   ],
   imports: [
     BrowserModule,
@@ -107,7 +111,8 @@ import { UnitPipe } from './pipes/unit.pipe';
     MatDatepickerModule,
     MatNativeDateModule,
     UnitPipe,
-    DecimalPipe
+    DecimalPipe,
+    EllipsisPipe
   ],
   bootstrap: [AppComponent]
 })

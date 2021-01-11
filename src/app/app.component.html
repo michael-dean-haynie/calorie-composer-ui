@@ -11,12 +11,13 @@
     <mat-sidenav-container>
         <mat-sidenav #sideNav [mode]="sideNavMode" [opened]="sideNavOpened" [disableClose]="sideNavDisableClose"
             id="menu">
-            <mat-selection-list [multiple]="false">
-                <mat-list-option *ngFor="let nav of navItems" [selected]="nav.id === activeNavId"
+            <mat-selection-list [multiple]="false" [compareWith]="compareWithFunc">
+                <mat-list-option *ngFor="let nav of navItems;" [selected]="navMatchesEvent(nav)"
                     (click)="navigateTo(nav.destination)">
-                    <div class="menu-item">
+                    <div class="menu-item" class="indent-{{nav.nestedLevel}}">
                         <div [matBadge]="nav.badgeText" matBadgeSize="small" matBadgeOverlap="false"
-                            matBadgePosition="after above" matBadgeColor="accent">{{nav.label}}</div>
+                            matBadgePosition="after above" matBadgeColor="accent">{{nav.label}}
+                        </div>
                         <mat-icon *ngIf="nav.iconName" class="menu-item__icon">
                             {{nav.iconName}}
                         </mat-icon>
@@ -30,5 +31,4 @@
             </div>
         </mat-sidenav-content>
     </mat-sidenav-container>
-
 </div>

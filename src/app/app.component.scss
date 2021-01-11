@@ -57,6 +57,12 @@
   }
 }
 
+#menu {
+  .indent-1 {padding-left: calc(var(--default-padding) * 1)}
+  .indent-2 {padding-left: calc(var(--default-padding) * 2)}
+  .indent-3 {padding-left: calc(var(--default-padding) * 3)}
+  .indent-4 {padding-left: calc(var(--default-padding) * 4)}
+}
 
 // Nested Styles
 

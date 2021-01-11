@@ -36,6 +36,12 @@ export class FoodApiService {
     );
   }
 
+  getDrafts(): Observable<Food[]> {
+    return this.http.get<FoodDTO[]>(`${this.baseUrl}/drafts`).pipe(
+      map(results => results.map(result => this.foodMapperService.dtoToModel(result)))
+    );
+  }
+
   search(query: string): Observable<Food[]> {
     const params = new HttpParams()
       .append('searchQuery', query);

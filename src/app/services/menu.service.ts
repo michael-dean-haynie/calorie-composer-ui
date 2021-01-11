@@ -8,6 +8,7 @@ import { UnitApiService } from './api/unit-api.service';
 export class MenuService {
 
   unitDraftCount = new BehaviorSubject<number>(null);
+  foodManagementNavs = new BehaviorSubject<any>(null);
 
   constructor(
     private unitApiService: UnitApiService
@@ -17,5 +18,9 @@ export class MenuService {
     this.unitApiService.getDraftCount().subscribe(count => {
       this.unitDraftCount.next(count);
     });
+  }
+
+  updateFoodManagementNavs(): void {
+    this.foodManagementNavs.next(null);
   }
 }
