@@ -32,3 +32,15 @@ h4{
     grid-template-columns: 1fr;
     row-gap: var(--default-padding);
 }
+
+#nutrients-table {
+    width: 100%;
+}
+
+#nutrient-filter {
+    width: 100%;
+}
+
+.align-right {
+    text-align: right;
+}

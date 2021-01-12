@@ -4,6 +4,7 @@ import { SumReducer } from 'src/app/constants/functions';
 import { MacroNutrientType, MacroNutrientTypes } from 'src/app/constants/types/macro-nutrient.type';
 import { NutrientType } from 'src/app/constants/types/nutrient.type';
 import { Food } from 'src/app/models/food.model';
+import { NutrientMetadataService } from '../nutrient-metadata.service';
 import { UnitService } from './unit.service';
 
 @Injectable({
@@ -12,7 +13,8 @@ import { UnitService } from './unit.service';
 export class NutrientCalculationService {
 
   constructor(
-    private unitService: UnitService
+    private unitService: UnitService,
+    private nutrientMetadataService: NutrientMetadataService
   ) { }
 
   /**
@@ -26,7 +28,7 @@ export class NutrientCalculationService {
    *  Returns 0 if Food does not specify a value for the nutrient.
    */
   nutrientAmtInFood(food: Food, nutrientType: NutrientType): number {
-    const nutrient = food.nutrients.find(nutr => nutr.name === nutrientType);
+    const nutrient = this.nutrientMetadataService.findNutrientModelByType(food.nutrients, nutrientType);
     return nutrient ? nutrient.amount : 0;
   }
 

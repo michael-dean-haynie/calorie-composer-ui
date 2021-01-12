@@ -1,16 +1,23 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
+import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Path } from 'src/app/constants/types/path.type';
 import { RefUnit } from 'src/app/constants/types/reference-unit.type';
 import { Opt } from 'src/app/constants/types/select-options';
 import { Food } from 'src/app/models/food.model';
+import { Nutrient } from 'src/app/models/nutrient.model';
 import { Unit } from 'src/app/models/unit.model';
 import { UnitPipe } from 'src/app/pipes/unit.pipe';
 import { FoodApiService } from 'src/app/services/api/food-api.service';
 import { NewConversionRatioService } from 'src/app/services/new-conversion-ratio.service';
+
+export interface FoodDetailsNutrientTableRow {
+  name: string;
+  amount: string;
+}
 
 @Component({
   selector: 'app-food-details',
@@ -29,6 +36,8 @@ export class FoodDetailsComponent implements OnInit, OnDestroy {
   macroTablePerUnit: Unit = this.constituentsUnit();
   macroTablePerAmt = 1;
 
+  nutrientsTableDisplayedColumns: string[] = ['name', 'amount'];
+  nutrientsTableDataSource: MatTableDataSource<FoodDetailsNutrientTableRow>;
 
   RefUnit = RefUnit;
 
@@ -71,6 +80,12 @@ export class FoodDetailsComponent implements OnInit, OnDestroy {
     return unit;
   }
 
+  applyNutrientFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.nutrientsTableDataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+
 
   /**
    * ----------------------------------------
@@ -82,7 +97,9 @@ export class FoodDetailsComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.foodApiService.get(foodId).subscribe(food => {
         this.food = food;
+        console.log(food);
         this.prepareDataForDisplayUnits(food);
+        this.nutrientsTableDataSource = new MatTableDataSource(food.nutrients.map(this.nutrientAsRowModel));
         this.loading = false;
       })
     );
@@ -142,6 +159,13 @@ export class FoodDetailsComponent implements OnInit, OnDestroy {
       return;
     }
 
+  }
+
+  private nutrientAsRowModel(nutrient: Nutrient): FoodDetailsNutrientTableRow {
+    return {
+      name: nutrient.name,
+      amount: `${nutrient.amount} ${nutrient.unit.abbreviation}`
+    };
   }
 
 }

@@ -19,7 +19,8 @@ export class NutrientMapperService {
   dtoToModel(nutrientDTO: NutrientDTO): Nutrient {
     const nutrient = new Nutrient();
     nutrient.id = nutrientDTO.id;
-    nutrient.name = this.nutriantMetadataService.aliasToType(nutrientDTO.name);
+    // nutrient.name = this.nutriantMetadataService.aliasToType(nutrientDTO.name);
+    nutrient.name = nutrientDTO.name;
     nutrient.unit = this.unitMapperService.dtoToModel(nutrientDTO.unit);
     nutrient.amount = nutrientDTO.amount;
     return nutrient;
@@ -32,7 +33,8 @@ export class NutrientMapperService {
   modelToFormGroup(nutrient: Nutrient): FormGroup {
     const result: FormGroup = this.fb.group({
       id: [nutrient.id],
-      name: [this.nutriantMetadataService.tryAliasToDisplayName(nutrient.name), Validators.required],
+      // name: [this.nutriantMetadataService.tryAliasToDisplayName(nutrient.name), Validators.required],
+      name: nutrient.name,
       unit: this.unitMapperService.modelToFormGroup(nutrient.unit), // TODO: make required
       amount: [nutrient.amount, Validators.required]
     });

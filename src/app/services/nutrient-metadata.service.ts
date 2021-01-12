@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { NutrientMetaData, NutrientMetadataList } from '../constants/nutrient-metadata';
 import { NutrientType } from '../constants/types/nutrient.type';
+import { Nutrient } from '../models/nutrient.model';
 // import convert from 'convert-units';
 // import Qty from 'js-quantities';
 
@@ -30,5 +31,10 @@ export class NutrientMetadataService {
     } else {
       return metaDataMatch.nutrient;
     }
+  }
+
+  findNutrientModelByType(nutrients: Nutrient[], type: NutrientType) {
+    const metadata = NutrientMetadataList.find(nutrientMD => nutrientMD.nutrient === type);
+    return nutrients.find(model => metadata.aliases.concat([metadata.nutrient, metadata.displayName]).includes(model.name));
   }
 }
