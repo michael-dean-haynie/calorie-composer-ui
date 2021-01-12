@@ -11,6 +11,8 @@ pu@ save food form draft as actual, discard changes
     - add banner to food form indicating that you are viewing a working draft, hit cancel to discard, hit save save draft as actual, or click somewhere to see actual details page
     - add ability to quickly jump to unit management to add unit and then come back
     - animate macro-breakdown table visual indicators in sync with pie chart
+    - add sticky footer to nutrients table in food-details indicating the number of nutrients
+    - from food-details page be able to do easy unit/amount conversions
 
 
 * Testing

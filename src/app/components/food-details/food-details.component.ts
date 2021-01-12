@@ -33,14 +33,11 @@ export class FoodDetailsComponent implements OnInit, OnDestroy {
   ssrDisplayValue: string;
   csrDisplayValue: string;
   displayUnitOpts: Opt[];
-  macroTablePerUnit: Unit = this.constituentsUnit();
-  macroTablePerAmt = 1;
+  selectedDisplayUnit = RefUnit.SERVING;
+  macroTablePerUnit: Unit = this.servingUnit();
 
   nutrientsTableDisplayedColumns: string[] = ['name', 'amount'];
-  nutrientsTableDataSource: MatTableDataSource<FoodDetailsNutrientTableRow>;
-
-  RefUnit = RefUnit;
-
+  nutrientsTableDataSource: MatTableDataSource<FoodDetailsNutrientTableRow> = new MatTableDataSource([]);
 
   private subscriptions: Subscription[] = [];
 
@@ -67,11 +64,28 @@ export class FoodDetailsComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
+  get nutrientsPerLabel() {
+    if (this.selectedDisplayUnit === RefUnit.SERVING) {
+      return `per ${this.ssrDisplayValue} portion`;
+    } else if (this.selectedDisplayUnit === RefUnit.CONSTITUENTS) {
+      return `per ${this.csrDisplayValue} portion`;
+    }
+  }
+
   onDisplayUnitChange(event: MatSelectChange) {
+    this.selectedDisplayUnit = event.value;
     const unit = new Unit();
     unit.abbreviation = event.value;
     this.macroTablePerUnit = unit;
-    this.macroTablePerAmt = 1;
+
+    // update nutrients table amoutns
+    this.nutrientsTableDataSource.data = this.nutrientsAsRowModels(this.food.nutrients);
+  }
+
+  servingUnit(): Unit {
+    const unit = new Unit();
+    unit.abbreviation = RefUnit.SERVING;
+    return unit;
   }
 
   constituentsUnit(): Unit {
@@ -99,7 +113,7 @@ export class FoodDetailsComponent implements OnInit, OnDestroy {
         this.food = food;
         console.log(food);
         this.prepareDataForDisplayUnits(food);
-        this.nutrientsTableDataSource = new MatTableDataSource(food.nutrients.map(this.nutrientAsRowModel));
+        this.nutrientsTableDataSource.data = this.nutrientsAsRowModels(food.nutrients);
         this.loading = false;
       })
     );
@@ -110,12 +124,12 @@ export class FoodDetailsComponent implements OnInit, OnDestroy {
     this.csrDisplayValue = this.resolveReferenceUnitDisplayValue(food, RefUnit.CONSTITUENTS);
     this.displayUnitOpts = [
       {
-        label: `${this.unitPipe.transform(RefUnit.CONSTITUENTS, 'nutrient')} (${this.csrDisplayValue})`,
-        value: RefUnit.CONSTITUENTS
-      },
-      {
         label: `${this.unitPipe.transform(RefUnit.SERVING, 'nutrient')} (${this.ssrDisplayValue})`,
         value: RefUnit.SERVING
+      },
+      {
+        label: `${this.unitPipe.transform(RefUnit.CONSTITUENTS, 'nutrient')} (${this.csrDisplayValue})`,
+        value: RefUnit.CONSTITUENTS
       }
     ];
   }
@@ -161,11 +175,24 @@ export class FoodDetailsComponent implements OnInit, OnDestroy {
 
   }
 
-  private nutrientAsRowModel(nutrient: Nutrient): FoodDetailsNutrientTableRow {
-    return {
-      name: nutrient.name,
-      amount: `${nutrient.amount} ${nutrient.unit.abbreviation}`
-    };
+  // take nutrients, and map to row model after converting amount based on selected ref unit (if needed)
+  private nutrientsAsRowModels(nutrients: Nutrient[]): FoodDetailsNutrientTableRow[] {
+    return nutrients.map(nutrient => {
+      let convFact = 1;
+
+      // multiply values by conversion factor to provided amount and unit
+      if (this.selectedDisplayUnit !== RefUnit.CONSTITUENTS) {
+        const perUnit = new Unit();
+        perUnit.abbreviation = this.selectedDisplayUnit;
+
+        convFact = this.newConversionRatioService.convertUnitAmount(this.food.conversionRatios, 1, this.constituentsUnit(), perUnit);
+      }
+
+      return {
+        name: nutrient.name,
+        amount: `${this.decimalPipe.transform(nutrient.amount / convFact, '1.0-2')} ${nutrient.unit.abbreviation}`
+      };
+    });
   }
 
 }

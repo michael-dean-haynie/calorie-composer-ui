@@ -33,6 +33,27 @@ h4{
     row-gap: var(--default-padding);
 }
 
+.nutrients-header {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    column-gap: 1ch;
+    align-items: flex-end;
+
+    h4 {
+        margin: 0
+    }
+
+    .nutrients-per-label {
+        font-style: italic;
+    }
+
+}
+
+.nutrients-table-container {
+    max-height: 300px;
+    overflow: auto;
+}
+
 #nutrients-table {
     width: 100%;
 }
