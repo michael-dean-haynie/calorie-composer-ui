@@ -35,14 +35,14 @@ export class AppComponent implements OnInit, OnDestroy {
       destination: 'home'
     },
     {
-      navId: NavId.UNIT_MANAGEMENT,
-      label: 'Unit Management',
-      destination: 'unit-management',
-    },
-    {
       navId: NavId.FOOD_MANAGEMENT,
       label: 'Food Management',
       destination: 'food-management',
+    },
+    {
+      navId: NavId.UNIT_MANAGEMENT,
+      label: 'Unit Management',
+      destination: 'unit-management',
     }
   ];
 
@@ -215,7 +215,7 @@ export class AppComponent implements OnInit, OnDestroy {
         oldNavItems = [
           ...oldNavItems.slice(0, foodMgmtNavIndex + 1),
           ...newNavItems,
-          ...oldNavItems.slice(foodMgmtNavIndex + 2)
+          ...oldNavItems.slice(foodMgmtNavIndex + 1)
         ];
 
         // empty and refill navItems (DO NOT RE-ASSIGN)

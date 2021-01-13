@@ -1,1 +1,30 @@
-<p>food-management works!</p>
+<div *ngIf="!loading" class="sections-container">
+    <section>
+        <table id="food-table" mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+            <!-- Description Column -->
+            <ng-container matColumnDef="description">
+                <th mat-header-cell *matHeaderCellDef> Description </th>
+                <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+            </ng-container>
+
+            <!-- Brand Column -->
+            <ng-container matColumnDef="brand">
+                <th mat-header-cell *matHeaderCellDef> Brand </th>
+                <td mat-cell *matCellDef="let element"> {{element.brandOwner}} </td>
+            </ng-container>
+
+            <!-- Link Column -->
+            <ng-container matColumnDef="link">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let element">
+                    <a class="view-details-btn" mat-raised-button routerLink="/food-details/{{element.id}}">
+                        View Details</a>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+    </section>
+</div>

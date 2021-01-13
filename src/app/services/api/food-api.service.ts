@@ -36,6 +36,12 @@ export class FoodApiService {
     );
   }
 
+  getAllFoods(): Observable<Food[]> {
+    return this.http.get<FoodDTO[]>(`${this.baseUrl}`).pipe(
+      map(results => results.map(result => this.foodMapperService.dtoToModel(result)))
+    );
+  }
+
   getDrafts(): Observable<Food[]> {
     return this.http.get<FoodDTO[]>(`${this.baseUrl}/drafts`).pipe(
       map(results => results.map(result => this.foodMapperService.dtoToModel(result)))
