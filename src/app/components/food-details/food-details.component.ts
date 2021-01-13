@@ -2,7 +2,7 @@ import { DecimalPipe } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Path } from 'src/app/constants/types/path.type';
 import { RefUnit } from 'src/app/constants/types/reference-unit.type';
@@ -12,6 +12,7 @@ import { Nutrient } from 'src/app/models/nutrient.model';
 import { Unit } from 'src/app/models/unit.model';
 import { UnitPipe } from 'src/app/pipes/unit.pipe';
 import { FoodApiService } from 'src/app/services/api/food-api.service';
+import { MenuService } from 'src/app/services/menu.service';
 import { NewConversionRatioService } from 'src/app/services/new-conversion-ratio.service';
 
 export interface FoodDetailsNutrientTableRow {
@@ -43,7 +44,9 @@ export class FoodDetailsComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private foodApiService: FoodApiService,
+    private menuService: MenuService,
     private newConversionRatioService: NewConversionRatioService,
     private unitPipe: UnitPipe,
     private decimalPipe: DecimalPipe
@@ -97,6 +100,17 @@ export class FoodDetailsComponent implements OnInit, OnDestroy {
   applyNutrientFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.nutrientsTableDataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  deleteFood(): void {
+    this.subscriptions.push(
+      this.foodApiService.delete(this.foodId).subscribe(() => {
+        this.menuService.updateFoodManagementNavs();
+        this.menuService.updateUnitDraftCount();
+        this.router.navigate(['food-management']);
+
+      })
+    );
   }
 
 

@@ -36,6 +36,10 @@ export class FoodApiService {
     );
   }
 
+  delete(id: string): Observable<any> {
+    return this.http.delete<any>(`${this.baseUrl}/${id}`);
+  }
+
   getAllFoods(): Observable<Food[]> {
     return this.http.get<FoodDTO[]>(`${this.baseUrl}`).pipe(
       map(results => results.map(result => this.foodMapperService.dtoToModel(result)))
