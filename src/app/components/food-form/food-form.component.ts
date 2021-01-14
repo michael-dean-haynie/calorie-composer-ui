@@ -1,4 +1,3 @@
-import { DecimalPipe, Location } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,7 +8,6 @@ import { RefUnit } from 'src/app/constants/types/reference-unit.type';
 import { Opt } from 'src/app/constants/types/select-options';
 import { Food } from 'src/app/models/food.model';
 import { Unit } from 'src/app/models/unit.model';
-import { UnitPipe } from 'src/app/pipes/unit.pipe';
 import { FdcApiService } from 'src/app/services/api/fdc-api.service';
 import { FoodApiService } from 'src/app/services/api/food-api.service';
 import { AutoCompleteService } from 'src/app/services/auto-complete.service';
@@ -61,9 +59,6 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     private conversionRatioMapperService: ConversionRatioMapperService,
     private newConversionRatioService: NewConversionRatioService,
     private autoCompleteService: AutoCompleteService,
-    private unitPipe: UnitPipe,
-    private decimalPipe: DecimalPipe,
-    private location: Location,
     private menuService: MenuService
   ) { }
 
@@ -81,10 +76,6 @@ export class FoodFormComponent implements OnInit, OnDestroy {
         else if (this.fdcId !== undefined) {
           this.formMode = 'import';
           this.loadFdcFood();
-        }
-        else {
-          this.formMode = 'create';
-          this.prepareNewFood();
         }
       })
     );
@@ -124,10 +115,6 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     return this.newConversionRatioService.getPathProduct(path);
   }
 
-  get canDiscardChanges(): boolean {
-    // pu@
-    return false;
-  }
 
   addNutrient(): void {
     this.nutrientsFormComponent.addNutrient();
@@ -137,7 +124,6 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     this.conversionRatiosFormComponent.addConversionRatio();
   }
 
-  // TODO: can only do this in edit mode? what about other modes. Cancel? Go back higher level Food dashboard
   discardChanges(): void {
     this.ignoreChangesFlag = true;
     delete this.food.draft;
@@ -151,31 +137,17 @@ export class FoodFormComponent implements OnInit, OnDestroy {
 
   }
 
-  // TODO: update to handle if creating new and there is no actual version yet
-  // TODO: point food-details to form if the foodId is for one that is a draft
-  saveDraft(): void {
+  autoSave(): void {
     this.ignoreChangesFlag = true;
     const draft = this.foodMapperService.formGroupToModel(this.foodForm);
     this.food.draft = draft;
 
-
-    if (this.formMode === 'create' || this.formMode === 'import') {
-      this.foodApiService.post(this.food).subscribe(savedFood => {
-        console.log('all done posting!');
-        this.food.id = savedFood.id;
-        this.foodForm.get('id').setValue(savedFood.draft.id);
-        this.ignoreChangesFlag = false;
-        this.menuService.updateFoodManagementNavs();
-      });
-    }
-    else if (this.formMode === 'update') {
-      this.foodApiService.put(this.food).subscribe(savedFood => {
-        console.log('all done updating!')
-        this.foodForm.get('id').setValue(savedFood.draft.id);
-        this.ignoreChangesFlag = false;
-        this.menuService.updateFoodManagementNavs();
-      });
-    }
+    this.foodApiService.put(this.food).subscribe(savedFood => {
+      console.log('all done updating!')
+      this.foodForm.get('id').setValue(savedFood.draft.id);
+      this.ignoreChangesFlag = false;
+      this.menuService.updateFoodManagementNavs();
+    });
   }
 
   // save draft as actual and discard draft
@@ -184,19 +156,11 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     food.isDraft = false;
     food.id = this.food.id
 
-    if (this.formMode === 'create' || this.formMode === 'import') {
-      this.foodApiService.post(food).subscribe(() => {
-        console.log('all done posting!');
-        this.menuService.updateFoodManagementNavs();
-      });
-    }
-    else if (this.formMode === 'update') {
-      this.foodApiService.put(food).subscribe(() => {
-        console.log('all done updating!');
-        this.menuService.updateFoodManagementNavs();
-        this.router.navigate(['food-details', this.foodId]);
-      });
-    }
+    this.foodApiService.put(food).subscribe(() => {
+      console.log('all done updating!');
+      this.menuService.updateFoodManagementNavs();
+      this.router.navigate(['food-details', this.foodId]);
+    });
   }
 
   /**
@@ -225,12 +189,8 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     );
   }
 
-  private prepareNewFood(): void {
-    this.food = new Food();
-    this.prepareFoodForm();
-  }
-
   private prepareFoodForm(): void {
+
     if (!this.food.draft) {
       this.food.draft = this.createDraft();
     }
@@ -241,14 +201,10 @@ export class FoodFormComponent implements OnInit, OnDestroy {
 
     // trigger initial value changes
     this.foodForm.updateValueAndValidity({ onlySelf: false, emitEvent: true });
+    this.foodForm.markAllAsTouched();
 
-    // mark all existing fields as touched unless in create mode
-    if (this.formMode !== 'create') {
-      this.foodForm.markAllAsTouched();
-    }
 
-    // auto save draft
-    this.saveDraftOnEveryChange(this.foodForm);
+    this.autoSaveOnEveryChange(this.foodForm);
 
     this.loading = false;
   }
@@ -309,13 +265,13 @@ export class FoodFormComponent implements OnInit, OnDestroy {
     }));
   }
 
-  private saveDraftOnEveryChange(form: FormGroup): void {
+  private autoSaveOnEveryChange(form: FormGroup): void {
     this.subscriptions.push(
       form.valueChanges.pipe(
         filter(() => !this.ignoreChangesFlag),
         debounceTime(500)
       ).subscribe(() => {
-        this.saveDraft();
+        this.autoSave();
       })
     );
   }

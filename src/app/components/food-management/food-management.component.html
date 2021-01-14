@@ -27,4 +27,11 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
     </section>
+    <section>
+        <div class="buttons">
+            <button mat-raised-button color="primary" [disabled]="false" (click)="createFood()" class="add-button">
+                <mat-icon>add_to_photos</mat-icon>&nbsp;Add New Food Item
+            </button>
+        </div>
+    </section>
 </div>

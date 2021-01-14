@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Food } from 'src/app/models/food.model';
 import { FoodApiService } from 'src/app/services/api/food-api.service';
@@ -17,7 +18,8 @@ export class FoodManagementComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
 
   constructor(
-    private foodApiService: FoodApiService
+    private foodApiService: FoodApiService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -31,6 +33,16 @@ export class FoodManagementComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  createFood(): void {
+    const food = new Food();
+    food.description = 'New Food Name';
+    this.subscriptions.push(
+      this.foodApiService.post(food).subscribe(savedFood => {
+        this.router.navigate(['edit-food', savedFood.id]);
+      })
+    );
   }
 
 }
