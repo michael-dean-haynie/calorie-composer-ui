@@ -1,5 +1,5 @@
-pu@ save food form draft as actual, discard changes
-    - these probably will re-direct to higher level food page
+pu@ 
+    - remove cruft (search components / types)
 
 
 * Wish List
@@ -26,5 +26,7 @@ DONT FORGET TO
 - double check that null/empty fields on updates actually go through
 - make sure users can't create units with same abbreviation as units that they can't manage (maybe also make column unique
 - make sure users can't delete units that would mess with existing stuff.
+- need to make sure you can't create 2 custom units with the same abbreviation
+- need to make sure you can't create a custom unit with the same abbreviation as any non-custom units
 
         
