@@ -1,8 +1,11 @@
 @import '../../../style-vars';
 
+#search-form-field {
+    width: 100%;
+}
 
-.wide-container {
+.import-button-row {
     display: grid;
-    grid-template-columns: 350px 1fr;
-    grid-gap: var(--default-padding);
+    justify-items: end;
+    margin-top: var(--default-padding);
 }

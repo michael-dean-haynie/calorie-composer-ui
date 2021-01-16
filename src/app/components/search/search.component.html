@@ -1,26 +1,41 @@
 <div class="sections-container">
-    <ng-container *ngIf="layoutMode === 'narrow'">
-        <section>
-            <app-search-bar></app-search-bar>
-        </section>
-        <section>
-            <app-narrow-search-results></app-narrow-search-results>
-        </section>
-    </ng-container>
-
-    <ng-container *ngIf="layoutMode === 'wide'">
-        <section>
-            <div class="wide-container">
-                <app-search-side-bar></app-search-side-bar>
-                <div>
-                    {{selectedFood?.description}}
-                    <div>
-                        <a routerLink="/import-food/{{selectedFood?.fdcId}}">
-                            <button>Save to library (pantry?)</button>
-                        </a>
+    <section>
+        <mat-form-field id="search-form-field">
+            <mat-label>Search</mat-label>
+            <input matInput [formControl]="searchCtrl" placeholder="Chicken Soup">
+        </mat-form-field>
+    </section>
+    <section>
+        <mat-accordion>
+            <ng-container *ngFor="let food of results?.content">
+                <mat-expansion-panel (opened)="lazyLoadFullFood(food.fdcId)">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            {{food.description}}
+                        </mat-panel-title>
+                        <mat-panel-description>
+                            {{food.brandOwner}}
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <div *ngIf="!checkFoodFullyLoaded(food)">
+                        <mat-spinner diameter="50"></mat-spinner>
                     </div>
-                </div>
-            </div>
-        </section>
-    </ng-container>
+                    <div *ngIf="checkFoodFullyLoaded(food)">
+                        <app-macro-pie-chart [food]="food"></app-macro-pie-chart>
+                        <div>{{getHackyPerPortionLabel(food)}}</div>
+                        <div>
+                            <app-macro-table [food]="food" [perUnit]="macroTablePerUnit" [perAmt]="1">
+                            </app-macro-table>
+                        </div>
+                    </div>
+                    <div class="import-button-row">
+                        <button mat-flat-button color="primary" [disabled]="false" (click)="import(food)">
+                            <mat-icon>save_alt</mat-icon>&nbsp;Import
+                        </button>
+                    </div>
+                </mat-expansion-panel>
+            </ng-container>
+        </mat-accordion>
+    </section>
+    <section></section>
 </div>

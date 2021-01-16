@@ -3,9 +3,8 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FoodDTO } from 'src/app/contracts/food-dto';
-import { SearchResultDTO } from 'src/app/contracts/search-result-dto';
+import { PageDTO } from 'src/app/contracts/page-dto';
 import { Food } from 'src/app/models/food.model';
-import { SearchResult } from 'src/app/models/search-result.model';
 import { environment } from 'src/environments/environment';
 import { FoodMapperService } from '../mappers/food-mapper.service';
 import { SearchResultMapperService } from '../mappers/search-result-mapper.service';
@@ -23,14 +22,12 @@ export class FdcApiService {
     private foodMapperService: FoodMapperService
   ) { }
 
-  search(query: string): Observable<SearchResult> {
+  search(query: string): Observable<PageDTO<FoodDTO>> {
 
     const params = new HttpParams()
       .append('query', query);
 
-    return this.http.get<SearchResultDTO>(`${this.baseUrl}/search`, { params }).pipe(
-      map(searchResultDTO => this.searchResultMapperService.dtoToModel(searchResultDTO)),
-    );
+    return this.http.get<PageDTO<FoodDTO>>(`${this.baseUrl}/search`, { params });
   }
 
   get(fdcId: string): Observable<Food> {

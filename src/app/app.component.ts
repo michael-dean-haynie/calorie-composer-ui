@@ -35,6 +35,11 @@ export class AppComponent implements OnInit, OnDestroy {
       destination: 'home'
     },
     {
+      navId: NavId.SEARCH,
+      label: 'Search',
+      destination: 'search'
+    },
+    {
       navId: NavId.FOOD_MANAGEMENT,
       label: 'Food Management',
       destination: 'food-management',

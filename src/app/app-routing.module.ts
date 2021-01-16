@@ -18,20 +18,18 @@ const routes: Routes = [
     data: { pageTitle: 'Home', activeNavId: NavId.HOME }
   },
   { path: 'planning', component: PlanningComponent, data: { pageTitle: 'Planning' } },
-  { path: 'search', component: SearchComponent, data: { pageTitle: 'Search' } },
+  { path: 'search', component: SearchComponent, data: { pageTitle: 'Search', activeNavId: NavId.SEARCH } },
   // Units Form
   {
     path: 'unit-management', component: UnitsFormComponent,
     pathMatch: 'full',
     data: { pageTitle: 'Unit Management', activeNavId: NavId.UNIT_MANAGEMENT }
   },
-  // Food Form
+  // Foods
   { path: 'create-food', component: FoodFormComponent, pathMatch: 'full', data: { pageTitle: 'Create New Food' } },
   { path: 'edit-food/:id', component: FoodFormComponent, data: { pageTitle: 'Edit Food', activeNavId: NavId.EDIT_FOOD } },
   { path: 'import-food/:fdcId', component: FoodFormComponent, data: { pageTitle: 'Import Food' } },
-  // Food Details
   { path: 'food-details/:id', component: FoodDetailsComponent, pathMatch: 'full', data: { pageTitle: 'Food Details' } },
-  // Food Management
   {
     path: 'food-management', component: FoodManagementComponent,
     pathMatch: 'full',

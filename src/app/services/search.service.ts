@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Food } from '../models/food.model';
-import { SearchResult } from '../models/search-result.model';
+import { FoodDTO } from '../contracts/food-dto';
+import { PageDTO } from '../contracts/page-dto';
 import { FdcApiService } from './api/fdc-api.service';
 
 @Injectable({
@@ -9,13 +9,13 @@ import { FdcApiService } from './api/fdc-api.service';
 })
 export class SearchService {
 
-  results = new BehaviorSubject<SearchResult>(null);
-  selectedFood = new BehaviorSubject<Food>(null);
-  latestQuery = new BehaviorSubject<string>('');
+  results = new BehaviorSubject<PageDTO<FoodDTO>>(null);
+  selectedFoodFdcId = new BehaviorSubject<string>(null);
+  latestQuery = new BehaviorSubject<string>(null);
 
   constructor(private fdcApiService: FdcApiService) { }
 
-  search(query: string) {
+  search(query: string): void {
     this.fdcApiService.search(query).subscribe(searchResult => {
       this.results.next(searchResult);
     });

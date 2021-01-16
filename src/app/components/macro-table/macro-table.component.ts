@@ -28,10 +28,7 @@ export class MacroTableComponent implements OnInit, OnChanges {
     private newConversionRatioService: NewConversionRatioService
   ) { }
 
-  ngOnInit(): void {
-    this.dataSource = this.loadData(this.food, this.perAmt, this.perUnit);
-    this.loading = false;
-  }
+  ngOnInit(): void { }
 
   ngOnChanges(): void {
     this.loading = true;
