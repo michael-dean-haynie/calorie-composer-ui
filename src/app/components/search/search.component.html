@@ -28,7 +28,7 @@
                             </app-macro-table>
                         </div>
                     </div>
-                    <div class="import-button-row">
+                    <div *ngIf="checkFoodFullyLoaded(food)" class="import-button-row">
                         <button mat-flat-button color="primary" [disabled]="false" (click)="import(food)">
                             <mat-icon>save_alt</mat-icon>&nbsp;Import
                         </button>
