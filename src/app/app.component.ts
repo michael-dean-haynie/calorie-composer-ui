@@ -29,11 +29,12 @@ export class AppComponent implements OnInit, OnDestroy {
   activeNavIndex: number;
 
   navItems: NavData[] = [
-    {
-      navId: NavId.HOME,
-      label: 'Home',
-      destination: 'home'
-    },
+    // temp disabled until implemented
+    // {
+    //   navId: NavId.HOME,
+    //   label: 'Home',
+    //   destination: 'home'
+    // },
     {
       navId: NavId.SEARCH,
       label: 'Search',

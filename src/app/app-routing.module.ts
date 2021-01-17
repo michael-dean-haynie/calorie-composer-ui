@@ -39,9 +39,9 @@ const routes: Routes = [
   // { path: 'create-combo-food', component: ComboFoodFormComponent, pathMatch: 'full', data: { pageTitle: 'Create New Combo-Food' } },
   // { path: 'edit-combo-food/:id', component: ComboFoodFormComponent, data: { pageTitle: 'Edit Combo-Food' } },
   // empty url
-  { path: '', pathMatch: 'full', redirectTo: 'home' },
+  { path: '', pathMatch: 'full', redirectTo: 'food-management' }, // temp untill 'home' is implemented
   // anything else
-  { path: '**', pathMatch: 'full', redirectTo: 'home' }
+  { path: '**', pathMatch: 'full', redirectTo: 'food-management' } // temp until 'home' is implemented
 ];
 
 @NgModule({

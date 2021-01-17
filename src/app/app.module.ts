@@ -34,12 +34,9 @@ import { FoodManagementComponent } from './components/food-management/food-manag
 import { HomeComponent } from './components/home/home.component';
 import { MacroPieChartComponent } from './components/macro-pie-chart/macro-pie-chart.component';
 import { MacroTableComponent } from './components/macro-table/macro-table.component';
-import { NarrowSearchResultsComponent } from './components/narrow-search-results/narrow-search-results.component';
 import { NutrientsFormComponent } from './components/nutrients-form/nutrients-form.component';
 import { PlanningComponent } from './components/planning/planning.component';
-import { SearchBarComponent } from './components/search-bar/search-bar.component';
 import { SearchSelectComponent } from './components/search-select/search-select.component';
-import { SearchSideBarComponent } from './components/search-side-bar/search-side-bar.component';
 import { SearchComponent } from './components/search/search.component';
 import { UnitsFormComponent } from './components/units-form/units-form.component';
 import { MaskDirective } from './directives/mask.directive';
@@ -52,10 +49,7 @@ import { UnitPipe } from './pipes/unit.pipe';
 @NgModule({
   declarations: [
     AppComponent,
-    SearchBarComponent,
-    NarrowSearchResultsComponent,
     SearchComponent,
-    SearchSideBarComponent,
     MacroAmtPipe,
     MacroPctgPipe,
     MacroPieChartComponent,
